@@ -23,7 +23,6 @@ Parâmetros recebidos:
 - **valorEmprestimo**: Ex.: `10000.00`.
 - **quantidadeParcelas**: Opcional, múltiplo de 12, mínimo 24 (ex.: `24`, `36`, etc.). Se omitido, retorna opções.
 - **dataInicioPagamento**: Futura (ex.: `01/04/2025`).
-- **tipoVinculo**: `"servidor_federal"`, `"servidor_estadual"`, `"servidor_municipal"`, `"aposentado"`.
 - **contratarSeguro**: `true` ou `false`.
 
 **Opcional**:
@@ -33,6 +32,7 @@ Parâmetros recebidos:
 1. **Consulta ao banco de dados**:
    - Verificar consignados via `idCliente` (ex.: CPF).
    - Obter **vencimentos líquidos**, **parcelas anteriores** e **idade**.
+   - **tipoVinculo**: `"servidor_federal"`, `"servidor_estadual"`, `"servidor_municipal"`, `"aposentado"`.
 
 2. **Cálculo da margem consignável**:
    - Fórmula: `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
@@ -209,8 +209,10 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - **idCliente**: "123.456.789-00"  
 - **valorEmprestimo**: 10.000,00  
 - **quantidadeParcelas**: OMITIDA  
-- **tipoVinculo**: "aposentado"  
-- **contratarSeguro**: true  
+- **contratarSeguro**: true
+
+### Coletados do banco após envio da solicitação:
+- **tipoVinculo**: "aposentado"
 - **idade**: 75  
 - **Vencimentos**: 5.000,00  
 - **Parcelas anteriores**: 800,00  
