@@ -4,7 +4,7 @@
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
-- [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira).)
+- [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira)
 
 ## Referência
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
