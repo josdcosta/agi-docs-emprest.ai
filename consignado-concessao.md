@@ -97,12 +97,12 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 6. **Cálculo da parcela (Price)**:
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
-   - Inclui IOF e seguro no `ValorTotalFinanciado`, refletindo o custo total mensal para o cliente.
 
 7. **Cálculo da taxa efetiva mensal (CET)** *(novo)*:
    - Fórmula: Resolve numericamente a equação do fluxo de caixa para encontrar a taxa que iguala o valor presente líquido:
      - `ValorEmprestimo = Parcela * [(1 - (1 + TaxaEfetivaMensal)^(-QuantidadeParcelas)) / TaxaEfetivaMensal]`
    - Exemplo: Para `ValorEmprestimo = 10.000`, `Parcela = 350,13`, `QuantidadeParcelas = 48`, `IOF = 157,99`, `CustoSeguro = 1.150`, a `TaxaEfetivaMensal` seria ≈ 1,92% (cálculo iterativo).
+   - Inclui IOF e seguro no `ValorTotalFinanciado`, refletindo o custo total mensal para o cliente.
 
 8. **Validação da margem**:
    - Compara `Parcela` com `Margem`. Se exceder, retorna erro.
@@ -222,7 +222,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
 
 - **Taxa**:  
-  `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 1,80%.
+  `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 1,80%.
 
 - **Seguro**:  
   `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
@@ -256,6 +256,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   Aposentado de 75 anos, com seguro → Taxa base = 1,6%, máximo 48 meses.  
   **Opções**: 24, 36, 48 meses.
   
+  - **Sem quantidadeParcelas**:
    ```json
    {
      "idCliente": "123.456.789-00",
