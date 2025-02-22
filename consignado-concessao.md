@@ -40,7 +40,7 @@ Parâmetros recebidos:
 
 
 ### 2.3. Regras de Taxas de Juros e Prazos
-Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,025% a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
+Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,025 a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
 
 - **Fórmula da taxa**:
   - `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`
@@ -72,21 +72,22 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 ### 2.4. Cálculos Realizados
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
-
-2. **Cálculo do IOF**:
+   
+2. **Custo do seguro (se contratado)**:
+   - Fórmula: `CustoSeguro = [4% + (0,1% × idade)] * ValorEmprestimo`
+   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 × 75)] * 10000 = 1150.00`
+  
+3. **Cálculo do IOF**:
+   IOF_Fixo = `0,0038 * (ValorEmprestimo + CustoSeguro)`
    IOF_Fixo = `0,0038 * ValorEmprestimo`
    IOF_Variavel = `0,00008219 * ValorEmprestimo * NúmeroDeDias`
    IOF_Total = `min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
-   
-4. **Custo do seguro (se contratado)**:
-   - Fórmula: `CustoSeguro = [4% + (0,1% × idade)] * ValorEmprestimo`
-   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 × 75)] * 10000 = 1150.00`
 
 5. **Ajuste com carência (se aplicável)**:
-   - `ValorAjustado = ValorEmprestimo * (1 + (TaxaJurosMensal / 30) * Carência)`
-
+   - `jurosCarencia = (ValorEmprestimo + CustoSeguro + IOF_Total) * (1 + (TaxaJurosMensal / 30) ^ Carência)`
+ + 
 6. **Cálculo da parcela (Price com IOF, seguro e carência)**:
-   - `ValorTotalFinanciado = ValorEmprestimo + IOF + CustoSeguro + (ValorAjustado - ValorEmprestimo)`
+   - `ValorTotalFinanciado = ValorEmprestimo + IOF + CustoSeguro + jurosCarencia`
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
 7. **Validação da margem**:
