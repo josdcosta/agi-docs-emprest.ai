@@ -167,3 +167,129 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
         "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
       }
    ```
+
+## 3. Estrutura dos Cálculos
+
+### 3.1. Fórmulas
+
+- **Margem**:  
+  `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
+
+- **Taxa**:  
+  `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`, teto 1,80%.
+
+- **Parcela**:  
+  `Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
+
+- **Seguro**:  
+  `CustoSeguro = SaldoDevedorAnterior * 0.002`
+
+### 3.2. Exemplo Prático
+
+**Entrada:**  
+```json
+{
+  "idCliente": "123.456.789-00",
+  "valorEmprestimo": 10000.00,
+  "quantidadeParcelas": 60,
+  "tipoVinculo": "aposentado",
+  "contratarSeguro": true,
+  "idade": 75,
+  "Vencimentos": 5000.00,
+  "Parcelas anteriores": 800.00
+}
+
+**Cálculos:**
+
+- **Margem:**  
+  `700.00`
+
+- **Regra:**  
+  Aposentado 75 anos, com seguro → Taxa base = 1,6%, Prazo máximo = 48 meses.
+
+- **Ajuste:**  
+  60 para 48.
+
+- **Taxa:**  
+  `1,6 + 0,025 * ((48-24)/12) = 1,65% (0.0165)`
+
+- **Parcela:**  
+  `[10000 * 0.0165] / [1 - (1 + 0.0165)^(-48)] = 290.36`
+
+- **Seguro estimado:**  
+  `~12.50`
+
+- **Total:**  
+  `302.86`
+
+- **Validação:**  
+  `302.86 <= 700.00`
+
+
+**Cálculos:**
+
+- **Margem:**  
+  `700.00`
+
+- **Regra:**  
+  Aposentado 75 anos, com seguro → Taxa base = 1,6%, Prazo máximo = 48 meses.
+
+- **Ajuste:**  
+  60 para 48.
+
+- **Taxa:**  
+  `1,6 + 0,025 * ((48-24)/12) = 1,65% (0.0165)`
+
+- **Parcela:**  
+  `[10000 * 0.0165] / [1 - (1 + 0.0165)^(-48)] = 290.36`
+
+- **Seguro estimado:**  
+  `~12.50`
+
+- **Total:**  
+  `302.86`
+
+- **Validação:**  
+  `302.86 <= 700.00`
+
+{
+  "idCliente": "123.456.789-00",
+  "valorEmprestimo": 10000.00,
+  "parcela": 290.36,
+  "quantidadeParcelas": 48,
+  "dataInicioPagamento": "01/04/2025",
+  "taxaJurosMensal": 0.0165,
+  "contratarSeguro": true,
+  "custoSeguroEstimado": 12.50,
+  "margemUtilizada": 302.86,
+  "margemRestante": 397.14,
+  "prazoMaximoPermitido": 48
+}
+
+## 4. Observações
+
+- **Taxas**:  
+  Aumentam 0,025% a cada 12 meses acima de 24, com teto de 1,80%, equilibrando risco e acessibilidade.
+
+- **Seguro**:  
+  - 0,2% sobre o saldo reduz a taxa base em 0,1%.  
+  - Sem seguro, a taxa sobe 0,2%.
+
+- **Prazos**:  
+  Ajustados para idade final ≤ 80, em múltiplos de 12.
+
+- **CustoSeguroEstimado**:  
+  É uma média simplificada; a amortização detalha o valor exato.
+
+---
+
+### Explicações
+
+1. **Incremento de Taxa**:  
+   Adicionei 0,025% a cada 12 meses, um ajuste leve (ex.: de 1,3% em 24 meses para 1,45% em 96 meses com seguro), mantendo o consignado viável.
+
+2. **Teto de 1,80%**:  
+   Respeitado em todos os casos (ex.: aposentados 75+ sem seguro ficam em 1,8% mesmo com prazos longos).
+
+3. **Exemplo**:  
+   Reflete o ajuste para 48 meses com taxa de 1,65% (base 1,6% + 0,05% por 2 intervalos de 12 meses).
