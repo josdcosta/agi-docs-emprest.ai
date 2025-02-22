@@ -70,6 +70,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
     - Acima de 79 anos: Não permitido.
 
 ### 2.4. Cálculos Realizados
+
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
    
@@ -78,16 +79,20 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 × 75)] * 10000 = 1150.00`
   
 3. **Cálculo do IOF**:
-   IOF_Fixo = `0,0038 * (ValorEmprestimo + CustoSeguro)`
-   IOF_Fixo = `0,0038 * ValorEmprestimo`
-   IOF_Variavel = `0,00008219 * ValorEmprestimo * NúmeroDeDias`
-   IOF_Total = `min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
+   - `IOF_Fixo = 0,0038 * ValorEmprestimo`
+   - `IOF_Variavel = 0,00008219 * ValorEmprestimo * NúmeroDeDias`
+   - `IOF_Total = min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
 
-5. **Ajuste com carência (se aplicável)**:
-   - `ValorAjustado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ Carência`
- + 
-6. **Cálculo da parcela (Price com IOF, seguro e carência)**:
-   - `ValorTotalFinanciado = ValorEmprestimo + IOF + CustoSeguro + jurosCarencia`
+4. **Custo do seguro (se contratado)**:
+   - Fórmula: `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
+   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 * 75)] * 10.000 = 1.150,00`
+   - Nota: O seguro é um custo fixo inicial, não 0,2% ao mês sobre o saldo.
+
+5. **Ajuste com carência (juros compostos)**:
+   - `ValorInicial = ValorEmprestimo + IOF_Total + CustoSeguro`
+   - `ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ Carência`
+
+6. **Cálculo da parcela (Price)**:
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
 7. **Validação da margem**:
@@ -169,11 +174,11 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - **Taxa**:  
   `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 1,80%.
 
-- **Parcela**:  
-  `Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
-
 - **Seguro**:  
-  `CustoSeguro = [4% + (0,1% × idade)] * ValorEmprestimo`
+  `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
+
+- **Parcela**:  
+  `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
 ## 3.2. Exemplo Prático
 
