@@ -18,17 +18,8 @@ O backend gerencia solicitações de empréstimos consignados, verificando consi
 
 ## 2. Funcionalidades do Backend
 
-### 2.1. Verificação Inicial
-Antes da solicitação:
-1. **Consulta ao banco de dados**:
-   - Verificar consignados via `idCliente` (ex.: CPF).
-   - Obter **vencimentos líquidos**, **parcelas anteriores** e **idade**.
 
-2. **Cálculo da margem consignável**:
-   - Fórmula: `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
-   - Exemplo: Vencimentos `5000.00`, parcelas `800.00` → Margem = `700.00`
-
-### 2.2. Entrada de Dados
+### 2.1. Entrada de Dados
 Parâmetros recebidos:
 - **idCliente**: Ex.: `"123.456.789-00"`.
 - **valorEmprestimo**: Ex.: `10000.00`.
@@ -39,6 +30,16 @@ Parâmetros recebidos:
 
 **Opcional**:
 - **dataSolicitacao**: Ex.: `22/02/2025`.
+
+
+### 2.2. Verificação Inicial
+1. **Consulta ao banco de dados**:
+   - Verificar consignados via `idCliente` (ex.: CPF).
+   - Obter **vencimentos líquidos**, **parcelas anteriores** e **idade**.
+
+2. **Cálculo da margem consignável**:
+   - Fórmula: `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
+   - Exemplo: Vencimentos `5000.00`, parcelas `800.00` → Margem = `700.00`
 
 ### 2.3. Regras de Taxas de Juros e Prazos
 Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,025% a cada 12 meses** acima de 24, até o teto de 1,80%. Prazos são múltiplos de 12, começando em 24, com idade final ≤ 80 anos:
