@@ -165,7 +165,7 @@ Exemplo (prazo inválido):
 
 Exemplo (prazo inválido):
 ```json
-{
-  "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
-}
+   {
+     "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
+   }
 ```
