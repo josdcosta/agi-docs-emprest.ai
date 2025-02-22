@@ -3,6 +3,7 @@
 ## Autores
 - [@dalleth](https://github.com/dalleth-martinss)
 - [@josdcosta](https://github.com/josdcosta)
+- [@CarollinaGuedes](https://github.com/CarollinaGuedes)
 
 ## Referência
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
