@@ -152,7 +152,6 @@ Exemplo (prazo inválido):
    {
      "erro": "Quantidade de parcelas (60) excede o prazo máximo permitido (48) para aposentado de 75 anos (idade final não pode ultrapassar 80 anos)"
    }
-Exemplo (prazo inválido):
 ```
 
 
@@ -166,7 +165,6 @@ Exemplo (prazo inválido):
 
 Exemplo (prazo inválido):
 ```json
-Exemplo (idade impede empréstimo):
 {
   "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
 }
