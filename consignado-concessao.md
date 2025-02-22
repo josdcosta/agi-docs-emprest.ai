@@ -11,7 +11,7 @@
 # Documentação - Empréstimo Consignado
 
 ## 1. Objetivo
-O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo e idade, aumentando 0,025 a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Um custo fixo de seguro pode ser incluído opcionalmente. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
+O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo e idade, aumentando 0,0025 a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Um custo fixo de seguro pode ser incluído opcionalmente. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
 
 ---
 
@@ -40,7 +40,7 @@ Parâmetros recebidos:
 
 
 ### 2.3. Regras de Taxas de Juros e Prazos
-Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,025 a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
+Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,0025 a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
 
 - **Fórmula da taxa**:
   - `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`
@@ -75,7 +75,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
 
 2. **Determinação de taxa e prazo**:
-   - `TaxaJurosMensal = TaxaBase + 0,025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 1,80%.
+   - `TaxaJurosMensal = TaxaBase + 0,0025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 1,80%.
    - Taxa base depende de `tipoVinculo`, `idade` e `contratarSeguro` (ver seção 2.3).
 
 3. **Custo do seguro (se contratado)**:
@@ -300,7 +300,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 ## 4. Observações
 
 - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
-- Taxas aumentam 0,025 a cada 12 meses, com teto de 1,80%.
+- Taxas aumentam 0,0025 a cada 12 meses, com teto de 1,80%.
 - Seguro é um custo fixo incluído no `ValorTotalFinanciado`; amortização detalha valores exatos.
 
    ### Explicações
