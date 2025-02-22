@@ -189,27 +189,48 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 3. Estrutura dos Cálculos
 
-3.1. Fórmulas
-   Margem: Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores
-   Taxa: TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12), teto 1,80%.
-   Parcela: Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]
-   Seguro: CustoSeguro = SaldoDevedorAnterior * 0.002
-3.2. Exemplo Prático
-   Entrada:
-   idCliente: "123.456.789-00"
-   valorEmprestimo: 10000.00
-   quantidadeParcelas: OMITIDA
-   tipoVinculo: "aposentado"
-   contratarSeguro: true
-   idade: 75
-   Vencimentos: 5000.00, Parcelas anteriores: 800.00
-   Cálculos:
-   Margem: 700.00
-   Regra: Aposentado 75 anos, com seguro → Taxa base = 1,6%, máximo 48 meses.
-   Opções: 24, 36, 48 meses.
-   24 meses: Taxa = 1,6% → Parcela = 514.88, Seguro ~14.58.
-   36 meses: Taxa = 1,625% → Parcela = 363.14, Seguro ~13.33.
-   48 meses: Taxa = 1,65% → Parcela = 290.36, Seguro ~12.50.
+## 3.1. Fórmulas
+
+- **Margem**:  
+  `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
+
+- **Taxa**:  
+  `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 1,80%.
+
+- **Parcela**:  
+  `Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
+
+- **Seguro**:  
+  `CustoSeguro = SaldoDevedorAnterior * 0.002`
+
+## 3.2. Exemplo Prático
+
+### Entrada:
+- **idCliente**: "123.456.789-00"  
+- **valorEmprestimo**: 10.000,00  
+- **quantidadeParcelas**: OMITIDA  
+- **tipoVinculo**: "aposentado"  
+- **contratarSeguro**: true  
+- **idade**: 75  
+- **Vencimentos**: 5.000,00  
+- **Parcelas anteriores**: 800,00  
+
+### Cálculos:
+- **Margem**:  
+  `Margem = (5.000,00 * 0.3) - 800,00 = 700,00`
+
+- **Regra**:  
+  Aposentado de 75 anos, com seguro → Taxa base = 1,6%, máximo 48 meses.  
+  **Opções**: 24, 36, 48 meses.
+
+- **24 meses**:  
+  Taxa = 1,6% → Parcela = 514,88, Seguro ~14,58.
+
+- **36 meses**:  
+  Taxa = 1,625% → Parcela = 363,14, Seguro ~13,33.
+
+- **48 meses**:  
+  Taxa = 1,65% → Parcela = 290,36, Seguro ~12,50.
    ```json
          {
         "idCliente": "123.456.789-00",
