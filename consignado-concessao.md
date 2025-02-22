@@ -84,7 +84,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    IOF_Total = `min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
 
 5. **Ajuste com carência (se aplicável)**:
-   - `jurosCarencia = (ValorEmprestimo + CustoSeguro + IOF_Total) * (1 + (TaxaJurosMensal / 30) ^ Carência)`
+   - `ValorAjustado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ Carência`
  + 
 6. **Cálculo da parcela (Price com IOF, seguro e carência)**:
    - `ValorTotalFinanciado = ValorEmprestimo + IOF + CustoSeguro + jurosCarencia`
@@ -173,7 +173,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   `Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
 - **Seguro**:  
-  `CustoSeguro = SaldoDevedorAnterior * 0.002`
+  `CustoSeguro = [4% + (0,1% × idade)] * ValorEmprestimo`
 
 ## 3.2. Exemplo Prático
 
