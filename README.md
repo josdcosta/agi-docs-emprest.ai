@@ -146,8 +146,6 @@ O backend deve:
 ## 4. Observações
 - Os cálculos seguem o método de amortização **Price** (parcelas fixas), resultando em valores consistentes (ex.: `734.22`).
 - As datas devem ser tratadas como objetos ou valores numéricos (ex.: diferença em dias) para facilitar os cálculos.
-- O backend deve suportar arredondamentos consistentes (ex.: 2 casas decimais) para valores monetários.
-
 ---
 
 Essa documentação descreve as funcionalidades e cálculos necessários para o backend. Está pronta para guiar a implementação!
