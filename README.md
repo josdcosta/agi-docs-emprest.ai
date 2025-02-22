@@ -9,7 +9,7 @@
 
 ---
 
-# Documentação do Backend - Empréstimo Consignado
+# Empréstimo Consignado
 
 ## 1. Objetivo do Backend
 O backend será responsável por gerenciar solicitações de empréstimos consignados, verificando consignados anteriores no banco de dados, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão com taxas de juros determinadas pelo sistema. Inclui a opção de seguro prestamista (0,2% ao mês sobre o saldo), ajustando as taxas e prazos em múltiplos de 12 meses a partir de 24, com idade final limitada a 80 anos.
