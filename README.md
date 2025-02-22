@@ -27,7 +27,7 @@ O backend receberá os seguintes dados como entrada:
 - **Data de liberação do crédito**: Data em que o crédito foi liberado (ex.: `07/11/2022`).
 - **Data da primeira parcela**: Data do primeiro pagamento (ex.: `02/01/2023`).
 - **Data do último vencimento**: Data do vencimento da última parcela (ex.: `31/03/2028`).
-- **Taxa de juros nominal mensal**: Taxa de juros mensal em decimal (ex.: `0.0155` para 1,55%).
+- **Taxa de juros nominal mensal**: Taxa de juros mensal em decimal (ex.: `0.0155` para 1,55%)
 - **Número de parcelas**: Quantidade total de parcelas (ex.: `64`).
 - **Seguros**: Valor total dos seguros (ex.: `1888.43`).
 - **Tributos**: Valor total dos tributos (ex.: `940.68`).
@@ -150,5 +150,3 @@ O backend deve:
 - Os cálculos seguem o método de amortização **Price** (parcelas fixas), resultando em valores consistentes (ex.: `734.22`).
 - As datas devem ser tratadas como objetos ou valores numéricos (ex.: diferença em dias) para facilitar os cálculos.
 ---
-
-Essa documentação descreve as funcionalidades e cálculos necessários para o backend. Está pronta para guiar a implementação!
