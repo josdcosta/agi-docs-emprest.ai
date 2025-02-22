@@ -247,11 +247,12 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
       }
    ```
 
-   4. Observações
-      Sem quantidadeParcelas, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
-      Taxas aumentam 0,025% a cada 12 meses, com teto de 1,80%.
-      Seguro é estimado como média; amortização detalha valores exatos.
-      Data referência: 22/02/2025.
+## 4. Observações
+
+- Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
+- Taxas aumentam 0,025% a cada 12 meses, com teto de 1,80%.
+- Seguro é estimado como média; amortização detalha valores exatos.
+- **Data referência**: 22/02/2025.
 
 
    ### Explicações
