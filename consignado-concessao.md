@@ -304,9 +304,8 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - Seguro é um custo fixo incluído no `ValorTotalFinanciado`; amortização detalha valores exatos.
 
    ### Explicações
-      1. **Nova Funcionalidade**: Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
-      2. **Regras Mantidas**: Todas as validações (idade ≤ 80, margem, múltiplos de 12) são aplicadas às opções retornadas.
-      3. **Exemplo**: Para um aposentado de 75 anos, retorna 24, 36 e 48 meses, com taxas crescentes e detalhes completos.
+      1. Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
+      2.  Todas as validações (idade ≤ 80, margem, múltiplos de 12) são aplicadas às opções retornadas.
       
 
 
