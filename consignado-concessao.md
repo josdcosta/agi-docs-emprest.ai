@@ -44,7 +44,7 @@ Parâmetros recebidos:
 Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,0025 a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
 
 - **Fórmula da taxa**:
-  - `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`
+  - `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`
   - Limite: `min(TaxaCalculada, 1.80%)`
 
 - **Com seguro**:
