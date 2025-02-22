@@ -8,6 +8,9 @@ Documentação Emprest.AI
 - [@dalleth](https://github.com/dalleth-martinss)
 - [@josdcosta](https://github.com/josdcosta)
 
+## Referência
+ - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
+
 
 # Documentação do Backend - Empréstimo Consignado
 
