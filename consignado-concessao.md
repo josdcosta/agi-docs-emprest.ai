@@ -129,7 +129,6 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
        "prazoMaximoPermitido": 48
      }
 
-- **Com `quantidadeParcelas` fornecida**:
   - Exemplo (com seguro):
     ```json
     {
@@ -149,6 +148,21 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
       "margemRestante": 349.87,
       "prazoMaximoPermitido": 48
     }
+
+- **Cálculo da Amortização (Price)**:
+  - Juros = Saldo Devedor Anterior * TaxaJurosMensal
+  - Amortização = Parcela - Juros
+  - Saldo Devedor = Saldo Devedor Anterior - Amortização
+
+| Parcela | Saldo Devedor Anterior | Juros       | Amortização | Parcela  | Saldo Devedor Restante |
+|---------|-----------------------|-------------|-------------|----------|------------------------|
+| 1       | 11.496,87             | 189,70      | 160,43      | 350,13   | 11.336,44              |
+| 2       | 11.336,44             | 187,05      | 163,08      | 350,13   | 11.173,36              |
+| 3       | 11.173,36             | 184,36      | 165,77      | 350,13   | 11.007,59              |
+| 4       | 11.007,59             | 181,63      | 168,50      | 350,13   | 10.839,09              |
+| 5       | 10.839,09             | 178,85      | 171,28      | 350,13   | 10.667,81              |
+| ...     | ...                   | ...         | ...         | ...      | ...                    |
+| 48      | 347,45                | 5,73        | 344,40      | 350,13   | 0,00                   |
 
    
     
@@ -270,6 +284,18 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
      ]
    }
    ```
+
+   Para o exemplo com `ValorTotalFinanciado = 11.496,87`, `TaxaJurosMensal = 0,0165`, e `Parcela = 350,13`:
+   
+   | Parcela | Saldo Devedor Anterior | Juros  | Amortização | Parcela | Saldo Devedor Restante |
+   |---------|-----------------------|--------|-------------|---------|------------------------|
+   | 1       | 11.496,87             | 189,70 | 160,43      | 350,13  | 11.336,44              |
+   | 2       | 11.336,44             | 187,05 | 163,08      | 350,13  | 11.173,36              |
+   | 3       | 11.173,36             | 184,36 | 165,77      | 350,13  | 11.007,59              |
+   | 4       | 11.007,59             | 181,63 | 168,50      | 350,13  | 10.839,09              |
+   | 5       | 10.839,09             | 178,85 | 171,28      | 350,13  | 10.667,81              |
+   | ...     | ...                   | ...    | ...         | ...     | ...                    |
+   | 48      | 347,45                | 5,73   | 344,40      | 350,13  | 0,00                   |
 
 ## 4. Observações
 
