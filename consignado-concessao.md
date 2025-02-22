@@ -11,7 +11,7 @@
 # Documentação - Empréstimo Consignado
 
 ## 1. Objetivo
-O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo, idade, seguro prestamista e aumentam 0,025% a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
+O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo e idade, aumentando 0,025 a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Um custo fixo de seguro pode ser incluído opcionalmente. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
 
 ---
 
@@ -71,22 +71,23 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 ### 2.4. Cálculos Realizados
 
+### 2.4. Cálculos Realizados
+
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
-   
-2. **Custo do seguro (se contratado)**:
-   - Fórmula: `CustoSeguro = [4% + (0,1% × idade)] * ValorEmprestimo`
-   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 × 75)] * 10000 = 1150.00`
-  
-3. **Cálculo do IOF**:
+
+2. **Determinação de taxa e prazo**:
+   - `TaxaJurosMensal = TaxaBase + 0,025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 1,80%.
+   - Taxa base depende de `tipoVinculo`, `idade` e `contratarSeguro` (ver seção 2.3).
+
+3. **Custo do seguro (se contratado)**:
+   - Fórmula: `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
+   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = 1.150,00`
+
+4. **Cálculo do IOF**:
    - `IOF_Fixo = 0,0038 * ValorEmprestimo`
    - `IOF_Variavel = 0,00008219 * ValorEmprestimo * NúmeroDeDias`
    - `IOF_Total = min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
-
-4. **Custo do seguro (se contratado)**:
-   - Fórmula: `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
-   - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = [0,04 + (0,001 * 75)] * 10.000 = 1.150,00`
-   - Nota: O seguro é um custo fixo inicial, não 0,2% ao mês sobre o saldo.
 
 5. **Ajuste com carência (juros compostos)**:
    - `ValorInicial = ValorEmprestimo + IOF_Total + CustoSeguro`
@@ -96,10 +97,10 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
 7. **Validação da margem**:
-   - Compara `Parcela` (sem seguro) ou `Parcela + CustoSeguro médio` com `Margem`.
+   - Compara `Parcela` com `Margem`. Se exceder, retorna erro.
 
 8. **Retorno de opções (se `quantidadeParcelas` omitida)**:
-   - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela e custo do seguro (se aplicável).
+   - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela e custo total.
 
 ### 2.5. Validações
 - Verificar `idCliente`, `dataInicioPagamento` futura (`22/02/2025`).
@@ -114,18 +115,18 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
     {
       "idCliente": "123.456.789-00",
       "valorEmprestimo": 10000.00,
-      "parcela": 318.45,
+      "parcela": 350.13,
       "quantidadeParcelas": 48,
       "dataInicioPagamento": "01/04/2025",
       "dataFimContrato": "01/04/2029",
       "taxaJurosMensal": 0.0165,
       "contratarSeguro": true,
       "custoSeguro": 1150.00,
-      "iof": 176.70,
+      "iof": 157.99,
       "carencia": 30,
-      "valorTotalFinanciado": 11326.50,
-      "margemUtilizada": 318.45,
-      "margemRestante": 381.55,
+      "valorTotalFinanciado": 11496.87,
+      "margemUtilizada": 350.13,
+      "margemRestante": 349.87,
       "prazoMaximoPermitido": 48
     }
     
@@ -203,47 +204,49 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   **Opções**: 24, 36, 48 meses.
   
    ```json
-      {
-        "idCliente": "123.456.789-00",
-        "valorEmprestimo": 10000.00,
-        "dataInicioPagamento": "01/04/2025",
-        "dataFimContrato": "01/04/2029",
-        "tipoVinculo": "aposentado",
-        "contratarSeguro": true,
-        "prazoMaximoPermitido": 48,
-        "opcoesParcelamento": [
-          {
-            "quantidadeParcelas": 24,
-            "taxaJurosMensal": 0.016,
-            "parcela": 564.72,
-            "iof": 176.70,
-            "custoSeguro": 1150.00,
-            "valorTotalFinanciado": 11326.70,
-            "margemUtilizada": 564.72,
-            "margemRestante": 135.28
-          },
-          {
-            "quantidadeParcelas": 36,
-            "taxaJurosMensal": 0.01625,
-            "parcela": 398.25,
-            "iof": 176.70,
-            "custoSeguro": 1150.00,
-            "valorTotalFinanciado": 11326.70,
-            "margemUtilizada": 398.25,
-            "margemRestante": 301.75
-          },
-          {
-            "quantidadeParcelas": 48,
-            "taxaJurosMensal": 0.0165,
-            "parcela": 318.45,
-            "iof": 176.70,
-            "custoSeguro": 1150.00,
-            "valorTotalFinanciado": 11326.70,
-            "margemUtilizada": 318.45,
-            "margemRestante": 381.55
-          }
-        ]
-      }
+   {
+     "idCliente": "123.456.789-00",
+     "valorEmprestimo": 10000.00,
+     "dataInicioPagamento": "01/04/2025",
+     "tipoVinculo": "aposentado",
+     "contratarSeguro": true,
+     "prazoMaximoPermitido": 48,
+     "opcoesParcelamento": [
+       {
+         "quantidadeParcelas": 24,
+         "taxaJurosMensal": 0.016,
+         "parcela": 588.92,
+         "iof": 98.00,
+         "custoSeguro": 1150.00,
+         "valorTotalFinanciado": 11435.27,
+         "margemUtilizada": 588.92,
+         "margemRestante": 111.08,
+         "dataFimContrato": "01/04/2027"
+       },
+       {
+         "quantidadeParcelas": 36,
+         "taxaJurosMensal": 0.01625,
+         "parcela": 415.06,
+         "iof": 128.00,
+         "custoSeguro": 1150.00,
+         "valorTotalFinanciado": 11466.77,
+         "margemUtilizada": 415.06,
+         "margemRestante": 284.94,
+         "dataFimContrato": "01/04/2028"
+       },
+       {
+         "quantidadeParcelas": 48,
+         "taxaJurosMensal": 0.0165,
+         "parcela": 350.13,
+         "iof": 157.99,
+         "custoSeguro": 1150.00,
+         "valorTotalFinanciado": 11496.87,
+         "margemUtilizada": 350.13,
+         "margemRestante": 349.87,
+         "dataFimContrato": "01/04/2029"
+       }
+     ]
+   }
    ```
 
 ## 4. Observações
