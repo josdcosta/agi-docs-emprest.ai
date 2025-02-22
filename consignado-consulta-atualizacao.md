@@ -6,7 +6,6 @@
 - [@CarollinaGuedes](https://github.com/CarollinaGuedes)
 
 ## Referência
-- [Documentação de Concessão](#) (base para esta extensão)
 
 ---
 
