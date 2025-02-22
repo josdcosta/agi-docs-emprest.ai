@@ -8,14 +8,14 @@
 ## Referência
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 
-# Documentação do Backend - Empréstimo Consignado
+# Documentação - Empréstimo Consignado
 
-## 1. Objetivo do Backend
+## 1. Objetivo
 O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo, idade, seguro prestamista (0,2% ao mês sobre o saldo) e aumentam 0,025% a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
 
 ---
 
-## 2. Funcionalidades do Backend
+## 2. Funcionalidades
 
 ### 2.1. Entrada de Dados
 Parâmetros recebidos:
@@ -254,8 +254,6 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
 - Taxas aumentam 0,025% a cada 12 meses, com teto de 1,80%.
 - Seguro é estimado como média; amortização detalha valores exatos.
-- **Data referência**: 22/02/2025.
-
 
    ### Explicações
       1. **Nova Funcionalidade**: Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
