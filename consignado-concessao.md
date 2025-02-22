@@ -71,8 +71,6 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 ### 2.4. Cálculos Realizados
 
-### 2.4. Cálculos Realizados
-
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
 
@@ -88,6 +86,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - `IOF_Fixo = 0,0038 * ValorEmprestimo`
    - `IOF_Variavel = 0,00008219 * ValorEmprestimo * NúmeroDeDias`
    - `IOF_Total = min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
+   - Nota: `NúmeroDeDias` é a diferença em dias entre `dataInicioPagamento` e `dataFimContrato`.
 
 5. **Ajuste com carência (juros compostos)**:
    - `ValorInicial = ValorEmprestimo + IOF_Total + CustoSeguro`
@@ -110,6 +109,27 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 ### 2.6. Saídas Geradas
 - **Com `quantidadeParcelas` fornecida**:
+   - Exemplo (sem seguro):
+     ```json
+     {
+       "idCliente": "123.456.789-00",
+       "valorEmprestimo": 10000.00,
+       "parcela": 319.81,
+       "quantidadeParcelas": 48,
+       "dataInicioPagamento": "01/04/2025",
+       "dataFimContrato": "01/04/2029",
+       "taxaJurosMensal": 0.018,
+       "contratarSeguro": false,
+       "custoSeguro": 0.00,
+       "iof": 157.99,
+       "carencia": 30,
+       "valorTotalFinanciado": 10318.84,
+       "margemUtilizada": 319.81,
+       "margemRestante": 380.19,
+       "prazoMaximoPermitido": 48
+     }
+
+- **Com `quantidadeParcelas` fornecida**:
   - Exemplo (com seguro):
     ```json
     {
@@ -129,6 +149,8 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
       "margemRestante": 349.87,
       "prazoMaximoPermitido": 48
     }
+
+   
     
    Exemplo (parcela excede margem):
    ```json
@@ -252,15 +274,13 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 ## 4. Observações
 
 - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
-- Taxas aumentam 0,025% a cada 12 meses, com teto de 1,80%.
-- Seguro é estimado como média; amortização detalha valores exatos.
+- Taxas aumentam 0,025 a cada 12 meses, com teto de 1,80%.
+- Seguro é um custo fixo incluído no `ValorTotalFinanciado`; amortização detalha valores exatos.
 
    ### Explicações
       1. **Nova Funcionalidade**: Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
       2. **Regras Mantidas**: Todas as validações (idade ≤ 80, margem, múltiplos de 12) são aplicadas às opções retornadas.
       3. **Exemplo**: Para um aposentado de 75 anos, retorna 24, 36 e 48 meses, com taxas crescentes e detalhes completos.
       
-      Se precisar ajustar o formato do retorno ou testar outros casos, é só pedir!
-
 
 
