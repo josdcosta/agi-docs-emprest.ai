@@ -126,7 +126,7 @@ Com base na projeção da esperança de vida em 2025 (78 anos) e no limite máxi
     - `margemUtilizada`: Valor da margem utilizada (`parcela`).
     - `margemRestante`: Margem restante após o consignado (`Margem - Parcela`).
     - `prazoMaximoPermitido`: Prazo máximo conforme vínculo e idade.
-  - Exemplo:
+   Exemplo:
     ```json
     {
       "idCliente": "123.456.789-00",
@@ -139,33 +139,33 @@ Com base na projeção da esperança de vida em 2025 (78 anos) e no limite máxi
       "prazoMaximoPermitido": 96
     }
 
-Exemplo (parcela excede margem):
-```json
-   {
-     "erro": "Parcela solicitada (496.69) excede a margem consignável disponível (700.00)"
-   }
-```
-
-
-Exemplo (prazo inválido):
-```json
-   {
-     "erro": "Quantidade de parcelas (60) excede o prazo máximo permitido (48) para aposentado de 75 anos (idade final não pode ultrapassar 80 anos)"
-   }
-```
-
-
-Exemplo (prazo inválido):
-```json
-   {
-     "erro": "Quantidade de parcelas (30) deve ser múltiplo de 12, começando por 24"
-   }
-```
-
-
-Exemplo (prazo inválido):
-```json
-   {
-     "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
-   }
-```
+   Exemplo (parcela excede margem):
+   ```json
+      {
+        "erro": "Parcela solicitada (496.69) excede a margem consignável disponível (700.00)"
+      }
+   ```
+   
+   
+   Exemplo (prazo inválido):
+   ```json
+      {
+        "erro": "Quantidade de parcelas (60) excede o prazo máximo permitido (48) para aposentado de 75 anos (idade final não pode ultrapassar 80 anos)"
+      }
+   ```
+   
+   
+   Exemplo (prazo inválido):
+   ```json
+      {
+        "erro": "Quantidade de parcelas (30) deve ser múltiplo de 12, começando por 24"
+      }
+   ```
+   
+   
+   Exemplo (prazo inválido):
+   ```json
+      {
+        "erro": "Empréstimo não permitido para cliente com 80 anos ou mais (idade final ultrapassaria 80 anos)"
+      }
+   ```
