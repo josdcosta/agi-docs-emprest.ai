@@ -1,152 +1,98 @@
-
-
-Documentação Emprest.AI
-
+# Documentação Emprest.AI
 
 ## Autores
-
 - [@dalleth](https://github.com/dalleth-martinss)
 - [@josdcosta](https://github.com/josdcosta)
 
 ## Referência
- - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
+- [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 
+---
 
 # Documentação do Backend - Empréstimo Consignado
 
 ## 1. Objetivo do Backend
-O backend será responsável por gerenciar e calcular os detalhes de um **empréstimo consignado**, incluindo valores de parcelas, amortização do principal, juros, saldo devedor e valor presente das parcelas, com base em entradas como valor recebido, taxa de juros, carência, seguros, tributos e número de parcelas.
+O backend será responsável por gerenciar solicitações de empréstimos consignados, verificando a existência de consignados anteriores no banco de dados, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão do empréstimo com base nos parâmetros fornecidos, incluindo cálculo de parcelas e validação da margem.
 
 ---
 
 ## 2. Funcionalidades do Backend
 
-### 2.1. Entrada de Dados
-O backend receberá os seguintes dados como entrada:
-- **Valor recebido**: Valor líquido liberado ao cliente (ex.: `26000.00`).
-- **Data de liberação do crédito**: Data em que o crédito foi liberado (ex.: `07/11/2022`).
-- **Data da primeira parcela**: Data do primeiro pagamento (ex.: `02/01/2023`).
-- **Data do último vencimento**: Data do vencimento da última parcela (ex.: `31/03/2028`).
-- **Taxa de juros nominal mensal**: Taxa de juros mensal em decimal (ex.: `0.0155` para 1,55%)
-- **Número de parcelas**: Quantidade total de parcelas (ex.: `64`).
-- **Seguros**: Valor total dos seguros (ex.: `1888.43`).
-- **Tributos**: Valor total dos tributos (ex.: `940.68`).
-- **Alíquota fixa**: Alíquota para cálculo de tributos (ex.: `0.0038`).
+### 2.1. Verificação Inicial
+Antes de processar a solicitação de empréstimo:
+1. **Consulta ao banco de dados**:
+   - Verificar se o usuário (identificado pelo `idCliente`, que pode ser o CPF) já possui consignados registrados.
+   - Obter os **vencimentos líquidos** do cliente (renda mensal após descontos).
+   - Obter o valor total das **parcelas de consignados anteriores**, se existirem.
 
-### 2.2. Cálculos Realizados
-O backend executará os seguintes cálculos:
+2. **Cálculo da margem consignável**:
+   - Fórmula: `Margem = (Vencimentos líquidos * 0.3) - Soma das parcelas de consignados anteriores`
+   - Exemplo:
+     - Vencimentos líquidos: `5000.00`
+     - Parcelas anteriores: `800.00`
+     - Margem: `(5000.00 * 0.3) - 800.00 = 1500.00 - 800.00 = 700.00`
 
-1. **Taxa de juros nominal diária**:
-   - Fórmula: `Taxa diária = Taxa mensal / 30`
-   - Exemplo: `0.0155 / 30 = 0.000513`.
+### 2.2. Entrada de Dados para Concessão
+Os seguintes parâmetros serão recebidos na solicitação de concessão:
+- **idCliente**: Identificador único do cliente (ex.: CPF, formato `string`, como `"123.456.789-00"`).
+- **valorEmprestimo**: Valor solicitado do empréstimo (ex.: `10000.00`).
+- **quantidadeParcelas**: Número de parcelas (ex.: `24`).
+- **dataInicioPagamento**: Data do início dos pagamentos, sempre futura (ex.: `01/04/2025`).
+- **taxaJurosMensal**: Taxa de juros nominal mensal em decimal (ex.: `0.015` para 1,5% ao mês).
 
-2. **Período de carência (em dias)**:
-   - Fórmula: `Carência = Data da primeira parcela - Data de liberação do crédito`
-   - Exemplo: `02/01/2023 - 07/11/2022 = 56 dias`.
+**Parâmetros adicionais sugeridos**:
+- **dataSolicitacao**: Data da solicitação do empréstimo (ex.: `22/02/2025`), para cálculos de carência.
+- **seguros**: Valor opcional de seguros, se aplicável (ex.: `500.00`, padrão `0.00`).
+- **tributos**: Valor opcional de tributos, se aplicável (ex.: `200.00`, padrão `0.00`).
 
-3. **Empréstimo + Seguros**:
-   - Fórmula: `Empréstimo + Seguros = Valor recebido + Seguros`
-   - Exemplo: `26000 + 1888.43 = 27888.43`.
+### 2.3. Cálculos Realizados
+1. **Consulta de dados do cliente**:
+   - Obter `vencimentos líquidos` e `parcelas anteriores` do banco de dados com base no `idCliente`.
 
-4. **Empréstimo + Seguros + Tributos**:
-   - Fórmula: `Empréstimo + Seguros + Tributos = Empréstimo + Seguros + Tributos`
-   - Exemplo: `27888.43 + 940.68 = 28829.11`.
+2. **Cálculo da parcela do consignado**:
+   - Usando o método Price (parcelas fixas):
+     - Fórmula: `Parcela = [ValorEmprestimo * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
+     - Exemplo:
+       - Valor: `10000.00`
+       - Taxa: `0.015`
+       - Parcelas: `24`
+       - Parcela: `[10000 * 0.015] / [1 - (1 + 0.015)^(-24)] = 150 / 0.302 = 496.69`
 
-5. **Empréstimo + Seguros + Tributos + Carência**:
-   - Fórmula: `Total = (Empréstimo + Seguros + Tributos) * (1 + Taxa diária * Carência)`
-   - Exemplo: `28829.11 * (1 + 0.000513 * 56) = 29668.83`.
+3. **Ajuste com carência (opcional)**:
+   - Se `dataSolicitacao` e `dataInicioPagamento` forem fornecidas:
+     - Carência (em dias): `dataInicioPagamento - dataSolicitacao`
+     - Taxa diária: `TaxaJurosMensal / 30`
+     - Valor ajustado: `ValorEmprestimo * (1 + TaxaDiária * Carência)`
 
-6. **Cálculo da parcela fixa (método Price)**:
-   - Fórmula: `Parcela = [Total * Taxa mensal] / [1 - (1 + Taxa mensal)^(-Número de parcelas)]`
-   - Exemplo: `[29668.83 * 0.0155] / [1 - (1 + 0.0155)^(-64)] = 734.22`.
-
-7. **Tabela de amortização**:
-   - Para cada parcela, calcular:
-     - **Juros**: `Juros = Saldo devedor anterior * Taxa mensal`
-     - **Principal**: `Principal = Parcela - Juros`
-     - **Saldo devedor**: `Saldo devedor = Saldo devedor anterior - Principal`
-     - **Valor presente da parcela**: `VP = Parcela / (1 + Taxa mensal)^(n)`, onde `n` é o número da parcela (contado a partir de 1).
-   - Exemplo (Parcela 1):
-     - Saldo devedor inicial: `29668.83`
-     - Juros: `29668.83 * 0.0155 = 459.87`
-     - Principal: `734.22 - 459.87 = 274.35`
-     - Saldo devedor: `29668.83 - 274.35 = 29394.48`
-     - Valor presente: `734.22 / (1 + 0.0155)^1 = 734.22`.
-
-8. **Cálculo de tributos**:
-   - Fórmula:
-     - Se o contrato ultrapassa 1 ano: `Tributos = Alíquota fixa * 365 * Valor recebido`
-     - Se não ultrapassa 1 ano: `Tributos = Alíquota fixa * (Data fim - Data início) * Valor recebido`
-   - Exemplo: `0.0038 * 365 * 26000 = 940.68`.
-
-### 2.3. Saídas Geradas
-O backend retornará:
-- **Resumo inicial**:
-  - Valor recebido
-  - Empréstimo + Seguros + Tributos + Carência
-  - Parcela fixa
-  - Taxa de juros diária
-  - Período de carência
-- **Tabela de amortização**:
-  - Para cada parcela:
-    - Número da parcela
-    - Data de vencimento
-    - Valor da parcela
-    - Principal
-    - Juros
-    - Saldo devedor
-    - Valor presente da parcela
+4. **Validação da margem**:
+   - Comparar o valor da `Parcela` calculada com a `Margem`:
+     - Se `Parcela <= Margem`: Prosseguir com a concessão.
+     - Se `Parcela > Margem`: Retornar erro com mensagem.
 
 ### 2.4. Validações
-O backend deve:
-- Verificar se as datas são válidas e seguem a ordem cronológica (`Data de liberação < Data da primeira parcela < Data do último vencimento`).
-- Garantir que a taxa de juros, número de parcelas, valor recebido, seguros e tributos sejam valores positivos.
-- Validar que o cálculo da parcela resulta em um valor finito e positivo.
+- Verificar se o `idCliente` existe no banco de dados.
+- Garantir que `dataInicioPagamento` seja futura em relação à data atual (`22/02/2025`).
+- Validar que `valorEmprestimo`, `quantidadeParcelas`, e `taxaJurosMensal` sejam positivos.
+- Verificar se a parcela calculada cabe na margem consignável.
 
----
-
-## 3. Estrutura dos Cálculos
-
-### 3.1. Fórmulas Detalhadas
-1. **Taxa de Juros Diária**:
-   - `Taxa diária = Taxa nominal mensal / 30`
-   - Objetivo: Converter a taxa mensal para uso em cálculos de carência.
-
-2. **Cálculo do Total com Carência**:
-   - `Total = (Valor recebido + Seguros + Tributos) * (1 + Taxa diária * Carência)`
-   - Objetivo: Ajustar o montante inicial pelo período de carência.
-
-3. **Parcela Fixa (Método Price)**:
-   - `Parcela = [Total * Taxa mensal] / [1 - (1 + Taxa mensal)^(-Número de parcelas)]`
-   - Objetivo: Determinar o valor fixo das parcelas.
-
-4. **Amortização (por parcela)**:
-   - `Juros = Saldo devedor anterior * Taxa mensal`
-   - `Principal = Parcela - Juros`
-   - `Novo saldo devedor = Saldo devedor anterior - Principal`
-   - Objetivo: Detalhar a evolução do saldo devedor ao longo das parcelas.
-
-5. **Valor Presente**:
-   - `VP = Parcela / (1 + Taxa mensal)^(n)`
-   - Objetivo: Calcular o valor presente de cada parcela em relação à data inicial.
-
-### 3.2. Exemplo Prático
-- **Entrada**:
-  - Valor recebido: `26000.00`
-  - Taxa mensal: `0.0155`
-  - Parcelas: `64`
-  - Carência: `56 dias`
-  - Seguros: `1888.43`
-  - Tributos: `940.68`
-- **Saída**:
-  - Parcela fixa: `734.22`
-  - Total com carência: `29668.83`
-  - Tabela de amortização (primeira linha):
-    - Parcela 1: `{data: "02/01/2023", valor: 734.22, principal: 274.35, juros: 459.87, saldo: 29394.48, vp: 734.22}`
-
----
-
-## 4. Observações
-- Os cálculos seguem o método de amortização **Price** (parcelas fixas), resultando em valores consistentes (ex.: `734.22`).
-- As datas devem ser tratadas como objetos ou valores numéricos (ex.: diferença em dias) para facilitar os cálculos.
----
+### 2.5. Saídas Geradas
+- **Sucesso**:
+  - Objeto JSON com:
+    - `idCliente`: Identificador do cliente.
+    - `valorEmprestimo`: Valor concedido.
+    - `parcela`: Valor da parcela fixa.
+    - `quantidadeParcelas`: Total de parcelas.
+    - `dataInicioPagamento`: Data do primeiro pagamento.
+    - `margemUtilizada`: Valor da margem utilizada (`parcela`).
+    - `margemRestante`: Margem restante após o consignado (`Margem - Parcela`).
+  - Exemplo:
+    ```json
+    {
+      "idCliente": "123.456.789-00",
+      "valorEmprestimo": 10000.00,
+      "parcela": 496.69,
+      "quantidadeParcelas": 24,
+      "dataInicioPagamento": "01/04/2025",
+      "margemUtilizada": 496.69,
+      "margemRestante": 203.31
+    }
