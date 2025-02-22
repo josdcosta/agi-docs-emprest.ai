@@ -83,9 +83,9 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = 1.150,00`
 
 4. **Cálculo do IOF**:
-   - `IOF_Fixo = 0,0038 * ValorEmprestimo`
-   - `IOF_Variavel = 0,00008219 * ValorEmprestimo * NúmeroDeDias`
-   - `IOF_Total = min(IOF_Fixo + IOF_Variavel, 0,03 * ValorEmprestimo)`
+      IOF_Fixo = `0,0038 * ValorEmprestimo`
+      IOF_Variavel = `0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365)`
+      IOF_Total = `IOF_Fixo + IOF_Variavel`
    - Nota: `NúmeroDeDias` é a diferença em dias entre `dataInicioPagamento` e `dataFimContrato`.
 
 5. **Ajuste com carência (juros compostos)**:
