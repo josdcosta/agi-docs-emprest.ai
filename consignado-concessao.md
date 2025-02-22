@@ -46,7 +46,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   - `TaxaJurosMensal = TaxaBase + 0.025 * ((QuantidadeParcelas - 24) / 12)`
   - Limite: `min(TaxaCalculada, 1.80%)`
 
-- **Com seguro (0,2% ao mês sobre o saldo)**:
+- **Com seguro**:
   - **Servidores federais**: Taxa base 1,3% (0.013), máximo 96 meses (24, 36, ..., 96).
   - **Servidores estaduais**: Taxa base 1,4% (0.014), máximo 84 meses (24, 36, ..., 84).
   - **Servidores municipais**: Taxa base 1,5% (0.015), máximo 72 meses (24, 36, ..., 72).
