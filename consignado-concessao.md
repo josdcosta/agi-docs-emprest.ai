@@ -72,6 +72,8 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 ### 2.4. Cálculos Realizados
 
+### 2.4. Cálculos Realizados
+
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
 
@@ -95,13 +97,19 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 6. **Cálculo da parcela (Price)**:
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
+   - Inclui IOF e seguro no `ValorTotalFinanciado`, refletindo o custo total mensal para o cliente.
 
-7. **Validação da margem**:
+7. **Cálculo da taxa efetiva mensal (CET)** *(novo)*:
+   - Fórmula: Resolve numericamente a equação do fluxo de caixa para encontrar a taxa que iguala o valor presente líquido:
+     - `ValorEmprestimo = Parcela * [(1 - (1 + TaxaEfetivaMensal)^(-QuantidadeParcelas)) / TaxaEfetivaMensal]`
+   - Exemplo: Para `ValorEmprestimo = 10.000`, `Parcela = 350,13`, `QuantidadeParcelas = 48`, `IOF = 157,99`, `CustoSeguro = 1.150`, a `TaxaEfetivaMensal` seria ≈ 1,92% (cálculo iterativo).
+
+8. **Validação da margem**:
    - Compara `Parcela` com `Margem`. Se exceder, retorna erro.
 
-8. **Retorno de opções (se `quantidadeParcelas` omitida)**:
-   - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela e custo total.
-
+9. **Retorno de opções (se `quantidadeParcelas` omitida)**:
+   - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela, custo total e taxa efetiva mensal.
+     
 ### 2.5. Validações
 - Verificar `idCliente`, `dataInicioPagamento` futura (`22/02/2025`).
 - Validar `valorEmprestimo` positivo; se `quantidadeParcelas` fornecida, deve ser múltiplo de 12 e ≥ 24.
@@ -109,6 +117,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - Verificar margem.
 
 ### 2.6. Saídas Geradas
+
 - **Com `quantidadeParcelas` fornecida**:
    - Exemplo (sem seguro):
      ```json
@@ -120,6 +129,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
        "dataInicioPagamento": "01/04/2025",
        "dataFimContrato": "01/04/2029",
        "taxaJurosMensal": 0.018,
+       "taxaEfetivaMensal": 0.0185,  // Novo campo: calculado com IOF
        "contratarSeguro": false,
        "custoSeguro": 0.00,
        "iof": 157.99,
@@ -132,23 +142,25 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
   - Exemplo (com seguro):
     ```json
-    {
-      "idCliente": "123.456.789-00",
-      "valorEmprestimo": 10000.00,
-      "parcela": 350.13,
-      "quantidadeParcelas": 48,
-      "dataInicioPagamento": "01/04/2025",
-      "dataFimContrato": "01/04/2029",
-      "taxaJurosMensal": 0.0165,
-      "contratarSeguro": true,
-      "custoSeguro": 1150.00,
-      "iof": 157.99,
-      "carencia": 30,
-      "valorTotalFinanciado": 11496.87,
-      "margemUtilizada": 350.13,
-      "margemRestante": 349.87,
-      "prazoMaximoPermitido": 48
-    }
+      {
+        "idCliente": "123.456.789-00",
+        "valorEmprestimo": 10000.00,
+        "parcela": 350.13,
+        "quantidadeParcelas": 48,
+        "dataInicioPagamento": "01/04/2025",
+        "dataFimContrato": "01/04/2029",
+        "taxaJurosMensal": 0.0165,
+        "taxaEfetivaMensal": 0.0192,  // Novo campo: inclui IOF e seguro
+        "contratarSeguro": true,
+        "custoSeguro": 1150.00,
+        "iof": 157.99,
+        "carencia": 30,
+        "valorTotalFinanciado": 11496.87,
+        "margemUtilizada": 350.13,
+        "margemRestante": 349.87,
+        "prazoMaximoPermitido": 48
+      }
+    ```
 
 - **Cálculo da Amortização (Price)**:
   - Juros = Saldo Devedor Anterior * TaxaJurosMensal
@@ -218,6 +230,10 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - **Parcela**:  
   `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
+- **Taxa Efetiva Mensal (CET)** *(novo)*:  
+  - Resolve: `ValorEmprestimo = Parcela * [(1 - (1 + TaxaEfetivaMensal)^(-QuantidadeParcelas)) / TaxaEfetivaMensal]`  
+  - Considera `ValorTotalFinanciado` (com IOF e seguro) para refletir o custo total ao cliente.
+
 ## 3.2. Exemplo Prático
 
 ### Entrada:
@@ -252,6 +268,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
        {
          "quantidadeParcelas": 24,
          "taxaJurosMensal": 0.016,
+         "taxaEfetivaMensal": 0.0190,  // Novo campo
          "parcela": 588.92,
          "iof": 98.00,
          "custoSeguro": 1150.00,
@@ -263,6 +280,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
        {
          "quantidadeParcelas": 36,
          "taxaJurosMensal": 0.01625,
+         "taxaEfetivaMensal": 0.0191,  // Novo campo
          "parcela": 415.06,
          "iof": 128.00,
          "custoSeguro": 1150.00,
@@ -274,6 +292,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
        {
          "quantidadeParcelas": 48,
          "taxaJurosMensal": 0.0165,
+         "taxaEfetivaMensal": 0.0192,  // Novo campo
          "parcela": 350.13,
          "iof": 157.99,
          "custoSeguro": 1150.00,
@@ -303,6 +322,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
 - Taxas aumentam 0,0025 a cada 12 meses, com teto de 1,80%.
 - Seguro é um custo fixo incluído no `ValorTotalFinanciado`; amortização detalha valores exatos.
+- A **taxa efetiva mensal (CET)** é exibida para transparência, refletindo o custo total do empréstimo (juros, IOF, seguro), mas não substitui a `taxaJurosMensal` nos cálculos financeiros.
 
    ### Explicações
       1. Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
