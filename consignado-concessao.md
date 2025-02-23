@@ -12,7 +12,7 @@
 # Documentação - Empréstimo Consignado
 
 ## 1. Objetivo
-O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (30% dos vencimentos líquidos menos parcelas existentes) e processando a concessão. Taxas de juros variam por vínculo e idade, aumentando 0,0025 a cada 12 meses acima de 24, com teto de 1,80%. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Um custo fixo de seguro pode ser incluído opcionalmente. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores.
+O backend gerencia solicitações de empréstimos consignados, verificando consignados anteriores, calculando a margem consignável (35% da remuneração líquida menos parcelas de outros empréstimos existentes) e processando a concessão. Taxas de juros variam por vínculo e idade, aumentando 0,0025 a cada 12 meses acima de 24, com teto de 2,14% conforme regulamentação do Banco Central. Prazos são múltiplos de 12 a partir de 24, limitando a idade final a 80 anos. Um custo fixo de seguro pode ser incluído opcionalmente. Se `quantidadeParcelas` não for fornecida, retorna os possíveis parcelamentos com valores. As regras seguem a Lei 10.820/2003 e regulamentações do Banco Central e INSS.
 
 ---
 
@@ -32,20 +32,19 @@ Parâmetros recebidos:
 ### 2.2. Verificação Inicial
 1. **Consulta ao banco de dados**:
    - Verificar consignados via `idCliente` (ex.: CPF).
-   - Obter **vencimentos líquidos**, **parcelas anteriores** e **idade**.
+   - Obter **remuneração líquida**, **parcelas anteriores de empréstimos** e **idade**.
    - **tipoVinculo**: `"servidor_federal"`, `"servidor_estadual"`, `"servidor_municipal"`, `"aposentado"`.
 
 2. **Cálculo da margem consignável**:
-   - Fórmula: `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
-   - Exemplo: Vencimentos `5000.00`, parcelas `800.00` → Margem = `700.00`
-
+   - Fórmula: `Margem = (Remuneração líquida * 0.35) - Parcelas anteriores de empréstimos`
+   - Exemplo: Remuneração líquida `5000.00`, parcelas de empréstimos `800.00` → Margem = `(5000.00 * 0.35) - 800.00 = 950.00`
 
 ### 2.3. Regras de Taxas de Juros e Prazos
-Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,0025 a cada 12 meses** acima de 24, teto 1,80%. Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
+Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,0025 a cada 12 meses** acima de 24, teto 2,14% (limite do Banco Central para consignados). Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
 
 - **Fórmula da taxa**:
   - `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`
-  - Limite: `min(TaxaCalculada, 1.80%)`
+  - Limite: `min(TaxaCalculada, 2.14%)`
 
 - **Com seguro**:
   - **Servidores federais**: Taxa base 1,3% (0.013), máximo 96 meses (24, 36, ..., 96).
@@ -58,7 +57,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
     - 75 a 78 anos: Taxa base 1,6%, máximo 48 meses (24, 36, 48).
     - 79 anos: Taxa base 1,6%, máximo 24 meses (24).
 
-- **Sem seguro (taxa base + 0,2%, teto 1,80%)**:
+- **Sem seguro (taxa base + 0,2%, teto 2,14%)**:
   - **Servidores federais**: Taxa base 1,5%, máximo 96 meses.
   - **Servidores estaduais**: Taxa base 1,6%, máximo 84 meses.
   - **Servidores municipais**: Taxa base 1,7%, máximo 72 meses.
@@ -66,8 +65,8 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
     - Até 66 anos: Taxa base 1,5%, máximo 96 meses.
     - 67 a 70 anos: Taxa base 1,65%, máximo 84 meses.
     - 71 a 74 anos: Taxa base 1,65%, máximo 72 meses.
-    - 75 a 78 anos: Taxa base 1,8%, máximo 48 meses (teto).
-    - 79 anos: Taxa base 1,8%, máximo 24 meses (teto).
+    - 75 a 78 anos: Taxa base 1,8%, máximo 48 meses.
+    - 79 anos: Taxa base 1,8%, máximo 24 meses.
     - Acima de 79 anos: Não permitido.
 
 ### 2.4. Cálculos Realizados
@@ -78,7 +77,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
 
 2. **Determinação de taxa e prazo**:
-   - `TaxaJurosMensal = TaxaBase + 0,0025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 1,80%.
+   - `TaxaJurosMensal = TaxaBase + 0,0025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 2,14%.
    - Taxa base depende de `tipoVinculo`, `idade` e `contratarSeguro` (ver seção 2.3).
 
 3. **Custo do seguro (se contratado)**:
@@ -219,10 +218,10 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 ## 3.1. Fórmulas
 
 - **Margem**:  
-  `Margem = (Vencimentos líquidos * 0.3) - Parcelas anteriores`
+  `Margem = (Remuneração líquida * 0.35) - Parcelas anteriores de empréstimos` (35% destinada a empréstimos consignados, conforme Lei 10.820/2003)
 
 - **Taxa**:  
-  `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 1,80%.
+  `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`, com teto de 2,14%.
 
 - **Seguro**:  
   `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`
@@ -250,7 +249,7 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
 ### Cálculos:
 - **Margem**:  
-  `Margem = (5.000,00 * 0.3) - 800,00 = 700,00`
+  `Margem = (5.000,00 * 0.35) - 800,00 = 950,00`
 
 - **Regra**:  
   Aposentado de 75 anos, com seguro → Taxa base = 1,6%, máximo 48 meses.  
@@ -319,7 +318,6 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    | 48      | 347,45                | 5,73   | 344,40      | 350,13  | 0,00                   |
 
 ## 4. Observações
-
 - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo, respeitando margem e idade.
 - Taxas aumentam 0,0025 a cada 12 meses, com teto de 1,80%.
 - Seguro é um custo fixo incluído no `ValorTotalFinanciado`; amortização detalha valores exatos.
@@ -328,6 +326,12 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    ### Explicações
       1. Se `quantidadeParcelas` é omitida, o backend gera `opcoesParcelamento` com todas as opções de 24 até o máximo permitido, incluindo taxa ajustada, parcela, custo do seguro (se aplicável) e impacto na margem.
       2.  Todas as validações (idade ≤ 80, margem, múltiplos de 12) são aplicadas às opções retornadas.
+
+  ## 5. Referências Legais
+- **Lei 10.820/2003**: Dispõe sobre a autorização para desconto de prestações em folha de pagamento, definindo a base para consignados. [Leia aqui](https://www.jusbrasil.com.br/legislacao/98043/lei-10820-03).
+- **Lei 14.509/2022**: Aumenta a margem consignável para servidores federais, detalhando uso de 35% para empréstimos. [Leia aqui](https://www.gov.br/servidor/pt-br/assuntos/noticias/2023/maio/entenda-servidores-que-estao-com-margem-consignada-totalmente-comprometida-nao-serao-prejudicados-por-mudanca-na-lei-no-14-509-2022).
+- **Regulamentação INSS**: Estabelece 35% da margem para empréstimos consignados de aposentados. [Leia aqui](https://www.gov.br/inss/pt-br/noticias/margem-do-emprestimo-consignado-esta-atualizada).
+- **Banco Central do Brasil**: Define teto de 2,14% ao mês para taxas de juros de consignados. [Leia mais](https://pt.wikipedia.org/wiki/Cr%C3%A9dito_consignado).
       
 
 
