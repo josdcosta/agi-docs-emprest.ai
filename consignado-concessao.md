@@ -29,17 +29,17 @@ Parâmetros recebidos:
 **Opcional**:
 - **dataSolicitacao**: Ex.: `22/02/2025`.
 
-### 2.2. Verificação Inicial
+#### 2.2. Verificação Inicial
 1. **Consulta ao banco de dados**:
    - Verificar consignados via `idCliente` (ex.: CPF).
    - Obter **remuneração líquida**, **parcelas anteriores de empréstimos** e **idade**.
    - **tipoVinculo**: `"servidor_federal"`, `"servidor_estadual"`, `"servidor_municipal"`, `"aposentado"`.
+   - *Para refinanciamento e portabilidade*: Consultar `idEmprestimoOriginal` para obter saldo devedor atual, status de pagamento e detalhes do contrato original (taxa de juros, prazo restante).
 
 2. **Cálculo da margem consignável**:
    - Fórmula: `Margem = (Remuneração líquida * 0.35) - Parcelas anteriores de empréstimos`
    - Exemplo: Remuneração líquida `5000.00`, parcelas de empréstimos `800.00` → Margem = `(5000.00 * 0.35) - 800.00 = 950.00`
-
-### 2.3. Regras de Taxas de Juros e Prazos
+#### 2.3. Regras de Taxas de Juros e Prazos
 Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento de **0,0025 a cada 12 meses** acima de 24, teto 2,14% (limite do Banco Central para consignados). Prazos são múltiplos de 12, mínimo 24, idade final ≤ 80:
 
 - **Fórmula da taxa**:
@@ -69,12 +69,16 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
     - 79 anos: Taxa base 1,8%, máximo 24 meses.
     - Acima de 79 anos: Não permitido.
 
-### 2.4. Cálculos Realizados
+- **Refinanciamento**:
+  - A taxa de juros pode ser ajustada com base nas condições atuais do cliente (`tipoVinculo`, `idade`), respeitando o teto de 2,14%. Usa a mesma fórmula de incremento de 0,0025 por cada 12 meses acima de 24.
 
-### 2.4. Cálculos Realizados
+- **Portabilidade**:
+  - A taxa de juros é definida pelo banco de destino, informada na entrada ou baseada em uma tabela específica do banco receptor, respeitando o teto de 2,14%.
 
+#### 2.4. Cálculos Realizados
 1. **Consulta de dados**:
    - Obter `vencimentos líquidos`, `parcelas anteriores`, `idade`.
+   - *Para refinanciamento e portabilidade*: Obter `saldoDevedor` e status de pagamento via `idEmprestimoOriginal`.
 
 2. **Determinação de taxa e prazo**:
    - `TaxaJurosMensal = TaxaBase + 0,0025 * ((QuantidadeParcelas - 24) / 12)`, limitada a 2,14%.
@@ -85,9 +89,9 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
    - Exemplo: Idade 75, Valor 10.000 → `CustoSeguro = 1.150,00`
 
 4. **Cálculo do IOF**:
-      IOF_Fixo = `0,0038 * ValorEmprestimo`
-      IOF_Variavel = `0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365)`
-      IOF_Total = `IOF_Fixo + IOF_Variavel`
+   - `IOF_Fixo = 0,0038 * ValorEmprestimo`
+   - `IOF_Variavel = 0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365)`
+   - `IOF_Total = IOF_Fixo + IOF_Variavel`
    - Nota: `NúmeroDeDias` é a diferença em dias entre `dataInicioPagamento` e `dataFimContrato`.
 
 5. **Ajuste com carência (juros compostos)**:
@@ -97,26 +101,40 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 6. **Cálculo da parcela (Price)**:
    - `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`
 
-7. **Cálculo da taxa efetiva mensal (CET)** *(novo)*:
+7. **Cálculo da taxa efetiva mensal (CET)**:
    - Fórmula: Resolve numericamente a equação do fluxo de caixa para encontrar a taxa que iguala o valor presente líquido:
      - `ValorEmprestimo = Parcela * [(1 - (1 + TaxaEfetivaMensal)^(-QuantidadeParcelas)) / TaxaEfetivaMensal]`
-   - Exemplo: Para `ValorEmprestimo = 10.000`, `Parcela = 350,13`, `QuantidadeParcelas = 48`, `IOF = 157,99`, `CustoSeguro = 1.150`, a `TaxaEfetivaMensal` seria ≈ 1,92% (cálculo iterativo).
-   - Inclui IOF e seguro no `ValorTotalFinanciado`, refletindo o custo total mensal para o cliente.
+   - Inclui IOF e seguro no `ValorTotalFinanciado`.
 
-8. **Validação da margem**:
-   - Compara `Parcela` com `Margem`. Se exceder, retorna erro.
+8. **Refinanciamento**:
+   - `SaldoDevedor = ValorOriginal - AmortizaçõesPagas`
+   - `ValorTotalFinanciado = SaldoDevedor + novoValorEmprestimo (se fornecido) + CustoSeguro (se aplicável) + IOF`
+   - Nova parcela calculada via fórmula de Price (item 6).
 
-9. **Retorno de opções (se `quantidadeParcelas` omitida)**:
-   - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela, custo total e taxa efetiva mensal.
+9. **Portabilidade**:
+   - Obter `SaldoDevedor` do banco original.
+   - `ValorTotalFinanciado = SaldoDevedor + CustoSeguro (se aplicável) + IOF`
+   - Nova parcela calculada com a taxa do banco de destino via fórmula de Price (item 6).
+
+10. **Validação da margem**:
+    - Compara `Parcela` com `Margem`. Se exceder, retorna erro.
+
+11. **Retorno de opções (se `quantidadeParcelas` omitida)**:
+    - Gera lista de parcelamentos possíveis (24 até o máximo permitido), com taxa, parcela, custo total e taxa efetiva mensal.
      
-### 2.5. Validações
-- Verificar `idCliente`, `dataInicioPagamento` futura (`22/02/2025`).
+#### 2.5. Validações
+- Verificar `idCliente`, `dataInicioPagamento` futura (ex.: `22/02/2025`).
 - Validar `valorEmprestimo` positivo; se `quantidadeParcelas` fornecida, deve ser múltiplo de 12 e ≥ 24.
 - Ajustar ao máximo permitido, respeitando idade final ≤ 80.
 - Verificar margem.
-
+- **Refinanciamento**:
+  - Verificar se pelo menos 20% das parcelas do empréstimo original foram pagas.
+  - Validar idade final ≤ 80 anos com `novaQuantidadeParcelas`.
+- **Portabilidade**:
+  - Verificar se as parcelas do empréstimo original estão em dia.
+  - Confirmar que o banco de destino suporta a operação de portabilidade.
+  - 
 ### 2.6. Saídas Geradas
-
 - **Com `quantidadeParcelas` fornecida**:
    - Exemplo (sem seguro):
      ```json
@@ -211,7 +229,92 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
 
    Sem quantidadeParcelas:
       Retorna opções possíveis de parcelamento.
+      
+#### 2.7. Refinanciamento de Empréstimo Consignado
+O refinanciamento permite renegociar um empréstimo consignado existente no mesmo banco, possibilitando melhores condições de taxa de juros ou prazo.
 
+**Entrada de Dados Adicionais**:
+- `idEmprestimoOriginal`: Identificador único do empréstimo a ser refinanciado (ex.: `"EMP123456"`).
+- `novoValorEmprestimo`: Valor adicional solicitado (opcional, ex.: `5000.00`).
+- `novaQuantidadeParcelas`: Novo prazo desejado (múltiplo de 12, mínimo 24, ex.: `36`).
+
+**Processo**:
+1. Consultar o banco de dados com `idEmprestimoOriginal` para obter:
+   - Saldo devedor atual.
+   - Parcelas já pagas.
+   - Taxa de juros original e prazo restante.
+2. Verificar elegibilidade:
+   - Mínimo de 20% das parcelas originais pagas.
+   - Idade final ≤ 80 anos com o novo prazo.
+3. Calcular o novo empréstimo:
+   - `ValorTotalFinanciado = SaldoDevedor + novoValorEmprestimo (se fornecido) + CustoSeguro (se aplicável) + IOF`.
+   - Nova taxa de juros ajustada conforme regras de `tipoVinculo` e `idade` (seção 2.3).
+   - Nova parcela via fórmula de Price (seção 3.1).
+4. Validar a margem consignável com a nova parcela.
+
+
+### 2.8. Portabilidade de Empréstimo Consignado (Nova Seção)
+
+#### 2.8. Portabilidade de Empréstimo Consignado
+A portabilidade permite transferir um empréstimo consignado para outro banco, buscando melhores condições.
+
+**Entrada de Dados Adicionais**:
+- `idEmprestimoOriginal`: Identificador do empréstimo a ser portado (ex.: `"EMP123456"`).
+- `bancoDestino`: Identificador do banco receptor (ex.: `"BANCOXYZ"`).
+- `novaQuantidadeParcelas`: Novo prazo desejado no banco de destino (múltiplo de 12, ex.: `48`).
+
+**Processo**:
+1. Consultar o banco de dados com `idEmprestimoOriginal` para obter:
+   - Saldo devedor atual.
+   - Status de pagamento (deve estar em dia).
+2. Verificar elegibilidade:
+   - Parcelas em dia.
+   - Banco de destino aceita portabilidade.
+3. No banco de destino:
+   - Calcular novo empréstimo com base no saldo devedor, nova taxa de juros (definida pelo banco de destino) e `novaQuantidadeParcelas`.
+   - Incluir `CustoSeguro` (se aplicável) e `IOF`.
+   - Calcular nova parcela via fórmula de Price.
+4. Validar a margem consignável com a nova parcela.
+
+**Saída**:
+- JSON com detalhes do novo empréstimo no banco de destino:
+  ```json
+  {
+    "idCliente": "123.456.789-00",
+    "idEmprestimoOriginal": "EMP123456",
+    "bancoDestino": "BANCOXYZ",
+    "saldoDevedorOriginal": 8000.00,
+    "parcela": 360.20,
+    "novaQuantidadeParcelas": 48,
+    "taxaJurosMensal": 0.0155,
+    "taxaEfetivaMensal": 0.0180,
+    "contratarSeguro": false,
+    "custoSeguro": 0.00,
+    "iof": 120.00,
+    "valorTotalFinanciado": 8120.00,
+    "margemUtilizada": 360.20,
+    "margemRestante": 339.80
+  }
+
+**Saída**:
+- JSON com detalhes do novo empréstimo:
+  ```json
+  {
+    "idCliente": "123.456.789-00",
+    "idEmprestimoOriginal": "EMP123456",
+    "saldoDevedorOriginal": 8000.00,
+    "novoValorEmprestimo": 2000.00,
+    "parcela": 375.50,
+    "novaQuantidadeParcelas": 48,
+    "taxaJurosMensal": 0.0165,
+    "taxaEfetivaMensal": 0.0190,
+    "contratarSeguro": true,
+    "custoSeguro": 920.00,
+    "iof": 125.60,
+    "valorTotalFinanciado": 11045.60,
+    "margemUtilizada": 375.50,
+    "margemRestante": 324.50
+  }
 
 3. Estrutura dos Cálculos
 
@@ -233,77 +336,42 @@ Taxas baseiam-se em `tipoVinculo`, `idade` e `contratarSeguro`, com incremento d
   - Resolve: `ValorEmprestimo = Parcela * [(1 - (1 + TaxaEfetivaMensal)^(-QuantidadeParcelas)) / TaxaEfetivaMensal]`  
   - Considera `ValorTotalFinanciado` (com IOF e seguro) para refletir o custo total ao cliente.
 
-## 3.2. Exemplo Prático
+#### 3.2. Exemplo Prático
 
-### Entrada:
-- **idCliente**: "123.456.789-00"  
-- **valorEmprestimo**: 10.000,00  
-- **quantidadeParcelas**: OMITIDA  
-- **contratarSeguro**: true
+##### Exemplo de Empréstimo Novo
+- **Entrada**:  
+  - `"idCliente": "123.456.789-00"`  
+  - `"valorEmprestimo": 10000.00"`  
+  - `"quantidadeParcelas": OMITIDA`  
+  - `"contratarSeguro": true`  
+- **Dados Coletados**:  
+  - `tipoVinculo`: `"aposentado"`, `idade`: 75, `vencimentos`: 5000.00, `parcelas anteriores`: 800.00  
+- **Saída**: Veja exemplo na seção original.
 
-### Coletados do banco após envio da solicitação:
-- **tipoVinculo**: "aposentado"
-- **idade**: 75  
-- **Vencimentos**: 5.000,00  
-- **Parcelas anteriores**: 800,00  
+##### Exemplo de Refinanciamento
+- **Entrada**:  
+  - `"idEmprestimoOriginal": "EMP123456"`  
+  - `"novoValorEmprestimo": 2000.00"`  
+  - `"novaQuantidadeParcelas": 48"`  
+- **Dados do Empréstimo Original**:  
+  - Saldo devedor `8000.00`, 12 de 36 parcelas pagas, `tipoVinculo`: `"aposentado"`, `idade`: 75, `margem`: 950.00  
+- **Cálculos**:  
+  - `ValorTotalFinanciado = 8000.00 + 2000.00 + 920.00 (seguro) + 125.60 (IOF) = 11045.60`  
+  - `Parcela = 375.50` (via Price, taxa 0.0165)  
+- **Saída**: Veja JSON na seção 2.7.
 
-### Cálculos:
-- **Margem**:  
-  `Margem = (5.000,00 * 0.35) - 800,00 = 950,00`
-
-- **Regra**:  
-  Aposentado de 75 anos, com seguro → Taxa base = 1,6%, máximo 48 meses.  
-  **Opções**: 24, 36, 48 meses.
-  
-  - **Sem quantidadeParcelas**:
-   ```json
-   {
-     "idCliente": "123.456.789-00",
-     "valorEmprestimo": 10000.00,
-     "dataInicioPagamento": "01/04/2025",
-     "tipoVinculo": "aposentado",
-     "contratarSeguro": true,
-     "prazoMaximoPermitido": 48,
-     "opcoesParcelamento": [
-       {
-         "quantidadeParcelas": 24,
-         "taxaJurosMensal": 0.016,
-         "taxaEfetivaMensal": 0.0190,  // Novo campo
-         "parcela": 588.92,
-         "iof": 98.00,
-         "custoSeguro": 1150.00,
-         "valorTotalFinanciado": 11435.27,
-         "margemUtilizada": 588.92,
-         "margemRestante": 111.08,
-         "dataFimContrato": "01/04/2027"
-       },
-       {
-         "quantidadeParcelas": 36,
-         "taxaJurosMensal": 0.01625,
-         "taxaEfetivaMensal": 0.0191,  // Novo campo
-         "parcela": 415.06,
-         "iof": 128.00,
-         "custoSeguro": 1150.00,
-         "valorTotalFinanciado": 11466.77,
-         "margemUtilizada": 415.06,
-         "margemRestante": 284.94,
-         "dataFimContrato": "01/04/2028"
-       },
-       {
-         "quantidadeParcelas": 48,
-         "taxaJurosMensal": 0.0165,
-         "taxaEfetivaMensal": 0.0192,  // Novo campo
-         "parcela": 350.13,
-         "iof": 157.99,
-         "custoSeguro": 1150.00,
-         "valorTotalFinanciado": 11496.87,
-         "margemUtilizada": 350.13,
-         "margemRestante": 349.87,
-         "dataFimContrato": "01/04/2029"
-       }
-     ]
-   }
-   ```
+##### Exemplo de Portabilidade
+- **Entrada**:  
+  - `"idEmprestimoOriginal": "EMP123456"`  
+  - `"bancoDestino": "BANCOXYZ"`  
+  - `"novaQuantidadeParcelas": 48"`  
+- **Dados do Empréstimo Original**:  
+  - Saldo devedor `8000.00`, parcelas em dia, `margem`: 950.00  
+- **Cálculos**:  
+  - Taxa do banco destino: 0.0155  
+  - `ValorTotalFinanciado = 8000.00 + 120.00 (IOF) = 8120.00`  
+  - `Parcela = 360.20` (via Price)  
+- **Saída**: Veja JSON na seção 2.8.
 
    Para o exemplo com `ValorTotalFinanciado = 11.496,87`, `TaxaJurosMensal = 0,0165`, e `Parcela = 350,13`:
    
