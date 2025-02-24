@@ -562,7 +562,7 @@ Parâmetros recebidos:
      - Encerrar o contrato original (saldo devedor transferido ao banco de destino).
 
 4. **Verificação de pagamento insuficiente**:  
-   - Se `valorPago < valorTotalDevido`, registrar o pagamento parcial e manter `status = vencida`, ajustando o `valorParcelaOriginal` restante.
+   - Se `valorPago < valorTotalDevido`, registrar não registrar.
 
 #### 2.2.3. Saídas Geradas
 - **Exemplo (pagamento em atraso)**:  
@@ -673,7 +673,7 @@ Parâmetros recebidos:
 
 ### 4. Observações
 - **Multa e juros**: Aplicados apenas a parcelas vencidas, com valores fixos (multa 2%) e variáveis (juros 1% ao mês).  
-- **Pagamentos parciais**: Permitem quitar parte da dívida, ajustando o saldo devedor restante.  
+- **Pagamentos parciais**: Não aceita pagamentos parciais
 - **Histórico**: Todas as atualizações mantêm um log no banco para auditoria.  
 - **Data padrão**: Se `dataConsulta` não for fornecida, usa a data atual (`22/02/2025`).  
 - **Refinanciamento e Portabilidade**: Contratos refinanciados ou portados são marcados como encerrados (`statusContrato = refinanciado` ou `portado`), e o cliente deve consultar o novo contrato ou banco de destino para acompanhamento futuro.
