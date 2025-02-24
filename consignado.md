@@ -321,9 +321,101 @@ Nota: As taxas aumentam gradualmente: 1,65% (24 meses), 1,675% (36 meses), 1,7% 
 }
 ```
 
-# Observações
+# Tabelas Sugeridas e Campos  (Sem análise ainda de DER)
 
-- A margem consignável é mantida atualizada na tabela de clientes, refletindo o impacto de contratos ativos.
-- O incremento de 0,0025 na taxa de juros por cada 12 meses adicionais acima de 24 reflete o risco associado a prazos mais longos, sempre limitado a 2,14%.
-- Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
- 
+## 1. Tabela: Clientes
+Responsável pelo gerenciamento de dados dos clientes, incluindo informações pessoais e financeiras.
+
+| Campo             | Tipo          | Descrição                                | Exemplo            | Chave?    |
+|-------------------|---------------|------------------------------------------|--------------------|-----------|
+| idCliente         | VARCHAR(14)   | CPF do cliente                           | "123.456.789-00"   | Primária  |
+| nome              | VARCHAR(100)  | Nome completo                            | "João Silva"       | -         |
+| remuneracaoLiquida| DECIMAL(10,2) | Renda líquida mensal                     | 5000.00            | -         |
+| idade             | INT           | Idade atual do cliente                   | 75                 | -         |
+| tipoVinculo       | VARCHAR(20)   | Tipo de vínculo (ex.: "aposentado")      | "aposentado"       | -         |
+| margemConsignavel | DECIMAL(10,2) | Margem disponível para novos empréstimos | 950.00             | -         |
+| dataAtualizacao   | DATE          | Data da última atualização dos dados     | "2025-02-24"       | -         |
+
+### Notas:
+- **margemConsignavel** deve ser recalculada automaticamente sempre que houver alteração em empréstimos ativos (inclusão, pagamento ou cancelamento).
+- **idade** pode ser derivada de uma data de nascimento (campo opcional a adicionar, como **dataNascimento**), mas como a documentação usa idade diretamente, mantive assim.
+
+## 2. Tabela: Emprestimos
+Armazena informações sobre cada contrato de empréstimo (novo, refinanciamento ou portabilidade).
+
+| Campo                | Tipo         | Descrição                                            | Exemplo          | Chave?     |
+|----------------------|--------------|------------------------------------------------------|------------------|------------|
+| idEmprestimo         | VARCHAR(20)  | Identificador único do empréstimo                    | "EMP-00123"      | Primária   |
+| idCliente            | VARCHAR(14)  | CPF do cliente                                       | "123.456.789-00" | Estrangeira|
+| valorEmprestimo      | DECIMAL(12,2)| Valor solicitado                                     | 10000.00         | -          |
+| valorTotalFinanciado | DECIMAL(12,2)| Valor total com taxas (IOF, seguro, etc.)            | 11496.87         | -          |
+| quantidadeParcelas   | INT          | Número de parcelas                                   | 48               | -          |
+| taxaJurosMensal      | DECIMAL(6,5) | Taxa de juros mensal aplicada                        | 0.0170           | -          |
+| taxaEfetivaMensal    | DECIMAL(6,5) | Custo efetivo total (CET)                            | 0.0192           | -          |
+| contratarSeguro      | BOOLEAN      | Indicador de seguro contratado                       | true             | -          |
+| custoSeguro          | DECIMAL(10,2)| Custo do seguro (se aplicável)                       | 1150.00          | -          |
+| iof                  | DECIMAL(10,2)| Valor do IOF                                         | 157.99           | -          |
+| dataSolicitacao      | DATE         | Data da solicitação                                  | "2025-02-24"     | -          |
+| dataInicioPagamento  | DATE         | Data do primeiro pagamento                           | "2025-04-01"     | -          |
+| dataFimContrato      | DATE         | Data prevista para o fim do contrato                 | "2029-04-01"     | -          |
+| saldoDevedor         | DECIMAL(12,2)| Saldo restante a pagar                               | 11496.87         | -          |
+| totalPago            | DECIMAL(12,2)| Total já pago                                        | 0.00             | -          |
+| totalDevido          | DECIMAL(12,2)| Valor total a ser pago (parcela * n)                 | 16806.24         | -          |
+| margemUtilizada      | DECIMAL(10,2)| Margem consumida por este empréstimo                 | 350.13           | -          |
+| statusContrato       | VARCHAR(20)  | Status (ativo, cancelado, portado, etc.)             | "ativo"          | -          |
+| idEmprestimoOriginal | VARCHAR(20)  | ID do empréstimo original (ref/port)                 | "EMP-00099"      | Estrangeira (opcional) |
+| bancoDestino         | VARCHAR(50)  | Banco receptor (portabilidade)                       | "BANCOXYZ"       | - (opcional) |
+
+### Notas:
+- **idEmprestimoOriginal** é necessário para refinanciamentos e portabilidades, referenciando outro registro nesta mesma tabela.
+- **margemUtilizada** reflete o valor da parcela mensal e deve atualizar a **margemConsignavel** na tabela Clientes.
+- **statusContrato** suporta os estados "ativo", "cancelado", "portado", etc., conforme descrito.
+
+## 3. Tabela: Parcelas
+Registra as parcelas de cada empréstimo, incluindo pagamentos e atrasos.
+
+| Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
+|----------------------|--------------|--------------------------------------------------|------------------|------------|
+| idParcela            | VARCHAR(25)  | Identificador único da parcela                   | "PAR-00123-01"   | Primária   |
+| idEmprestimo         | VARCHAR(20)  | ID do empréstimo relacionado                     | "EMP-00123"      | Estrangeira|
+| numeroParcela        | INT          | Número da parcela no contrato                    | 1                | -          |
+| dataVencimento       | DATE         | Data de vencimento da parcela                    | "2025-05-01"     | -          |
+| dataPagamento        | DATE         | Data do pagamento (se pago)                      | "2025-04-30"     | -          |
+| valorParcelaOriginal | DECIMAL(10,2)| Valor original da parcela                        | 350.13           | -          |
+| multaAtraso          | DECIMAL(10,2)| Multa por atraso (se aplicável)                  | 7.00             | -          |
+| jurosMora            | DECIMAL(10,2)| Juros de mora por atraso                         | 1.63             | -          |
+| valorPago            | DECIMAL(10,2)| Valor efetivamente pago                          | 350.13           | -          |
+| saldoDevedorParcela  | DECIMAL(10,2)| Saldo restante da parcela (se parcial)           | 0.00             | -          |
+| status               | VARCHAR(20)  | Status (paga, a vencer, parcialmente paga)       | "paga"           | -          |
+
+### Notas:
+- **idParcela** pode ser composto (ex.: **idEmprestimo** + **numeroParcela**) ou um identificador único.
+- Campos como **multaAtraso** e **jurosMora** permitem lidar com atrasos, conforme exemplo na atualização de parcelas.
+
+## 4. Tabela: TaxasBase (Opcional)
+Armazena as taxas base por vínculo e faixa etária para cálculos dinâmicos.
+
+| Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
+|----------------------|--------------|--------------------------------------------------|------------------|------------|
+| tipoVinculo          | VARCHAR(20)  | Tipo de vínculo                                  | "aposentado"     | Primária (composta) |
+| idadeMin             | INT          | Faixa de idade mínima                            | 75               | Primária (composta) |
+| idadeMax             | INT          | Faixa de idade máxima                            | 78               | Primária (composta) |
+| taxaBaseComSeguro    | DECIMAL(6,5) | Taxa base com seguro                             | 0.016            | -          |
+| taxaBaseSemSeguro    | DECIMAL(6,5) | Taxa base sem seguro                             | 0.018            | -          |
+| prazoMaximo          | INT          | Prazo máximo em meses                            | 48               | -          |
+
+### Notas:
+- Essa tabela é opcional, mas facilita a manutenção das taxas base e prazos máximos mencionados na documentação (ex.: aposentado 75-78 anos, taxa 1,6%, prazo 48 meses).
+- Pode ser substituída por lógica no código, mas um banco de dados relacional oferece maior flexibilidade.
+
+## 5. Tabela: Logs (Opcional)
+Para auditoria de operações, como sugerido nas observações.
+
+| Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
+|----------------------|--------------|--------------------------------------------------|------------------|------------|
+| idLog                | BIGINT       | Identificador único do log                       | 1                | Primária   |
+| idCliente            | VARCHAR(14)  | CPF do cliente                                   | "123.456.789-00" | -          |
+| idEmprestimo         | VARCHAR(20)  | ID do empréstimo (se aplicável)                  | "EMP-00123"      | -          |
+| operacao             | VARCHAR(50)  | Tipo de operação (cadastro, pagamento, etc.)     | "concessao"      | -          |
+| dataOperacao         | DATETIME     | Data e hora da operação                          | "2025-02-24 10:00"| -          |
+| detalhes             | TEXT         | Informações adicionais                           | "Empréstimo concedido" | -          |
