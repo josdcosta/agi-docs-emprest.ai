@@ -1,5 +1,6 @@
-# Documentação Emprest.AI
+# Documentações Emprest.AI
 
+> **📄 Documentação 1**
 ## Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
@@ -400,8 +401,11 @@ A portabilidade permite transferir um empréstimo consignado para outro banco, b
 - **Lei 14.509/2022**: Aumenta a margem consignável para servidores federais, detalhando uso de 35% para empréstimos. [Leia aqui](https://www.gov.br/servidor/pt-br/assuntos/noticias/2023/maio/entenda-servidores-que-estao-com-margem-consignada-totalmente-comprometida-nao-serao-prejudicados-por-mudanca-na-lei-no-14-509-2022).
 - **Regulamentação INSS**: Estabelece 35% da margem para empréstimos consignados de aposentados. [Leia aqui](https://www.gov.br/inss/pt-br/noticias/margem-do-emprestimo-consignado-esta-atualizada).
 
-####################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
+---
+---
+---
 
+> **📄 Documentação 2**  
 # Documentação - Emprest.AI (Consulta e Atualização de Dados)
 
 ## 1. Objetivo
