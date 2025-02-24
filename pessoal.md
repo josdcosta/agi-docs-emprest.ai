@@ -424,6 +424,7 @@ Exemplo: Antecipar duas parcelas (2 e 3) de R$ 525,50 cada, com taxa 1,8%:
 - Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
 
 # Fluxograma Completo
+
 ```mermaid
 graph TD
     %% Início
