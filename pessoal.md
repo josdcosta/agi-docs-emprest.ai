@@ -23,7 +23,7 @@
 - Leis e Regulamentações: Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora), Resoluções do Banco Central (IOF e taxas), Lei 13.977/2020 (proteção ao consumidor em crédito).
 
 ## 1. Objetivo
-O Emprest.AI - Empréstimo Pessoal é um sistema backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos pessoais. Isso inclui o cadastro e análise de crédito do cliente, a concessão de novos contratos, o acompanhamento de parcelas, a antecipação de pagamentos e a renovação de empréstimos. O sistema define limites de crédito com base na renda e no score de crédito, calcula taxas de juros ajustadas ao perfil de risco e incorpora encargos como TAC e IOF, alinhando-se às práticas de mercado para oferecer uma experiência otimizada e segura.
+O Emprest.AI - Empréstimo Pessoal é um sistema backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos pessoais. Isso inclui o cadastro e análise de crédito do cliente, a concessão de novos contratos, o acompanhamento de parcelas, a antecipação de pagamentos e a renovação de empréstimos. O sistema define limites de crédito com base na renda e no score de crédito, calcula taxas de juros ajustadas ao perfil de risco e incorpora encargos como IOF e seguro, alinhando-se às práticas de mercado para oferecer uma experiência otimizada e segura.
 
 ## 2. Visão Geral do Funcionamento
 O sistema é estruturado em cinco áreas principais:
@@ -37,8 +37,8 @@ O sistema é estruturado em cinco áreas principais:
 - **Limite de Crédito:** Calculado como até 30% da renda líquida mensal. Esse valor é ajustado com base no score de crédito (quanto menor o score, menor o limite) e na idade (acima de 65 anos, o limite pode ser reduzido para evitar riscos). Exemplo: Uma renda de R$ 5.000 gera um limite inicial de R$ 1.500, mas um score baixo (ex.: 400) pode reduzi-lo a R$ 1.200, e idade acima de 70 anos pode limitar ainda mais.
 - **Taxas de Juros:** Variam de 1,0% a 4,0% ao mês, definidas pelo perfil de risco do cliente. Clientes com score alto (acima de 700) e prazos curtos (ex.: 12 meses) pegam taxas menores (1,0%-1,5%). Scores baixos (abaixo de 500) ou prazos longos (ex.: 60 meses) elevam a taxa (até 4,0%). Idade acima de 65 anos adiciona 0,5%-1,0% à taxa base.
 - **Prazos:** De 6 a 60 meses, com limites reduzidos acima de 65 anos.
-- **Encargos:** Incluem TAC, IOF, seguro opcional, taxa de cadastro e, se aplicável, taxa de liquidação antecipada.
-- **CET (Custo Efetivo Total):** Representa a taxa real do empréstimo, somando juros e todos os encargos (TAC, IOF, seguro). É calculado para mostrar ao cliente o custo total em uma única porcentagem mensal. Exemplo: Um empréstimo de R$ 10.000 com R$ 500 de encargos e parcelas de R$ 400 por 36 meses tem um CET que reflete esses custos adicionais, ajudando o cliente a comparar ofertas.
+- **Encargos:** Incluem IOF, seguro opcional e, se aplicável, taxa de liquidação antecipada.
+- **CET (Custo Efetivo Total):** Representa a taxa real do empréstimo, somando juros e todos os encargos (IOF, seguro). É calculado para mostrar ao cliente o custo total em uma única porcentagem mensal. Exemplo: Um empréstimo de R$ 10.000 com R$ 500 de encargos e parcelas de R$ 400 por 36 meses tem um CET que reflete esses custos adicionais, ajudando o cliente a comparar ofertas.
 
 ## 3. Gerenciamento de Clientes
 
@@ -127,7 +127,6 @@ A taxa base depende do risco:
 Exemplo: Score 750, 45 anos, 36 meses → 1,3%. Score 600, 68 anos, 24 meses → 2,0% + 0,5% = 2,5%.
 
 #### Encargos
-- **TAC:** 2% do valor pedido. Ex.: R$ 15.000 * 0,02 = R$ 300.
 - **IOF:** Imposto em duas partes: 0,38% do valor + 0,0082% por dia até 365 dias. "PrazoEmDias" é o tempo até o fim do contrato (limitado a 365). Ex.: R$ 15.000, 36 meses → (0,0038 * 15.000) + (0,000082 * 15.000 * 365) = R$ 57 + R$ 171,90 = R$ 228,90.
 - **Seguro (opcional):** 0,001 * idade * valor. Ex.: 45 anos, R$ 15.000 → 0,001 * 45 * 15.000 = R$ 675.
 
@@ -137,12 +136,11 @@ Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^
 Exemplo: R$ 16.203,90 (valor total), 1,8% ao mês, 36 meses → Parcela ≈ R$ 525,50. Isso distribui os juros e o principal ao longo do tempo.
 
 #### Encargos
-- **TAC:** 2% do valorEmprestimo.
 - **IOF:** (0,0038 * ValorEmprestimo) + (0,000082 * ValorEmprestimo * min(PrazoEmDias, 365)).
 - **Seguro (opcional):** 0,001 * idade * ValorEmprestimo.
 
 #### Valor Total Financiado
-- **ValorInicial = ValorEmprestimo + TAC + IOF + CustoSeguro**
+- **ValorInicial = ValorEmprestimo + IOF + CustoSeguro**
 - **ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ DiasCarencia**
 
 #### Parcela Mensal (Price)
@@ -410,7 +408,7 @@ Exemplo: Antecipar duas parcelas (2 e 3) de R$ 525,50 cada, com taxa 1,8%:
 ## 7. Observações
 
 - Taxas de juros refletem o perfil de risco do cliente, ajustadas por score, idade e prazo, conforme práticas de mercado.
-- Encargos (TAC, IOF, seguro) são incorporados ao CET para transparência.
+- Encargos (IOF, seguro) são incorporados ao CET para transparência.
 - Prazos máximos variam por idade: 60 meses (18-65 anos), 48 meses (66-70 anos), 36 meses (71-75 anos).
 - Pagamentos parciais e antecipações são flexíveis, permitindo ajustes no saldo devedor.
 - Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
@@ -436,7 +434,7 @@ graph TD
     C2 --> C3{Cliente existe e limite OK?}
     C3 -->|Sim| C4[Calcular Taxa de Juros]
     C3 -->|Não| C5[Erro: Cliente inválido ou limite excedido]
-    C4 --> C6[Calcular Encargos: TAC, IOF, Seguro]
+    C4 --> C6[Calcular Encargos: IOF, Seguro]
     C6 --> C7[Calcular Parcela Mensal - Price]
     C7 --> C8{Parcela ≤ 30% da renda?}
     C8 -->|Sim| C9[Registrar Contrato]
