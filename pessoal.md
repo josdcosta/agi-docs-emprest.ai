@@ -42,11 +42,11 @@ O sistema é estruturado em cinco áreas principais:
 - **Renovação de Contrato:** Processamento de novos empréstimos com base no saldo existente.
 
 ### Regras Principais
-- **Limite de Crédito:** Até 30% da renda líquida mensal, ajustado por score e idade.
-- **Taxas de Juros:** De 1,0% a 4,0% ao mês, conforme risco, prazo e perfil do cliente.
+- **Limite de Crédito:** Calculado como até 30% da renda líquida mensal. Esse valor é ajustado com base no score de crédito (quanto menor o score, menor o limite) e na idade (acima de 65 anos, o limite pode ser reduzido para evitar riscos). Exemplo: Uma renda de R$ 5.000 gera um limite inicial de R$ 1.500, mas um score baixo (ex.: 400) pode reduzi-lo a R$ 1.200, e idade acima de 70 anos pode limitar ainda mais.
+- **Taxas de Juros:** Variam de 1,0% a 4,0% ao mês, definidas pelo perfil de risco do cliente. Clientes com score alto (acima de 700) e prazos curtos (ex.: 12 meses) pegam taxas menores (1,0%-1,5%). Scores baixos (abaixo de 500) ou prazos longos (ex.: 60 meses) elevam a taxa (até 4,0%). Idade acima de 65 anos adiciona 0,5%-1,0% à taxa base.
 - **Prazos:** De 6 a 60 meses, com limites reduzidos acima de 65 anos.
 - **Encargos:** Incluem TAC, IOF, seguro opcional, taxa de cadastro e, se aplicável, taxa de liquidação antecipada.
-- **CET:** Reflete o custo total, incluindo juros e encargos.
+- **CET (Custo Efetivo Total):** Representa a taxa real do empréstimo, somando juros e todos os encargos (TAC, IOF, seguro). É calculado para mostrar ao cliente o custo total em uma única porcentagem mensal. Exemplo: Um empréstimo de R$ 10.000 com R$ 500 de encargos e parcelas de R$ 400 por 36 meses tem um CET que reflete esses custos adicionais, ajudando o cliente a comparar ofertas.
 
 ## 3. Gerenciamento de Clientes
 
@@ -118,15 +118,31 @@ Valida o idCliente na tabela de clientes, obtendo rendaLiquida, scoreCredito, id
 - "Erro: Valor solicitado excede limite de crédito (X.XX)"
 - "Erro: Idade fora da faixa permitida (18-75)"
 
+### 4.2. Processo de Cálculo
+
 #### Limite de Crédito
-Calculado como rendaLiquida * 0.30, ajustado por score e idade.
+O limite inicial é 30% da renda líquida mensal (ex.: R$ 5.000 * 0,30 = R$ 1.500). Depois, o sistema ajusta:
+- **Score de Crédito:** Scores altos (700-1000) mantêm o limite total. Scores médios (500-699) reduzem em 10%-20%. Scores baixos (<500) cortam até 30%.
+- **Idade:** Até 65 anos, sem ajuste. De 66 a 70 anos, redução de 10%. Acima de 71, até 20% a menos.
+Exemplo: Cliente com renda R$ 5.000, score 600 e 68 anos → R$ 1.500 - 10% (score) - 10% (idade) = R$ 1.215.
 
 #### Taxa de Juros
-Determinada por risco, score, idade e prazo:
-- **Faixas:** Baixo risco (1,0%-1,5%), Médio (1,6%-2,5%), Alto (2,6%-4,0%).
-- **Ajuste por Idade:** +0,5% (66-70 anos), +1,0% (71-75 anos).
+A taxa base depende do risco:
+- **Baixo risco (1,0%-1,5%):** Score >700, prazo até 24 meses.
+- **Médio risco (1,6%-2,5%):** Score 500-699, prazo até 48 meses.
+- **Alto risco (2,6%-4,0%):** Score <500 ou prazo até 60 meses.
+- **Ajuste por idade:** +0,5% para 66-70 anos, +1,0% para 71-75 anos.
+Exemplo: Score 750, 45 anos, 36 meses → 1,3%. Score 600, 68 anos, 24 meses → 2,0% + 0,5% = 2,5%.
 
-*Exemplo:* Score 750, 45 anos, 36 meses → 1,3%. Score 600, 68 anos, 24 meses → 2,0% + 0,5% = 2,5%.
+#### Encargos
+- **TAC:** 2% do valor pedido. Ex.: R$ 15.000 * 0,02 = R$ 300.
+- **IOF:** Imposto em duas partes: 0,38% do valor + 0,0082% por dia até 365 dias. "PrazoEmDias" é o tempo até o fim do contrato (limitado a 365). Ex.: R$ 15.000, 36 meses → (0,0038 * 15.000) + (0,000082 * 15.000 * 365) = R$ 57 + R$ 171,90 = R$ 228,90.
+- **Seguro (opcional):** 0,001 * idade * valor. Ex.: 45 anos, R$ 15.000 → 0,001 * 45 * 15.000 = R$ 675.
+
+#### Parcela Mensal (Price)
+A parcela é calculada para manter pagamentos iguais, considerando o valor total financiado (valor + encargos) e os juros. Fórmula:
+Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]
+Exemplo: R$ 16.203,90 (valor total), 1,8% ao mês, 36 meses → Parcela ≈ R$ 525,50. Isso distribui os juros e o principal ao longo do tempo.
 
 #### Encargos
 - **TAC:** 2% do valorEmprestimo.
@@ -356,13 +372,22 @@ Permite pagamentos parciais, ajustando saldoDevedorParcela. Se o valor pago for 
 | idEmprestimo | String | Identificador do empréstimo | "EMP-00456"        | Sim          |
 | parcelas     | Lista  | Parcelas a antecipar        | [2, 3]             | Sim          |
 
-### Processo
 
-Calcula o valor presente das parcelas antecipadas:
-```
-ValorPresente = valorParcelaOriginal / (1 + TaxaJurosMensal) ^ MesesAntecipados
-```
-Atualiza o saldoDevedor subtraindo os valores presentes.
+### Processo
+Quando o cliente antecipa parcelas, o sistema calcula o "valor presente" (quanto a parcela vale hoje, com desconto por pagar antes). Isso evita que o cliente pague o valor total da parcela, já que os juros futuros são eliminados.
+
+- **Fórmula:** `ValorPresente = valorParcelaOriginal / (1 + TaxaJurosMensal) ^ MesesAntecipados`
+- **Passo a passo:**
+  1. Pega o valor original da parcela (ex.: R$ 525,50).
+  2. Verifica quantos meses antes do vencimento está sendo pago (ex.: 2 meses).
+  3. Usa a taxa de juros do contrato (ex.: 1,8% ao mês).
+  4. Calcula: R$ 525,50 / (1 + 0,018)^2 = R$ 507,04.
+- **Resultado:** O cliente paga R$ 507,04 em vez de R$ 525,50, economizando R$ 18,46 por parcela. O saldo devedor é reduzido pelo valor presente (R$ 507,04), não pelo original.
+
+Exemplo: Antecipar duas parcelas (2 e 3) de R$ 525,50 cada, com taxa 1,8%:
+- Parcela 2 (1 mês antes): R$ 516,18.
+- Parcela 3 (2 meses antes): R$ 507,04.
+- Total pago: R$ 1.023,22. Desconto: R$ 27,78. Saldo devedor cai de R$ 15.000 para R$ 13.976,78.
 
 ### Requisição (Exemplo)
 
