@@ -459,10 +459,6 @@ A taxa de 1,55% (0,0155) é assumida como fornecida pelo banco destino, inferior
 # Tabelas Sugeridas e Campos  (Sem análise ainda de DER)
 
 ## 1. Tabela: Clientes
-
-[Gerenciamento de Clientes] → [Consulta de Elegibilidade] → [Concessão de Empréstimos]
-    ↓                           ↓                             ↓
-[Cancelamento de Contrato] ← [Consulta e Atualização de Parcelas]
 Responsável pelo gerenciamento de dados dos clientes, incluindo informações pessoais e financeiras.
 
 | Campo             | Tipo          | Descrição                                | Exemplo            | Chave?    |
