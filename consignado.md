@@ -556,7 +556,7 @@ Para auditoria de operações, como sugerido nas observações.
 | detalhes             | TEXT         | Informações adicionais                           | "Empréstimo concedido" | -          |
 
 
-# Fluxograma Completo do Emprest.AI
+# Fluxograma Completo
 ```mermaid
 graph TD
     %% Início
