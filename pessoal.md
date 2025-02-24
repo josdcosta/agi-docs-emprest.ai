@@ -1,373 +1,380 @@
-# Documentação - Empréstimo Pessoal
+# Documentação do Emprest.AI - Backend de Empréstimo Pessoal
 
-[Planilha de Cálculos](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?gid=1897659843#gid=1897659843)
+## Autores
+- @Dalleth Martins
+- @Josué Davi da Costa
+- @Carollina Guedes
+- @Victor Augusto Ferreira
+
+## Referências
+- Planilha de Cálculos
+- Leis e Regulamentações: Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora), Resoluções do Banco Central (IOF e taxas), Lei 13.977/2020 (proteção ao consumidor em crédito).
 
 ## 1. Objetivo
+O Emprest.AI - Empréstimo Pessoal é um sistema backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos pessoais. Isso inclui o cadastro e análise de crédito do cliente, a concessão de novos contratos, o acompanhamento de parcelas, a antecipação de pagamentos e a renovação de empréstimos. O sistema define limites de crédito com base na renda e no score de crédito, calcula taxas de juros ajustadas ao perfil de risco e incorpora encargos como TAC e IOF, alinhando-se às práticas de mercado para oferecer uma experiência otimizada e segura.
 
-Este sistema tem como objetivo principal gerenciar o processo completo de empréstimo pessoal, desde a análise de crédito e aprovação até a gestão das parcelas e o acompanhamento do histórico do cliente. O software visa otimizar a análise de risco, definir limites de crédito personalizados, calcular taxas de juros adequadas e oferecer funcionalidades como simulação de parcelas, antecipação de pagamentos e renovação de empréstimos, tudo isso com o objetivo de proporcionar uma experiência eficiente e transparente para clientes e administradores.
+## 2. Visão Geral do Funcionamento
+O sistema é estruturado em cinco áreas principais:
+- **Gerenciamento de Clientes:** Cadastro e atualização de dados pessoais e financeiros.
+- **Concessão de Empréstimos:** Análise de crédito, simulação e aprovação de novos contratos.
+- **Consulta de Empréstimos:** Acompanhamento de status, parcelas e histórico.
+- **Atualização de Dados:** Registro de pagamentos, incluindo antecipações e ajustes.
+- **Renovação de Contrato:** Processamento de novos empréstimos com base no saldo existente.
 
-## 2. Funcionalidades
+### Regras Principais
+- **Limite de Crédito:** Até 30% da renda líquida mensal, ajustado por score e idade.
+- **Taxas de Juros:** De 1,0% a 4,0% ao mês, conforme risco, prazo e perfil do cliente.
+- **Prazos:** De 6 a 60 meses, com limites reduzidos acima de 65 anos.
+- **Encargos:** Incluem TAC, IOF, seguro opcional, taxa de cadastro e, se aplicável, taxa de liquidação antecipada.
+- **CET:** Reflete o custo total, incluindo juros e encargos.
 
-### 2.1. Consulta de Dados
+## 3. Gerenciamento de Clientes
 
-Permite consultar o estado atual de um empréstimo pessoal, incluindo parcelas pagas, vencidas e a vencer, com detalhes de multas e juros aplicáveis.
+### 3.1. Cadastro/Atualização de Cliente
 
-### 2.1.1. Entrada de Dados
+#### Entrada
+| Campo          | Tipo    | Descrição                  | Exemplo           | Obrigatório? |
+|----------------|---------|----------------------------|-------------------|--------------|
+| idCliente      | String  | CPF do cliente             | "987.654.321-09"  | Sim          |
+| nome           | String  | Nome completo              | "Maria Souza"     | Sim          |
+| rendaLiquida   | Decimal | Renda líquida mensal       | 5000.00           | Sim          |
+| idade          | Inteiro | Idade na data atual        | 45                | Sim          |
+| scoreCredito   | Inteiro | Pontuação de crédito (0-1000) | 750               | Sim          |
 
-Parâmetros recebidos:
+#### Processo
+Registra ou atualiza os dados na tabela de clientes. O limite de crédito inicial é calculado como rendaLiquida * 0.30, ajustado por score e idade, com validação de CPF e criptografia de dados sensíveis.
 
-* `idCliente`: Ex.: "123.456.789-00" (CPF do cliente).
-* `idEmprestimo`: Opcional, Ex.: "EMP-00123" (identificador único do empréstimo). Se omitido, retorna todos os empréstimos do cliente.
-* `dataConsulta`: Opcional, Ex.: "22/02/2025". Padrão: data atual (ex.: 22/02/2025).
-
----
-
-### 2.1.2. Processo de Consulta
-
-* **Validação:**
-    * Verificar se `idCliente` existe no banco de dados.
-    * Se `idEmprestimo` for fornecido, validar sua existência associada ao `idCliente`.
-* **Busca no banco de dados:**
-    * Recuperar:
-        * Dados gerais do empréstimo: `valorEmprestimo`, `quantidadeParcelas`, `taxaJurosMensal`, `dataInicioPagamento`, etc.
-        * Tabela de parcelas: `numeroParcela`, `dataVencimento`, `dataPagamento`, `valorParcelaOriginal`, `multaAtraso`, `jurosMora`, `valorPago`, `status` (paga, vencida, a vencer).
-* **Cálculo de atrasos:**
-    * Para parcelas com `status = vencida`:
-        * Multa por atraso: Fixa em 2% sobre `valorParcelaOriginal`.
-        * Juros de mora: 1% ao mês (0,0333% ao dia) sobre `valorParcelaOriginal`, proporcional aos dias de atraso (`dataConsulta` - `dataVencimento`).
-        * Fórmula:
-            * `Multa = valorParcelaOriginal * 0.02`
-            * `JurosMora = valorParcelaOriginal * 0.000333 * diasAtraso`
-            * `ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora`
-
-### 2.1.3. Saídas Geradas
-
-Exemplo (empréstimo com parcelas em dia e atrasadas):
-
+#### Requisição (Exemplo)
 ```json
 {
-    "idCliente": "987.654.321-09",
-    "idEmprestimo": "EMP-00456",
-    "valorEmprestimo": 15000.00,
-    "quantidadeParcelas": 36,
-    "taxaJurosMensal": 0.0180,
-    "dataInicioPagamento": "15/03/2025",
-    "dataConsulta": "28/02/2025",
-    "parcelas": [
-        {
-            "numeroParcela": 1,
-            "dataVencimento": "15/04/2025",
-            "dataPagamento": "10/04/2025",
-            "valorParcelaOriginal": 525.50,
-            "multaAtraso": 0.00,
-            "jurosMora": 0.00,
-            "valorPago": 525.50,
-            "status": "paga"
-        },
-        {
-            "numeroParcela": 2,
-            "dataVencimento": "15/05/2025",
-            "dataPagamento": null,
-            "valorParcelaOriginal": 525.50,
-            "multaAtraso": 0.00,
-            "jurosMora": 0.00,
-            "valorPago": 0.00,
-            "status": "a vencer"
-        },
-        {
-            "numeroParcela": 3,
-            "dataVencimento": "15/06/2025",
-            "dataPagamento": null,
-            "valorParcelaOriginal": 525.50,
-            "multaAtraso": 0.00,
-            "jurosMora": 0.00,
-            "valorPago": 0.00,
-            "status": "a vencer"
-        }
-    ],
-    "totalPago": 525.50,
-    "totalDevido": 0.00,
-    "proximaParcela": {
-        "numeroParcela": 2,
-        "dataVencimento": "15/05/2025",
-        "valorParcelaOriginal": 525.50
-    }
+  "idCliente": "987.654.321-09",
+  "nome": "Maria Souza",
+  "rendaLiquida": 5000.00,
+  "idade": 45,
+  "scoreCredito": 750
 }
 ```
 
-Exemplo: Parcela vencida
-
+#### Saída
 ```json
 {
-    "idCliente": "987.654.321-09",
-    "idEmprestimo": "EMP-00456",
-    "dataConsulta": "20/06/2025",
-    "parcelas": [
-        {
-            "numeroParcela": 3,
-            "dataVencimento": "15/06/2025",
-            "dataPagamento": null,
-            "valorParcelaOriginal": 525.50,
-            "multaAtraso": 10.51,
-            "jurosMora": 0.88,
-            "valorPago": 0.00,
-            "valorTotalDevido": 536.89,
-            "status": "vencida"
-        }
-    ],
-    "totalDevido": 536.89
-}
-
-{
-    "idCliente": "987.654.321-09",
-    "idEmprestimo": "EMP-00456",
-    "numeroParcela": 3,
-    "dataVencimento": "15/06/2025",
-    "dataPagamento": "20/06/2025",
-    "valorParcelaOriginal": 525.50,
-    "multaAtraso": 10.51,
-    "jurosMora": 0.88,
-    "valorTotalDevido": 536.89,
-    "valorPago": 536.89,
-    "status": "paga",
-    "mensagem": "Parcela 3 atualizada com sucesso. Pagamento registrado com multa e juros por 5 dias de atraso."
+  "idCliente": "987.654.321-09",
+  "nome": "Maria Souza",
+  "rendaLiquida": 5000.00,
+  "idade": 45,
+  "scoreCredito": 750,
+  "limiteCredito": 1500.00,
+  "mensagem": "Cliente cadastrado/atualizado com sucesso."
 }
 ```
 
+## 4. Concessão de Empréstimos
+
+### 4.1. Entrada de Dados
+
+| Campo               | Tipo    | Descrição                            | Exemplo           | Obrigatório? |
+|---------------------|---------|--------------------------------------|-------------------|--------------|
+| idCliente           | String  | CPF do cliente                       | "987.654.321-09"  | Sim          |
+| valorEmprestimo     | Decimal | Valor solicitado                     | 15000.00          | Sim          |
+| quantidadeParcelas  | Inteiro | Número de parcelas (6 a 60)          | 36                | Não          |
+| dataInicioPagamento | Data    | Data do primeiro pagamento (futura)  | "15/03/2025"      | Não          |
+| contratarSeguro     | Booleano| Opção de contratar seguro            | true              | Sim          |
+
+*Nota:* Se quantidadeParcelas não for informada, o sistema sugere opções. Se dataInicioPagamento não for fornecida, usa carência de 30 dias a partir da data da solicitação.
+
+#### Dados Adicionais (Renovação)
+| Campo                | Tipo    | Descrição                            | Exemplo           | Obrigatório? |
+|----------------------|---------|--------------------------------------|-------------------|--------------|
+| idEmprestimoOriginal | String  | Identificador do empréstimo existente| "EMP-00456"       | Sim (renovação) |
+| novoValorEmprestimo  | Decimal | Valor adicional solicitado           | 5000.00           | Não          |
+
+### 4.2. Processo de Cálculo
+
+#### Consulta Inicial
+Valida o idCliente na tabela de clientes, obtendo rendaLiquida, scoreCredito, idade e empréstimos ativos. Para renovações, consulta o saldo devedor do idEmprestimoOriginal.
+
+#### Validação
+- "Erro: Cliente não encontrado"
+- "Erro: Valor solicitado excede limite de crédito (X.XX)"
+- "Erro: Idade fora da faixa permitida (18-75)"
+
+#### Limite de Crédito
+Calculado como rendaLiquida * 0.30, ajustado por score e idade.
+
+#### Taxa de Juros
+Determinada por risco, score, idade e prazo:
+- **Faixas:** Baixo risco (1,0%-1,5%), Médio (1,6%-2,5%), Alto (2,6%-4,0%).
+- **Ajuste por Idade:** +0,5% (66-70 anos), +1,0% (71-75 anos).
+
+*Exemplo:* Score 750, 45 anos, 36 meses → 1,3%. Score 600, 68 anos, 24 meses → 2,0% + 0,5% = 2,5%.
+
+#### Encargos
+- **TAC:** 2% do valorEmprestimo.
+- **IOF:** (0,0038 * ValorEmprestimo) + (0,000082 * ValorEmprestimo * min(PrazoEmDias, 365)).
+- **Seguro (opcional):** 0,001 * idade * ValorEmprestimo.
+- **Taxa de Cadastro:** R$ 50 (fixa, novos clientes).
+
+#### Valor Total Financiado
+- **ValorInicial = ValorEmprestimo + TAC + IOF + CustoSeguro**
+- **ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ DiasCarencia**
+
+#### Parcela Mensal (Price)
+- **Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]**
+
+#### CET
+- **ValorEmprestimo = Parcela * [(1 - (1 + CET)^(-QuantidadeParcelas)) / CET]**
+
+#### Validação Final
+- Parcela ≤ 30% da renda.
+- quantidadeParcelas entre 6 e máximo por idade (60, 48 ou 36 meses).
+
+### 4.3. Saídas
+
+#### Com quantidadeParcelas Informada
+
+##### Requisição (Exemplo)
 ```json
-Exemplo:Pagamento parcial
 {
-    "idCliente": "987.654.321-09",
-    "idEmprestimo": "EMP-00456",
-    "numeroParcela": 3,
-    "dataVencimento": "15/06/2025",
-    "dataPagamento": "20/06/2025",
-    "valorParcelaOriginal": 525.50,
-    "multaAtraso": 10.51,
-    "jurosMora": 0.88,
-    "valorTotalDevido": 536.89,
-    "valorPago": 400.00,
-    "valorRestante": 136.89,
-    "status": "vencida",
-    "mensagem": "Pagamento parcial registrado. Resta 136.89 para quitar a parcela 3."
+  "idCliente": "987.654.321-09",
+  "valorEmprestimo": 15000.00,
+  "quantidadeParcelas": 36,
+  "dataInicioPagamento": "15/03/2025",
+  "contratarSeguro": true
 }
 ```
-## 3. Estrutura dos Cálculos
 
-### 3.1. Fórmulas
+##### Saída
+```json
+{
+  "idCliente": "987.654.321-09",
+  "valorEmprestimo": 15000.00,
+  "parcela": 525.50,
+  "quantidadeParcelas": 36,
+  "dataInicioPagamento": "15/03/2025",
+  "dataFimContrato": "15/03/2028",
+  "taxaJurosMensal": 0.0180,
+  "taxaEfetivaMensal": 0.0215,
+  "contratarSeguro": true,
+  "custoSeguro": 675.00,
+  "tac": 300.00,
+  "iof": 228.90,
+  "valorTotalFinanciado": 16203.90,
+  "saldoDevedor": 16203.90,
+  "totalPago": 0.00,
+  "totalDevido": 18918.00,
+  "limiteUtilizado": 525.50,
+  "limiteRestante": 974.50,
+  "prazoMaximoPermitido": 60
+}
+```
 
-* **Multa por atraso:**
-    * `Multa = valorParcelaOriginal * 0.02`
-* **Juros de mora:**
-    * `JurosMora = valorParcelaOriginal * 0.000333 * diasAtraso`
-* **Valor total devido:**
-    * `ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora`
-* **Dias de atraso:**
-    * `diasAtraso = dataConsulta (ou dataPagamento) - dataVencimento`
+#### Sem quantidadeParcelas
 
-### 3.2. Exemplo Prático
+##### Requisição (Exemplo)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "valorEmprestimo": 15000.00,
+  "contratarSeguro": true
+}
+```
 
-**Entrada:**
+##### Saída
+```json
+{
+  "idCliente": "987.654.321-09",
+  "valorEmprestimo": 15000.00,
+  "contratarSeguro": true,
+  "opcoesParcelamento": [
+    {"quantidadeParcelas": 12, "parcela": 1392.75, "taxaJurosMensal": 0.0150, "valorTotalFinanciado": 15953.90, "totalDevido": 16713.00},
+    {"quantidadeParcelas": 24, "parcela": 742.10, "taxaJurosMensal": 0.0160, "valorTotalFinanciado": 16003.90, "totalDevido": 17810.40},
+    {"quantidadeParcelas": 36, "parcela": 525.50, "taxaJurosMensal": 0.0180, "valorTotalFinanciado": 16203.90, "totalDevido": 18918.00}
+  ]
+}
+```
 
-* `idCliente`: "456.789.012-34"
-* `idEmprestimo`: "EMP-00789"
-* `numeroParcela`: 5
-* `dataPagamento`: "25/08/2025"
-* `valorPago`: 492.26
+## 5. Consulta e Atualização de Parcelas
 
-**Dados do banco:**
+### 5.1. Consulta
 
-* `dataVencimento`: "10/08/2025"
-* `valorParcelaOriginal`: 480.25
-* `status`: "vencida"
+#### Entrada
+| Campo       | Tipo   | Descrição                  | Exemplo           | Obrigatório? |
+|-------------|--------|----------------------------|-------------------|--------------|
+| idCliente   | String | CPF do cliente             | "987.654.321-09"  | Sim          |
+| idEmprestimo| String | Identificador do empréstimo| "EMP-00456"       | Não          |
 
-**Cálculos:**
+#### Processo
+O sistema busca no banco de dados os dados gerais do contrato (valorEmprestimo, quantidadeParcelas, taxaJurosMensal, etc.) e a tabela de parcelas (numeroParcela, dataVencimento, dataPagamento, valorParcelaOriginal, multaAtraso, jurosMora, valorPago, status). Para parcelas vencidas:
+- **Multa:** valorParcelaOriginal * 0.02
+- **Juros Mora:** valorParcelaOriginal * 0.000333 * DiasAtraso
+- **Total Devido:** valorParcelaOriginal + Multa + JurosMora
 
-* Dias de atraso:
-    * 25/08/2025 - 10/08/2025 = 15 dias
-* Multa:
-    * 480.25 * 0.02 = 9.61
-* Juros de mora:
-    * 480.25 * 0.000333 * 15 = 2.40
-* Valor total devido:
-    * 480.25 + 9.61 + 2.40 = 492.26
+Dias de atraso são calculados com base na data atual do sistema no momento da consulta, comparada à dataVencimento.
 
-**Resultado:**
+##### Requisição (Exemplo)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456"
+}
+```
 
-Registro atualizado com `status = paga`, `dataPagamento = 25/08/2025`, `valorPago = 492.26`.
+##### Saída
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "valorEmprestimo": 15000.00,
+  "quantidadeParcelas": 36,
+  "dataInicioPagamento": "15/03/2025",
+  "statusContrato": "ativo",
+  "saldoDevedor": 15678.40,
+  "totalPago": 525.50,
+  "totalDevido": 18392.50,
+  "limiteUtilizado": 525.50,
+  "limiteRestante": 974.50,
+  "parcelas": [
+    {"numeroParcela": 1, "dataVencimento": "15/04/2025", "dataPagamento": "10/04/2025", "valorParcelaOriginal": 525.50, "multaAtraso": 0.00, "jurosMora": 0.00, "valorPago": 525.50, "status": "paga"},
+    {"numeroParcela": 2, "dataVencimento": "15/05/2025", "dataPagamento": null, "valorParcelaOriginal": 525.50, "multaAtraso": 0.00, "jurosMora": 0.00, "valorPago": 0.00, "status": "a vencer"}
+  ]
+}
+```
 
-## 4. Observações
+#### Erros
+- "Erro: Cliente não encontrado"
+- "Erro: Empréstimo não encontrado para o cliente"
 
-* **Multa e juros:** Aplicados apenas a parcelas vencidas, com valores fixos (multa 2%) e variáveis (juros 1% ao mês).
-* **Pagamentos parciais:** Permitem quitar parte da dívida, ajustando o saldo devedor restante.
-* **Histórico:** Todas as atualizações mantêm um log no banco para auditoria.
-* **Data padrão:** Se `dataConsulta` não for fornecida, usa a data atual (22/02/2025).
-* **Taxa de Abertura de Crédito (TAC):**
-    * Cobrada no momento da contratação do empréstimo.
-    * Cobre custos administrativos de análise de crédito e elaboração do contrato.
-    * Pode ser um valor fixo ou um percentual do valor do empréstimo.
-    * Exemplo de fórmula (se percentual): `TAC = valorEmprestimo * percentualTAC`
-* **Imposto sobre Operações Financeiras (IOF):**
-    * Imposto federal que incide sobre o valor total do empréstimo.
-    * Pode ser pago à vista ou diluído nas parcelas.
-    * Cálculo: O cálculo do IOF é complexo e varia de acordo com o prazo do empréstimo e o tipo de cliente. Geralmente, é um percentual sobre o valor do empréstimo, com uma alíquota diária adicional.
-    * Recomenda-se consultar a tabela oficial do IOF para valores exatos.
-* **Taxa de Cadastro:**
-    * Cobrada para realizar o cadastro do cliente, especialmente se não possuir conta corrente no banco.
-    * Valor fixo.
-* **Taxa de Avaliação de Bens:**
-    * Cobrada se o empréstimo exigir garantia de bens (veículos, imóveis).
-    * Cobre os custos de avaliação dos bens.
-    * Valor varia conforme o tipo de bem.
-* **Taxa de Seguro (Seguro Prestamista):**
-    * Garante o pagamento do empréstimo em caso de morte ou invalidez do cliente.
-    * Opcional, mas pode ser exigido em alguns casos.
-    * Valor varia conforme o perfil do cliente e o valor do empréstimo.
-* **Taxa de Liquidação Antecipada:**
-    * Cobrada se o cliente quitar o empréstimo antes do prazo previsto.
-    * Regulamentada por lei, com limites máximos.
-    * O cálculo depende do saldo devedor e do tempo restante para o término do contrato.
-* **Custo Efetivo Total (CET):**
-    * Indicador do custo total do empréstimo, incluindo todas as taxas e encargos.
-    * Essencial para comparar diferentes ofertas de empréstimo.
-    * O cálculo do CET é complexo e envolve diversas variáveis. Recomenda-se utilizar simuladores online ou consultar a instituição financeira.
-* **Observação:** Todas as taxas e encargos devem ser informados de forma clara e transparente no contrato de empréstimo.
-* **Observação:** O cliente tem o direito de solicitar o detalhamento de todas as taxas e esclarecer dúvidas antes de assinar o contrato.
-* **Observação:** A legislação brasileira protege o consumidor de práticas abusivas.
+### 5.2. Atualização
 
-## 5. Especificação das Faixas de Taxas de Juros
+#### Entrada
+| Campo       | Tipo   | Descrição                  | Exemplo           | Obrigatório? |
+|-------------|--------|----------------------------|-------------------|--------------|
+| idCliente   | String | CPF do cliente             | "987.654.321-09"  | Sim          |
+| idEmprestimo| String | Identificador do empréstimo| "EMP-00456"       | Sim          |
+| numeroParcela | Inteiro | Parcela a atualizar     | 3                 | Sim          |
+| dataPagamento | Data | Data do pagamento          | "20/06/2025"      | Sim          |
+| valorPago   | Decimal | Valor pago                | 536.89            | Sim          |
 
-* **Faixas de taxas de juros:**
-    * Baixo risco: 1,0% a 1,5% ao mês
-    * Risco médio: 1,6% a 2,5% ao mês
-    * Alto risco: 2,6% a 4,0% ao mês
-* **Associação com valores e prazos:**
-    * Valores de empréstimo mais altos e prazos mais longos podem resultar em taxas de juros mais altas.
-    * Exemplo:
-        * Cliente de baixo risco, empréstimo de R$ 10.000,00 em 24 meses: 1,2% ao mês.
-        * Cliente de risco médio, empréstimo de R$ 20.000,00 em 36 meses: 2,0% ao mês.
-* **Variação com o score:**
-    * Clientes com score de crédito mais alto podem obter taxas de juros mais baixas.
-    * Tabela Pontuação Score x Taxa de Juros:
+#### Processo
+Calcula atrasos, se aplicável:
+- **Multa:** valorParcelaOriginal * 0.02
+- **Juros Mora:** valorParcelaOriginal * 0.000333 * (dataPagamento - dataVencimento)
+- **Total Devido:** valorParcelaOriginal + Multa + JurosMora
 
-| Score de Crédito | Faixa de Taxa de Juros |
-| :--------------- | :---------------------- |
-| 700-1000        | 1,0% - 1,5%             |
-| 500-699         | 1,6% - 2,5%             |
-| 0-499           | 2,6% - 4.0%             |
+Permite pagamentos parciais, ajustando saldoDevedorParcela. Se o valor pago for inferior ao devido, o status permanece "parcialmente paga" até quitação total.
 
-## 6. Aprofundamento das Regras de Antecipação de Parcelas
+##### Requisição (Exemplo - Pagamento Total)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "numeroParcela": 3,
+  "dataPagamento": "20/06/2025",
+  "valorPago": 536.89
+}
+```
 
-* **Fórmulas de cálculo dos descontos:**
-    * Desconto = Valor da parcela / (1 + Taxa de juros mensal) ^ Número de meses de antecipação
-* **Opções de pagamento:**
-    * Pagamento único: Quitação de todas as parcelas restantes com desconto.
-    * Pagamento da primeira e última parcela: Quitação das duas parcelas com desconto.
-    * Pagamento parcial: pagamento de parcelas aleatórias, com o recálculo do saldo devedor.
-* **Exemplos de cálculo:**
-    * Parcela de R$ 1.000,00, taxa de juros de 2% ao mês, antecipação de 3 parcelas:
-        * Desconto = 1000 / (1 + 0.02) ^ 3 = R$ 942.32
-* **Recálculo do saldo devedor:**
-    * Após a antecipação, o saldo devedor é recalculado, subtraindo o valor presente das parcelas antecipadas.
-    * O cliente pode solicitar um novo cronograma de pagamento com o saldo devedor atualizado.
-* **Fórmulas para recálculo do saldo devedor:**
-    * Valor presente da parcela antecipada = Valor da parcela / (1 + Taxa de juros mensal) ^ Número de meses de antecipação
-    * Saldo devedor restante = Saldo devedor anterior - Valor presente da parcela antecipada
-* **Exemplo de recálculo do saldo devedor:**
-    * Saldo devedor anterior: R$ 5.000,00
-    * Parcela antecipada: R$ 1.000,00
-    * Taxa de juros mensal: 2%
-    * Meses de antecipação: 3
-    * Valor presente da parcela antecipada: 1000 / (1 + 0.02) ^ 3 = R$ 942.32
-    * Saldo devedor restante: 5000 - 942.32 = R$ 4.057,68
+##### Saída (Pagamento Total)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "numeroParcela": 3,
+  "dataVencimento": "15/06/2025",
+  "dataPagamento": "20/06/2025",
+  "valorParcelaOriginal": 525.50,
+  "multaAtraso": 10.51,
+  "jurosMora": 0.88,
+  "valorTotalDevido": 536.89,
+  "valorPago": 536.89,
+  "saldoDevedorParcela": 0.00,
+  "status": "paga",
+  "mensagem": "Parcela 3 atualizada com sucesso."
+}
+```
 
-## 7. Exemplos Práticos de Cálculos
+##### Requisição (Exemplo - Pagamento Parcial)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "numeroParcela": 3,
+  "dataPagamento": "20/06/2025",
+  "valorPago": 400.00
+}
+```
 
-* **Capacidade de pagamento:**
-    * Renda líquida: R$ 5.000,00
-    * Percentual máximo de comprometimento: 30%
-    * Capacidade de pagamento: 5000 \* 0,30 = R$ 1.500,00
-* **Cálculo de taxas de juros:**
-    * Score de crédito: 750 (baixo risco)
-    * Valor do empréstimo: R$ 20.000,00
-    * Prazo: 36 meses
-    * Taxa de juros: 1,3% ao mês
-* **Cálculo de multas e juros:**
-    * Parcela de R$ 1.000,00, 10 dias de atraso:
-        * Multa: 1000 \* 0,02 = R$ 20,00
-        * Juros: 1000 \* 0,000333 \* 10 = R$ 3,33
-        * Valor total devido: R$ 1.023,33
-* **Cálculo de amortização:**
-    * Para o cálculo de amortização, podemos utilizar o sistema Price, com a seguinte fórmula:
-        * PMT = PV * [i * (1 + i)^n] / [(1 + i)^n - 1]
-    * Onde:
-        * PMT = Valor da parcela
-        * PV = Valor presente (valor do empréstimo)
-        * i = Taxa de juros por período
-        * n = Número total de períodos
+##### Saída (Pagamento Parcial)
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "numeroParcela": 3,
+  "dataVencimento": "15/06/2025",
+  "dataPagamento": "20/06/2025",
+  "valorParcelaOriginal": 525.50,
+  "multaAtraso": 10.51,
+  "jurosMora": 0.88,
+  "valorTotalDevido": 536.89,
+  "valorPago": 400.00,
+  "saldoDevedorParcela": 136.89,
+  "status": "parcialmente paga",
+  "mensagem": "Parcela 3 parcialmente paga. Saldo restante: 136.89."
+}
+```
 
-## 8. Regras de negócio por idade
+#### Erros
+- "Erro: Parcela já totalmente paga"
+- "Erro: Empréstimo não encontrado"
 
-- **Idade mínima:** 18 anos.
-- **Idade máxima:** 75 anos (com condições especiais acima de 65 anos).
-- **Variação de condições:**
+## 6. Antecipação de Parcelas
 
-  - Clientes com mais de 65 anos podem ter prazos de pagamento mais curtos e taxas de juros mais altas.
-  - Clientes com mais de 70 anos podem precisar de garantias adicionais.
+### 6.1. Entrada
 
-- Tabela Faixa Etária X Prazos:
+| Campo        | Tipo   | Descrição                   | Exemplo            | Obrigatório? |
+|--------------|--------|-----------------------------|--------------------|--------------|
+| idCliente    | String | CPF do cliente              | "987.654.321-09"   | Sim          |
+| idEmprestimo | String | Identificador do empréstimo | "EMP-00456"        | Sim          |
+| parcelas     | Lista  | Parcelas a antecipar        | [2, 3]             | Sim          |
 
-| Faixa Etária | Prazos Máximos | Taxas de Juros | Garantias Adicionais |
-| :----------- | :------------- | :------------- | :------------------- |
-| 18-65 anos   | Até 60 meses   | Taxas padrão   | Não aplicável        |
-| 66-70 anos   | Até 48 meses   | +0,5%          | Opcional             |
-| 71-75 anos   | Até 36 meses   | +1,0%          | Obrigatório          |
+### Processo
 
-## 10. Informações adicionais
+Calcula o valor presente das parcelas antecipadas:
+```
+ValorPresente = valorParcelaOriginal / (1 + TaxaJurosMensal) ^ MesesAntecipados
+```
+Atualiza o saldoDevedor subtraindo os valores presentes.
 
-- **Cadastro do cliente:**
-  - Campos obrigatórios: Nome completo, CPF, data de nascimento, endereço, telefone, e-mail, renda.
-  - Campos opcionais: Informações adicionais de contato, referências.
-  - Validações de segurança: Validação de CPF, validação de email, confirmação de telefone, criptografia de dados sensíveis.
-  - Processo de cadastro:
-    1.  Coleta de dados pessoais e financeiros do cliente.
-    2.  Validação dos dados fornecidos.
-    3.  Criação de um perfil de cliente no sistema.
-    4.  Armazenamento seguro dos dados do cliente.
-- **Comunicação com o cliente:**
-  - Canais: SMS, WhatsApp, e-mail, notificações no aplicativo.
-  - Tipos de mensagens:
-    - Confirmação de solicitação de empréstimo.
-    - Atualização do status da solicitação.
-    - Lembrete de vencimento de parcelas.
-    - Confirmação de pagamento de parcelas.
-    - Ofertas de novos produtos e serviços.
+### Requisição (Exemplo)
 
-    ## Glossário
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "parcelas": [2, 3]
+}
+```
 
-**Amortização**
-: Processo de pagamento de uma dívida em parcelas periódicas, que incluem tanto o valor principal quanto os juros.
+### Saída
 
-**CET (Custo Efetivo Total)**
-: Indicador que representa o custo total de um empréstimo, incluindo todas as taxas e encargos.
+```json
+{
+  "idCliente": "987.654.321-09",
+  "idEmprestimo": "EMP-00456",
+  "parcelasAntecipadas": [
+    {"numeroParcela": 2, "valorParcelaOriginal": 525.50, "valorPresente": 516.18, "mesesAntecipados": 1},
+    {"numeroParcela": 3, "valorParcelaOriginal": 525.50, "valorPresente": 507.04, "mesesAntecipados": 2}
+  ],
+  "saldoDevedorAtualizado": 14655.18,
+  "totalDesconto": 33.28,
+  "mensagem": "Parcelas 2 e 3 antecipadas com sucesso."
+}
+```
 
-**IOF (Imposto sobre Operações Financeiras)**
-: Imposto federal que incide sobre operações de crédito, câmbio, seguros e títulos.
+## 7. Observações
 
-**Score de crédito**
-: Pontuação que indica o risco de inadimplência de um cliente, com base em seu histórico de crédito.
-
-**TAC (Taxa de Abertura de Crédito)**
-: Taxa cobrada no momento da contratação do empréstimo, para cobrir os custos administrativos da instituição financeira.
-
-**Taxa de Avaliação de Bens**
-: Taxa cobrada quando o empréstimo exige garantia de bens, para cobrir os custos de avaliação desses bens.
-
-**Taxa de Cadastro**
-: Taxa cobrada para realizar o cadastro do cliente, especialmente se ele não possuir conta corrente no banco.
-
-**Taxa de Liquidação Antecipada**
-: Taxa cobrada quando o cliente quita o empréstimo antes do prazo previsto.
-
-**Taxa de Seguro (Seguro Prestamista)**
-: Taxa cobrada para garantir o pagamento do empréstimo em caso de morte ou invalidez do cliente.
+- Taxas de juros refletem o perfil de risco do cliente, ajustadas por score, idade e prazo, conforme práticas de mercado.
+- Encargos (TAC, IOF, seguro) são incorporados ao CET para transparência.
+- Prazos máximos variam por idade: 60 meses (18-65 anos), 48 meses (66-70 anos), 36 meses (71-75 anos).
+- Pagamentos parciais e antecipações são flexíveis, permitindo ajustes no saldo devedor.
+- Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
