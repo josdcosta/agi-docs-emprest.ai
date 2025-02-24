@@ -557,161 +557,85 @@ Para auditoria de operações, como sugerido nas observações.
 
 
 # Fluxograma Completo do Emprest.AI
+```mermaid
+graph TD
+    %% Início
+    A[Requisição do Usuário] --> B1[3.1 Cadastro/Atualização de Cliente]
 
-## Início
-[Requisição do Usuário]
-        |
-        v
+    %% 3. Gerenciamento de Clientes
+    B1 --> B2{Cliente já existe?}
+    B2 -->|Sim| B3[Atualizar Cliente]
+    B2 -->|Não| B4[Inserir Cliente]
+    B3 --> B5[Recalcular Margem Consignável]
+    B4 --> B5
+    B5 --> B6[Saída: Cliente cadastrado/atualizado]
 
-## 3. Gerenciamento de Clientes
-[3.1 Cadastro/Atualização de Cliente]
-    | Entrada: idCliente, nome, remuneracaoLiquida, idade, tipoVinculo
-    v
-    [Validação dos Dados]
-    |
-    v
-    <Cliente já existe?>
-    |       Sim          Não
-    v        v            v
-[Atualizar]  [Inserir na Tabela Clientes]
-    |            |
-    v            v
-    [Recalcular Margem Consignável]
-    | 35% da remuneração líquida - soma das parcelas ativas
-    v
-    [Saída: Cliente cadastrado/atualizado]
-    |
-    v
+    %% 4. Consulta de Elegibilidade
+    B6 --> C1[4.1 Consulta de Elegibilidade]
+    C1 --> C2[Consultar Tabela Clientes]
+    C2 --> C3[Calcular Prazo Máximo]
+    C3 --> C4{Margem suficiente?}
+    C4 -->|Sim| C5[Saída: Elegível]
+    C4 -->|Não| C6[Erro: Margem insuficiente]
 
-## 4. Consulta de Elegibilidade
-[4.1 Consulta de Elegibilidade]
-    | Entrada: idCliente
-    v
-    [Consultar Tabela Clientes]
-    | Obtém: remuneracaoLiquida, margemConsignavel, idade, tipoVinculo
-    v
-    [Calcular Prazo Máximo]
-    | (80 - idade) * 12, limitado a 92 meses
-    v
-    <Margem suficiente?>
-    |       Sim          Não
-    v        v           v
-[Saída: Elegível]   (Erro: Margem insuficiente)
-    |
-    v
+    %% 5. Concessão de Empréstimos
+    C5 --> D1[5.1 Entrada de Dados]
+    D1 --> D2[5.2 Processo de Cálculo]
+    D2 --> D3{Cliente existe e margem OK?}
+    D3 -->|Sim| D4[Calcular Taxa de Juros]
+    D3 -->|Não| D5[Erro: Cliente inválido ou margem insuficiente]
+    D4 --> D6[Calcular Seguro, IOF, Parcela]
+    D6 --> D7[Registrar Contrato]
+    D7 --> D8[Saída: Contrato gerado]
 
-## 5. Concessão de Empréstimos
-[5.1 Entrada de Dados]
-    | Entrada: idCliente, valorEmprestimo, quantidadeParcelas (opcional), etc.
-    v
-    [5.2 Processo de Cálculo]
-    |   v
-    | [Validar Cliente e Margem]
-    |   |
-    |   v
-    |   <Cliente existe e margem OK?>
-    |   |       Sim          Não
-    |   v        v           v
-    | [Calcular Taxa de Juros]
-    | | TaxaBase + 0.000357 * (quantidadeParcelas - 24), teto 2,14%
-    | v
-    | [Calcular Seguro, IOF, Parcela]
-    | v
-    | [Registrar Contrato]
-    |   |
-    v   v
-[Saída: Contrato gerado]   (Erro: Cliente inválido ou margem insuficiente)
-    |
-    v
+    %% 6. Refinanciamento e Portabilidade
+    D8 --> E1[6.1 Refinanciamento]
+    E1 --> E2[Consultar Contrato Original]
+    E2 --> E3{20% pago e idade OK?}
+    E3 -->|Sim| E4[Calcular Novo Empréstimo]
+    E3 -->|Não| E5[Erro: Condições não atendidas]
+    E4 --> E6[Atualizar Contrato como 'refinanciado']
+    E6 --> E7[Registrar Novo Contrato]
+    E7 --> E8[Saída: Refinanciamento concluído]
 
-## 6. Refinanciamento e Portabilidade
-[6.1 Refinanciamento]
-    | Entrada: idCliente, idEmprestimoOriginal, novoValorEmprestimo, etc.
-    v
-    [Consultar Contrato Original]
-    | Obtém: saldoDevedor, parcelas pagas
-    v
-    <20% pago e idade OK?>
-    |       Sim          Não
-    v        v           v
-[Calcular Novo Empréstimo]  (Erro: Condições não atendidas)
-    | Taxa recalculada, nova parcela
-    v
-    [Atualizar Contrato Original como "refinanciado"]
-    v
-    [Registrar Novo Contrato]
-    |
-    v
-[Saída: Refinanciamento concluído]
-    |
-    v
+    D8 --> F1[6.2 Portabilidade]
+    F1 --> F2[Consultar Contrato Original]
+    F2 --> F3{Parcelas em dia e idade OK?}
+    F3 -->|Sim| F4[Calcular no Banco Destino]
+    F3 -->|Não| F5[Erro: Parcelas vencidas]
+    F4 --> F6[Marcar Contrato como 'portado']
+    F6 --> F7[Registrar no Banco Destino]
+    F7 --> F8[Saída: Portabilidade concluída]
 
-[6.2 Portabilidade]
-    | Entrada: idCliente, idEmprestimoOriginal, bancoDestino, etc.
-    v
-    [Consultar Contrato Original]
-    | Obtém: saldoDevedor, status de pagamento
-    v
-    <Parcelas em dia e idade OK?>
-    |       Sim          Não
-    v        v           v
-[Calcular no Banco Destino]  (Erro: Parcelas vencidas)
-    | Taxa ajustada, nova parcela
-    v
-    [Marcar Contrato como "portado"]
-    v
-    [Registrar no Banco Destino]
-    |
-    v
-[Saída: Portabilidade concluída]
-    |
-    v
+    %% 7. Consulta e Atualização de Parcelas
+    D8 --> G1[7.1 Consulta]
+    G1 --> G2[Consultar Tabela Parcelas]
+    G2 --> G3[Saída: Dados das parcelas]
 
-## 7. Consulta e Atualização de Parcelas
-[7.1 Consulta]
-    | Entrada: idCliente, idEmprestimo
-    v
-    [Consultar Tabela Parcelas]
-    v
-    [Saída: Dados das parcelas]
-    |
-    v
+    D8 --> H1[7.2 Atualização]
+    H1 --> H2[Validar Parcela]
+    H2 --> H3{Parcela em atraso?}
+    H3 -->|Sim| H4[Calcular Multa/Juros]
+    H3 -->|Não| H5[Atualizar como Paga]
+    H4 --> H6[Registrar Pagamento]
+    H5 --> H6
+    H6 --> H7[Saída: Parcela atualizada]
 
-[7.2 Atualização]
-    | Entrada: idCliente, idEmprestimo, numeroParcela, valorPago, etc.
-    v
-    [Validar Parcela]
-    v
-    <Parcela em atraso?>
-    |       Sim          Não
-    v        v           v
-[Calcular Multa/Juros]  [Atualizar como Paga]
-    | Multa: 2%, Juros: 0.0333%/dia
-    v
-    [Registrar Pagamento]
-    | Ajusta saldoDevedor
-    v
-[Saída: Parcela atualizada]
-    |
-    v
+    %% 8. Cancelamento de Contrato
+    D8 --> I1[8.1 Cancelamento]
+    I1 --> I2[Validar Contrato]
+    I2 --> I3{Antes da dataInicioPagamento?}
+    I3 -->|Sim| I4[Calcular Reembolso]
+    I3 -->|Não| I5[Erro: Cancelamento não permitido]
+    I4 --> I6[Atualizar Status como 'cancelado']
+    I6 --> I7[Saída: Contrato cancelado]
 
-## 8. Cancelamento de Contrato
-[8.1 Cancelamento]
-    | Entrada: idCliente, idEmprestimo
-    v
-    [Validar Contrato]
-    v
-    <Antes da dataInicioPagamento?>
-    |       Sim          Não
-    v        v           v
-[Calcular Reembolso (se aplicável)]  (Erro: Cancelamento não permitido)
-    | ValorEmprestimo * (1 + taxa/30)^dias
-    v
-    [Atualizar Status como "cancelado"]
-    v
-[Saída: Contrato cancelado]
-    |
-    v
-
-## Fim
-[Processo Concluído]
+    %% Fim
+    B6 --> J[Processo Concluído]
+    C5 --> J
+    D8 --> J
+    E8 --> J
+    F8 --> J
+    G3 --> J
+    H7 --> J
+    I7 --> J
