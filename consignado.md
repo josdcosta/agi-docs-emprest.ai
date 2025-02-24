@@ -165,8 +165,56 @@ A taxa de juros mensal é calculada com base no tipo de vínculo, na idade e na 
 - **Com Seguro:** Aposentado 75-78 anos: 1,6% (0,016), máximo 48 meses.
 - **Sem Seguro:** Taxa base + 0,2% (ex.: 1,8%), mesmo prazo.
 
-#### Custo do Seguro, IOF, Valor Total Financiado, Parcela Mensal, CET
-Mesmas fórmulas da versão anterior.
+### Custo do Seguro (se contratado)
+
+**Fórmula:**
+```
+CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo
+```
+
+**Exemplo:**
+```
+Idade 75, R$ 10.000 → Custo = [0,04 + (0,001 * 75)] * 10000 = 1.150,00.
+```
+
+### IOF
+
+**Fórmula:**
+```
+IOF = (0,0038 * ValorEmprestimo) + (0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365))
+```
+
+### Valor Total Financiado
+
+**Inclui a carência (padrão 30 dias, máximo 60):**
+
+```
+ValorInicial = ValorEmprestimo + IOF + CustoSeguro
+ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ DiasCarencia
+```
+
+### Parcela Mensal (Método Price)
+
+**Fórmula:**
+```
+Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]
+```
+
+### Taxa Efetiva Mensal (CET)
+
+**Resolvida numericamente para incluir todos os custos (juros, IOF, seguro):**
+
+```
+ValorEmprestimo = Parcela * [(1 - (1 + CET)^(-QuantidadeParcelas)) / CET]
+```
+
+### Validação Final
+
+- Parcela ≤ margemConsignavel.
+- Idade final (idade + prazo em anos) ≤ 80.
+- quantidadeParcelas múltiplo de 12, ≥ 24.
+- Dias de carência ≤ 60.
+- TaxaJurosMensal ≤ 0,0214.
 
 ### Registro
 
