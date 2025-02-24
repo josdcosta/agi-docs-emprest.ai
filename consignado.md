@@ -39,7 +39,7 @@
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
-O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados. Isso inclui o cadastro de clientes, a análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações. O sistema respeita as normas brasileiras, como a margem consignável de 35% da remuneração líquida (Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS). As taxas de juros são calculadas com base no vínculo do cliente e na idade, ajustadas dinamicamente pelo prazo escolhido, enquanto os prazos são oferecidos em múltiplos de 12 a partir de 24 meses. O seguro é opcional, e, caso o cliente não especifique a quantidade de parcelas, o sistema sugere opções viáveis.
+O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados. Isso inclui o cadastro de clientes, a análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações. O sistema respeita as normas brasileiras, como a margem consignável de 35% da remuneração líquida (Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS). As taxas de juros são calculadas com base no vínculo do cliente e na idade, ajustadas dinamicamente pelo prazo escolhido, enquanto os prazos são oferecidos de 24 até 92 meses, com preferência para múltiplos de 12, mas permitindo flexibilidade até o máximo de 92 meses, desde que a idade ao fim do contrato não ultrapasse 80 anos. O seguro é opcional, e, caso o cliente não especifique a quantidade de parcelas, o sistema sugere opções viáveis dentro desse intervalo.
 
 ## 2. Visão Geral do Funcionamento
 O sistema é estruturado em cinco áreas principais:
@@ -53,7 +53,7 @@ O sistema é estruturado em cinco áreas principais:
 ### Regras Principais
 - **Margem Consignável:** Calculada como 35% da remuneração líquida menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
 - **Taxas de Juros:** Determinadas pelo tipo de vínculo e idade do cliente, com um incremento específico por prazo, sempre respeitando o limite de 2,14% ao mês.
-- **Prazos:** Oferecidos em múltiplos de 12 (ex.: 24, 36, 48 meses), com mínimo de 24 meses e máximo ajustado para que a idade do cliente ao fim do contrato não ultrapasse 80 anos.
+- **Prazos:** Oferecidos de 24 até 92 meses, preferencialmente em múltiplos de 12 (ex.: 24, 36, 48, 60, 72, 84), com mínimo de 24 meses e máximo de 92 meses, ajustado para que a idade do cliente ao fim do contrato não ultrapasse 80 anos.
 - **Seguro:** Opcional, com custo baseado na idade e no valor do empréstimo.
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
@@ -106,8 +106,7 @@ Os dados são inseridos ou atualizados na tabela de clientes. A margem consigná
 ```
 
 ### 4.2. Processo
-
-O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. O prazo máximo permitido é calculado como `(80 - idade) * 12`, arredondado para o menor múltiplo de 12, garantindo que a idade final não exceda 80 anos. Verifica se a margem consignável é suficiente para suportar um empréstimo.
+O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. O prazo máximo permitido é calculado como `(80 - idade) * 12`, limitado a 92 meses, garantindo que a idade final não exceda 80 anos. Se o cálculo resultar em mais de 92 meses, o máximo será 92; se menos, será o valor calculado. Verifica se a margem consignável é suficiente para suportar um empréstimo.
 
 ### 4.3. Saída
 
@@ -130,7 +129,7 @@ O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `ma
 |---------------------|----------|-----------------------------------------------|-----------------|--------------|
 | idCliente           | String   | CPF do cliente                                | "123.456.789-00"| Sim          |
 | valorEmprestimo     | Decimal  | Valor solicitado                              | 10000.00        | Sim          |
-| quantidadeParcelas  | Inteiro  | Número de parcelas (múltiplo de 12, ≥ 24)     | 36              | Não          |
+| quantidadeParcelas  | Inteiro  | Número de parcelas (24 a 92 meses)            | 92              | Não          |
 | dataInicioPagamento | Data     | Data do primeiro pagamento (futura, até 60 dias)| "01/04/2025"   | Não          |
 | contratarSeguro     | Booleano | Opção de contratar seguro                     | true            | Sim          |
 
@@ -157,9 +156,9 @@ O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquid
 #### Taxa de Juros
 A taxa de juros mensal é calculada com base no tipo de vínculo, na idade e na opção de seguro, ajustada pelo prazo escolhido:
 
-- **Fórmula:** TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)
+- **Fórmula:** TaxaJurosMensal = TaxaBase + 0.000357 * (QuantidadeParcelas - 24)
 - **TaxaBase:** Definida por vínculo e idade (ex.: 1,6% para aposentado de 75-78 anos com seguro).
-- **Incremento:** Para cada 12 meses acima de 24, a taxa aumenta em 0,0025 (0,25%). Exemplo: 48 meses adiciona 0,005 (0,5%) à taxa base.
+- **Incremento:** Para cada mês acima de 24, a taxa aumenta em 0,000357 (aproximadamente 0,0357%), ajustado para atingir até 0,024 no máximo em 92 meses. Exemplo: 92 meses adiciona 0,024 (2,4%) à taxa base.
 - **Teto:** Limitada a 2,14% (0,0214).
 
 #### Taxas Base por Vínculo e Idade
@@ -248,9 +247,8 @@ Essa seção descreve os processos de refinanciamento e portabilidade de emprés
 O refinanciamento é uma operação que renegocia um empréstimo consignado existente no mesmo banco, possibilitando ao cliente estender o prazo, adicionar um valor extra ou ajustar as condições de pagamento. Isso geralmente é feito para reduzir a parcela mensal ou obter recursos adicionais.
 
 ### Condições
-
 - **Pagamento Mínimo**: Pelo menos 20% das parcelas do contrato original devem estar pagas, verificado pela contagem de parcelas com status "paga" no banco de dados.
-- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve garantir que a idade do cliente ao fim do contrato não exceda 80 anos.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas), de até 92 meses, deve garantir que a idade do cliente ao fim do contrato não exceda 80 anos.
 - **Margem Consignável**: A nova parcela deve ser inferior ou igual à margem consignável disponível, obtida da tabela de clientes.
 
 ### Processo
@@ -309,10 +307,9 @@ A taxa de 1,7% (0,017) reflete a base de 1,6% (aposentado, 75 anos, com seguro) 
 A portabilidade permite transferir um empréstimo consignado para outro banco, geralmente para aproveitar taxas de juros menores ou melhores condições. O saldo devedor é quitado pelo banco de destino, que assume o contrato com um novo prazo e taxa.
 
 ### Condições
-
 - **Parcelas em Dia**: Todas as parcelas do contrato original devem estar pagas até a data atual (nenhuma com status "vencida").
 - **Aceitação do Banco Destino**: O banco receptor (bancoDestino) deve aceitar a portabilidade, o que pode ser validado por integração externa ou configuração manual.
-- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve respeitar o limite de idade de 80 anos no fim do contrato.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas), de até 92 meses, deve respeitar o limite de idade de 80 anos no fim do contrato.
 - **Margem Consignável**: A nova parcela deve caber na margem disponível.
 
 ### Processo
