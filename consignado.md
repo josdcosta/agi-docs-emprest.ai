@@ -8,97 +8,103 @@
 
 ## Referências
 - Planilha de Cálculo
-- Leis e Regulamentações: Lei 10.820/2003, Lei 14.509/2022, Regulamentação INSS, Resoluções do Banco Central.
+- Leis e Regulamentações: Lei 10.820/2003, Lei 14.509/2022, Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
-O Emprest.AI é um sistema backend projetado para gerenciar solicitações, consultas e atualizações de empréstimos consignados. Ele automatiza o processo de concessão, refinanciamento e portabilidade, respeitando as regras legais brasileiras, como a margem consignável de 35% da remuneração líquida (Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS). O sistema calcula taxas de juros variáveis com base no vínculo do cliente e na idade, oferece prazos em múltiplos de 12 (mínimo 24 meses) e inclui a opção de contratar seguro. Se o número de parcelas não for informado, retorna opções viáveis.
+O Emprest.AI é um sistema backend projetado para gerenciar solicitações, consultas e atualizações de empréstimos consignados. Ele automatiza o processo de concessão, refinanciamento, portabilidade e cancelamento, respeitando as regras legais brasileiras, como a margem consignável de 35% da remuneração líquida (Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS). O sistema calcula taxas de juros variáveis com base no vínculo do cliente e na idade, oferece prazos em múltiplos de 12 (mínimo 24 meses) e inclui a opção de contratar seguro. Se o número de parcelas não for informado, retorna opções viáveis.
 
 ## 2. Visão Geral do Funcionamento
-O sistema abrange três grandes áreas:
-
-- **Concessão de Empréstimos**: Processa novos empréstimos, refinanciamentos e portabilidades.
-- **Consulta de Empréstimos**: Permite verificar o status de contratos e parcelas.
-- **Atualização de Dados**: Registra pagamentos e gerencia alterações como refinanciamento ou portabilidade.
+O sistema abrange quatro grandes áreas:
+1. **Concessão de Empréstimos:** Processa novos empréstimos, refinanciamentos e portabilidades.
+2. **Consulta de Empréstimos:** Permite verificar o status de contratos e parcelas.
+3. **Atualização de Dados:** Registra pagamentos e gerencia alterações como refinanciamento ou portabilidade.
+4. **Cancelamento de Contrato:** Permite cancelar solicitações antes do início do pagamento.
 
 ### Regras Principais
-- **Margem Consignável**: 35% da remuneração líquida menos parcelas de outros empréstimos.
-- **Taxas de Juros**: Variam por vínculo e idade, com incremento de 0,0025 por cada 12 meses acima de 24, limitadas a 2,14%.
-- **Prazos**: Múltiplos de 12 (24, 36, 48...), até o máximo permitido pela idade (≤ 80 anos no fim do contrato).
-- **Seguro**: Opcional, calculado com base na idade e no valor do empréstimo.
-- **IOF**: Incluído no valor financiado, conforme regras fiscais.
+- **Margem Consignável:** 35% da remuneração líquida menos parcelas de outros empréstimos.
+- **Taxas de Juros:** Variam por vínculo e idade, com incremento de 0,0025 por cada 12 meses acima de 24, limitadas a 2,14%.
+- **Prazos:** Múltiplos de 12 (24, 36, 48...), até o máximo permitido pela idade (≤ 80 anos no fim do contrato).
+- **Seguro:** Opcional, calculado com base na idade e no valor do empréstimo.
+- **IOF:** Incluído no valor financiado, conforme regras fiscais.
+- **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até 60 dias.
 
 ## 3. Concessão de Empréstimos
-
 ### 3.1. Entrada de Dados
 Os dados necessários para processar uma solicitação são:
 
-| Campo               | Tipo    | Descrição                                 | Exemplo           | Obrigatório? |
-|---------------------|---------|-------------------------------------------|-------------------|--------------|
-| idCliente           | String  | CPF do cliente                            | "123.456.789-00"  | Sim          |
-| valorEmprestimo     | Decimal | Valor solicitado                          | 10000.00          | Sim          |
-| quantidadeParcelas  | Inteiro | Número de parcelas (múltiplo de 12, ≥ 24) | 36                | Não          |
-| dataInicioPagamento | Data    | Data do primeiro pagamento (futura)       | "01/04/2025"      | Não          |
-| contratarSeguro     | Booleano| Opção de contratar seguro                 | true              | Sim          |
-| dataSolicitacao     | Data    | Data da solicitação                       | "22/02/2025"      | Não          |
+| Campo               | Tipo     | Descrição                            | Exemplo          | Obrigatório? |
+| ------------------- | -------- | ------------------------------------ | ---------------- | ------------ |
+| idCliente           | String   | CPF do cliente                       | "123.456.789-00" | Sim          |
+| valorEmprestimo     | Decimal  | Valor solicitado                     | 10000.00         | Sim          |
+| quantidadeParcelas  | Inteiro  | Número de parcelas (múltiplo de 12, ≥ 24) | 36               | Não          |
+| dataInicioPagamento | Data     | Data do primeiro pagamento (futura, até 60 dias) | "01/04/2025"    | Não          |
+| contratarSeguro     | Booleano | Opção de contratar seguro            | true             | Sim          |
 
-**Nota**: Se `quantidadeParcelas` não for fornecida, o sistema retorna opções possíveis. Se `dataInicioPagamento` não for informada, a solicitação é registrada sem processamento imediato.
+Nota:
+- Se quantidadeParcelas não for fornecida, o sistema retorna opções possíveis.
+- Se dataInicioPagamento não for informada, assume carência padrão de 30 dias a partir da solicitação.
+- O campo dataSolicitacao foi removido, pois pode ser gerado automaticamente pelo sistema com a data atual (ex.: 24/02/2025).
 
 #### Dados Adicionais (Refinanciamento ou Portabilidade)
 
-| Campo               | Tipo    | Descrição                                 | Exemplo           | Obrigatório? |
-|---------------------|---------|-------------------------------------------|-------------------|--------------|
-| idEmprestimoOriginal| String  | Identificador do empréstimo existente     | "EMP-00123"       | Sim (ref/port)|
-| novoValorEmprestimo | Decimal | Valor adicional (refinanciamento)         | 2000.00           | Não          |
-| novaQuantidadeParcelas | Inteiro | Novo prazo (múltiplo de 12, ≥ 24)       | 48                | Sim (ref/port)|
-| bancoDestino        | String  | Banco receptor (portabilidade)            | "BANCOXYZ"        | Sim (port)   |
+| Campo                 | Tipo     | Descrição                            | Exemplo     | Obrigatório? |
+| --------------------- | -------- | ------------------------------------ | ----------- | ------------ |
+| idEmprestimoOriginal  | String   | Identificador do empréstimo existente | "EMP-00123" | Sim (ref/port) |
+| novoValorEmprestimo   | Decimal  | Valor adicional (refinanciamento)     | 2000.00     | Não          |
+| novaQuantidadeParcelas| Inteiro  | Novo prazo (múltiplo de 12, ≥ 24)     | 48          | Sim (ref/port) |
+| bancoDestino          | String   | Banco receptor (portabilidade)        | "BANCOXYZ"  | Sim (port)   |
+
+Nota: novoValorEmprestimo é opcional em refinanciamento, pois o cliente pode apenas estender o prazo.
 
 ### 3.2. Processo de Cálculo
-
 #### Consulta Inicial:
-Valida o `idCliente` e busca no banco de dados:
+Valida o idCliente e busca no banco de dados:
 - Remuneração líquida.
 - Parcelas de outros empréstimos.
 - Idade e tipo de vínculo ("servidor_federal", "servidor_estadual", "servidor_municipal", "aposentado").
-- Para refinanciamento/portabilidade: saldo devedor do `idEmprestimoOriginal`.
+- Para refinanciamento/portabilidade: saldo devedor do idEmprestimoOriginal.
+
+#### Validação de Dados:
+- Se CPF não existir: retorna "Erro: Cliente não encontrado".
+- Se remuneração líquida não estiver cadastrada: retorna "Erro: Remuneração líquida não informada".
 
 #### Margem Consignável:
-- Fórmula: `Margem = (Remuneração líquida * 0.35) - Parcelas anteriores`.
-- Exemplo: Renda R$ 5.000, parcelas R$ 800 → `Margem = (5000 * 0.35) - 800 = R$ 950,00`.
+- Fórmula: Margem = (Remuneração líquida * 0.35) - Parcelas anteriores.
+- Exemplo: Renda R$ 5.000, parcelas R$ 800 → Margem = (5000 * 0.35) - 800 = R$ 950,00.
 
 #### Taxa de Juros:
 - Baseada em vínculo, idade e seguro, com incremento de 0,0025 por cada 12 meses acima de 24, até 2,14%.
-- Fórmula: `TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12)`.
+- Fórmula: TaxaJurosMensal = TaxaBase + 0.0025 * ((QuantidadeParcelas - 24) / 12).
 
-#### Taxas por Vínculo e Idade
-**Com Seguro**:
-- Servidor Federal: 1,3%, até 96 meses.
-- Servidor Estadual: 1,4%, até 84 meses.
-- Servidor Municipal: 1,5%, até 72 meses.
-- Aposentado:
-  - ≤ 66 anos: 1,3%, até 96 meses.
-  - 67-70 anos: 1,45%, até 84 meses.
-  - 71-74 anos: 1,45%, até 72 meses.
-  - 75-78 anos: 1,6%, até 48 meses.
-  - 79 anos: 1,6%, até 24 meses.
-
-**Sem Seguro**: Taxa base + 0,2%, mesmo limite de prazos, teto 2,14%.
+##### Taxas por Vínculo e Idade
+- **Com Seguro:**
+  - Servidor Federal: 1,3%, até 96 meses.
+  - Servidor Estadual: 1,4%, até 84 meses.
+  - Servidor Municipal: 1,5%, até 72 meses.
+  - Aposentado:
+    - ≤ 66 anos: 1,3%, até 96 meses.
+    - 67-70 anos: 1,45%, até 84 meses.
+    - 71-74 anos: 1,45%, até 72 meses.
+    - 75-78 anos: 1,6%, até 48 meses.
+    - 79 anos: 1,6%, até 24 meses.
+- **Sem Seguro:** Taxa base + 0,2%, mesmo limite de prazos, teto 2,14%.
 
 #### Custo do Seguro (se contratado):
-- Fórmula: `CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo`.
-- Exemplo: Idade 75, R$ 10.000 → `Custo = [0,04 + (0,001 * 75)] * 10000 = R$ 1.150,00`.
+- Fórmula: CustoSeguro = [0,04 + (0,001 * idade)] * ValorEmprestimo.
+- Exemplo: Idade 75, R$ 10.000 → Custo = [0,04 + (0,001 * 75)] * 10000 = R$ 1.150,00.
 
 #### IOF:
-- `IOF_Fixo = 0,0038 * ValorEmprestimo`.
-- `IOF_Variavel = 0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365)`.
-- Exemplo: R$ 10.000, 48 meses → IOF ≈ R$ 157,99 (NúmeroDeDias calculado entre dataInicioPagamento e dataFimContrato).
+- IOF_Fixo = 0,0038 * ValorEmprestimo.
+- IOF_Variavel = 0,000082 * ValorEmprestimo * min(NúmeroDeDias, 365).
+- Exemplo: R$ 10.000, 48 meses → IOF ≈ R$ 157,99.
 
 #### Valor Total Financiado:
-- Inclui carência (30 dias padrão):
-  - `ValorInicial = ValorEmprestimo + IOF + CustoSeguro`.
-  - `ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ 30`.
+Inclui carência ajustável (padrão 30 dias, máximo 60 dias):
+- ValorInicial = ValorEmprestimo + IOF + CustoSeguro.
+- ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ DiasCarencia.
 
 #### Parcela Mensal (Método Price):
-- Fórmula: `Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)]`.
+- Fórmula: Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-QuantidadeParcelas)].
 
 #### Amortização:
 - Juros = SaldoDevedorAnterior * TaxaJurosMensal.
@@ -106,18 +112,16 @@ Valida o `idCliente` e busca no banco de dados:
 - SaldoDevedor = SaldoDevedorAnterior - Amortização.
 
 #### Taxa Efetiva Mensal (CET):
-- Calculada numericamente para refletir o custo total (juros, IOF, seguro):
-  - `ValorEmprestimo = Parcela * [(1 - (1 + CET)^(-QuantidadeParcelas)) / CET]`.
+- Calculada numericamente: ValorEmprestimo = Parcela * [(1 - (1 + CET)^(-QuantidadeParcelas)) / CET].
 
 #### Validação:
-- `Parcela ≤ Margem`.
+- Parcela ≤ Margem.
 - Idade final (idade atual + prazo em anos) ≤ 80.
-- `QuantidadeParcelas` múltiplo de 12, ≥ 24.
+- QuantidadeParcelas múltiplo de 12, ≥ 24.
+- DiasCarencia ≤ 60.
 
 ### 3.3. Saídas
-
 #### Com quantidadeParcelas Informada
-
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -138,20 +142,7 @@ Valida o `idCliente` e busca no banco de dados:
 }
 ```
 
-#### Tabela de Amortização (Exemplo):
-
-| Parcela | Saldo Devedor Anterior | Juros | Amortização | Parcela | Saldo Devedor Restante |
-|---------|------------------------|-------|-------------|---------|-----------------------|
-| 1       | 11.496,87              | 189,70| 160,43      | 350,13  | 11.336,44             |
-| 2       | 11.336,44              | 187,05| 163,08      | 350,13  | 11.173,36             |
-| 3       | 11.173,36              | 184,36| 165,77      | 350,13  | 11.007,59             |
-| ...     | ...                    | ...   | ...         | ...     | ...                   |
-| 48      | 347,45                 | 5,73  | 344,40      | 350,13  | 0,00                  |
-
 #### Sem quantidadeParcelas
-
-Retorna opções viáveis:
-
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -166,12 +157,13 @@ Retorna opções viáveis:
 ```
 
 #### Erros
-
-- Margem excedida: `"Parcela (496.69) excede margem disponível (950.00)"`.
-- Prazo inválido: `"Quantidade de parcelas (60) excede o máximo (48) para idade 75"`.
+- "Erro: Cliente não encontrado"
+- "Erro: Remuneração líquida não informada"
+- "Parcela (496.69) excede margem disponível (950.00)"
+- "Quantidade de parcelas (60) excede o máximo (48) para idade 75"
+- "Carência (70 dias) excede o limite máximo de 60 dias"
 
 ## 4. Refinanciamento e Portabilidade
-
 ### 4.1. Refinanciamento
 Renegocia um empréstimo existente no mesmo banco.
 
@@ -180,11 +172,9 @@ Renegocia um empréstimo existente no mesmo banco.
 - Novo prazo respeita idade ≤ 80.
 
 #### Cálculo:
-- `ValorTotalFinanciado = SaldoDevedor + NovoValorEmprestimo + CustoSeguro + IOF`.
-- Nova taxa ajustada conforme vínculo e idade.
+- ValorTotalFinanciado = SaldoDevedor + NovoValorEmprestimo + CustoSeguro + IOF.
 
 #### Saída
-
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -206,11 +196,9 @@ Transfere o empréstimo para outro banco.
 - Banco de destino aceita portabilidade.
 
 #### Cálculo:
-- `ValorTotalFinanciado = SaldoDevedor + CustoSeguro + IOF`.
-- Taxa definida pelo banco destino (≤ 2,14%).
+- ValorTotalFinanciado = SaldoDevedor + CustoSeguro + IOF.
 
 #### Saída
-
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -225,27 +213,24 @@ Transfere o empréstimo para outro banco.
 ```
 
 ## 5. Consulta e Atualização de Parcelas
-
 ### 5.1. Consulta
-
 #### Entrada
+| Campo       | Tipo   | Descrição               | Exemplo          | Obrigatório? |
+| ----------- | ------ | ----------------------- | ---------------- | ------------ |
+| idCliente   | String | CPF do cliente           | "123.456.789-00" | Sim          |
+| idEmprestimo| String | Identificador do empréstimo | "EMP-00123" | Não          |
 
-| Campo         | Tipo   | Descrição               | Exemplo           | Obrigatório? |
-|---------------|--------|-------------------------|-------------------|--------------|
-| idCliente     | String | CPF do cliente          | "123.456.789-00"  | Sim          |
-| idEmprestimo  | String | Identificador do empréstimo | "EMP-00123"   | Não          |
-| dataConsulta  | Data   | Data da consulta (padrão: hoje) | "22/02/2025" | Não          |
+Nota: O campo dataConsulta foi removido, pois o sistema pode usar a data atual (ex.: 24/02/2025) por padrão.
 
 #### Processo
+Busca no banco de dados: dados gerais e tabela de parcelas (numeroParcela, dataVencimento, dataPagamento, valorParcelaOriginal, multaAtraso, jurosMora, valorPago, status).
 
-- Busca no banco de dados: dados gerais e tabela de parcelas (numeroParcela, dataVencimento, dataPagamento, valorParcelaOriginal, multaAtraso, jurosMora, valorPago, status).
-- Para parcelas vencidas:
-  - Multa = valorParcelaOriginal * 0.02.
-  - JurosMora = valorParcelaOriginal * 0.000333 * (dataConsulta - dataVencimento).
-  - ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora.
+Para parcelas vencidas:
+- Multa = valorParcelaOriginal * 0.02 (limite legal pelo Código de Defesa do Consumidor).
+- JurosMora = valorParcelaOriginal * 0.000333 * (dataConsulta - dataVencimento) (1% ao mês, conforme Banco Central).
+- ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora.
 
 #### Saída
-
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -253,7 +238,6 @@ Transfere o empréstimo para outro banco.
   "valorEmprestimo": 10000.00,
   "quantidadeParcelas": 48,
   "dataInicioPagamento": "01/04/2025",
-  "dataConsulta": "22/02/2025",
   "statusContrato": "ativo",
   "parcelas": [
     {"numeroParcela": 1, "dataVencimento": "01/05/2025", "dataPagamento": "30/04/2025", "valorParcelaOriginal": 350.13, "multaAtraso": 0.00, "jurosMora": 0.00, "valorPago": 350.13, "status": "paga"},
@@ -265,45 +249,25 @@ Transfere o empréstimo para outro banco.
 ```
 
 ### 5.2. Atualização
-
 #### Entrada
+| Campo         | Tipo   | Descrição               | Exemplo          | Obrigatório? |
+| ------------- | ------ | ----------------------- | ---------------- | ------------ |
+| idCliente     | String | CPF do cliente           | "123.456.789-00" | Sim          |
+| idEmprestimo  | String | Identificador do empréstimo | "EMP-00123" | Sim          |
+| numeroParcela | Inteiro| Parcela a atualizar      | 3                | Sim          |
+| dataPagamento | Data   | Data do pagamento        | "15/07/2025"     | Sim          |
+| valorPago     | Decimal| Valor pago               | 358.76           | Sim          |
 
-| Campo         | Tipo   | Descrição               | Exemplo           | Obrigatório? |
-|---------------|--------|-------------------------|-------------------|--------------|
-| idCliente     | String | CPF do cliente          | "123.456.789-00"  | Sim          |
-| idEmprestimo  | String | Identificador do empréstimo | "EMP-00123"   | Sim          |
-| numeroParcela | Inteiro| Parcela a atualizar     | 3                 | Sim          |
-| dataPagamento | Data   | Data do pagamento       | "15/07/2025"      | Sim          |
-| valorPago     | Decimal| Valor pago              | 358.76            | Sim          |
-| acao          | String | "refinanciar" ou "portar" | "refinanciar"   | Não          |
-| idEmprestimoNovo | String | Novo contrato        | "EMP-00124"       | Não          |
-| bancoDestino  | String | Banco receptor (portabilidade) | "BANCOXYZ" | Não          |
-
-**Atraso**:
-- Multa: 2% (`valorParcelaOriginal * 0.02`).
-- Juros de mora: 0,0333% ao dia (`valorParcelaOriginal * 0.000333 * diasAtraso`).
-- ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora.
-
-#### Regra de Pagamento:
-- O pagamento deve ser igual ao ValorTotalDevido (parcela inteira, incluindo multa e juros, se aplicável). Caso contrário, o pagamento é recusado, e o status permanece "vencida".
+Nota: Os campos acao, idEmprestimoNovo e bancoDestino foram movidos para as seções específicas de refinanciamento e portabilidade, pois não são essenciais na atualização de parcelas.
 
 #### Processo
-
-- Validação:
-  - Verifica se `idCliente`, `idEmprestimo` e `numeroParcela` existem e estão associados.
-  - Confirma que a parcela não está com status = paga (exceto para refinanciamento/portabilidade).
-  - Calcula ValorTotalDevido para parcelas vencidas.
-  - Compara `valorPago` com `ValorTotalDevido`: se diferente, rejeita o pagamento.
-
-- Atualização:
-  - Se `valorPago` = `ValorTotalDevido`:
-    - Atualiza `dataPagamento`, `multaAtraso`, `jurosMora`, `valorPago` e `status` para "paga".
-    - Para refinanciamento: marca `statusContrato` como "refinanciado" e registra `idEmprestimoNovo`.
-    - Para portabilidade: marca `statusContrato` como "portado" e registra `bancoDestino`.
+- Multa: 2% (valorParcelaOriginal * 0.02).
+- Juros de mora: 0,0333% ao dia (valorParcelaOriginal * 0.000333 * diasAtraso).
+- ValorTotalDevido = valorParcelaOriginal + Multa + JurosMora.
+- Pagamento deve igualar ValorTotalDevido, ou é recusado.
 
 #### Saída
-# Pagamento em Atraso:
-
+##### Pagamento em Atraso:
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -321,8 +285,7 @@ Transfere o empréstimo para outro banco.
 }
 ```
 
-# Pagamento Recusado:
-
+##### Pagamento Recusado:
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -340,23 +303,46 @@ Transfere o empréstimo para outro banco.
 }
 ```
 
-# Refinanciamento:
+# 6. Cancelamento de Contrato
+
+## 6.1. Entrada
+
+| Campo       | Tipo   | Descrição                | Exemplo           | Obrigatório? |
+|-------------|--------|--------------------------|-------------------|--------------|
+| idCliente   | String | CPF do cliente           | "123.456.789-00"  | Sim          |
+| idEmprestimo| String | Identificador do empréstimo| "EMP-00123"       | Sim          |
+
+## 6.2. Condições
+
+- Solicitação antes da `dataInicioPagamento`.
+- Sem parcelas pagas.
+
+## 6.3. Processo
+
+1. Valida se o contrato existe e está elegível (status "ativo" e sem pagamentos).
+2. Atualiza `statusContrato` para "cancelado".
+
+## 6.4. Saída
 
 ```json
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP-00123",
-  "acao": "refinanciar",
-  "idEmprestimoNovo": "EMP-00124",
-  "saldoDevedorOriginal": 8000.00,
-  "statusContrato": "refinanciado",
-  "mensagem": "Contrato EMP-00123 refinanciado com sucesso."
+  "statusContrato": "cancelado",
+  "mensagem": "Contrato EMP-00123 cancelado com sucesso."
 }
 ```
 
-## Observações
-1. Todas as taxas respeitam o teto de 2,14% do Banco Central.
-2. O sistema ajusta automaticamente prazos para garantir idade final ≤ 80.
-3. Seguro e IOF são somados ao valor financiado, impactando a parcela.
-4. A CET reflete o custo total para transparência ao cliente.
-5. Pagamentos devem cobrir o valor total devido (parcela + multa + juros, se aplicável); pagamentos parciais não são aceitos.
+### Erros
+
+- "Erro: Contrato já iniciado (dataInicioPagamento ultrapassada)"
+- "Erro: Contrato possui parcelas pagas"
+
+### Observações
+
+- Taxas respeitam o teto de 2,14% (Banco Central).
+- Prazos ajustados para idade final ≤ 80 (INSS).
+- Seguro e IOF somados ao valor financiado.
+- CET reflete custo total (juros, IOF, seguro).
+- Pagamentos devem cobrir o valor total devido; parciais não são aceitos.
+- Carência padrão de 30 dias, ajustável até 60 dias.
