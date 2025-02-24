@@ -43,11 +43,12 @@ O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficient
 
 ## 2. Visão Geral do Funcionamento
 O sistema é estruturado em cinco áreas principais:
-- **Gerenciamento de Clientes:** Permite cadastrar e atualizar informações essenciais, como remuneração e margem consignável.
-- **Concessão de Empréstimos:** Processa novos empréstimos, refinanciamentos e portabilidades com cálculos automáticos.
-- **Consulta de Empréstimos:** Disponibiliza informações sobre elegibilidade, contratos ativos e parcelas.
-- **Atualização de Dados:** Registra pagamentos e ajustes em contratos existentes.
-- **Cancelamento de Contrato:** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
+
+1. **Gerenciamento de Clientes:** Permite cadastrar e atualizar informações essenciais, como remuneração e margem consignável.
+2. **Concessão de Empréstimos:** Processa novos empréstimos, refinanciamentos e portabilidades com cálculos automáticos.
+3. **Consulta de Empréstimos:** Disponibiliza informações sobre elegibilidade, contratos ativos e parcelas.
+4. **Atualização de Dados:** Registra pagamentos e ajustes em contratos existentes.
+5. **Cancelamento de Contrato:** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
 
 ### Regras Principais
 - **Margem Consignável:** Calculada como 35% da remuneração líquida menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
@@ -57,11 +58,14 @@ O sistema é estruturado em cinco áreas principais:
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
 
+# Emprest.AI
+
 ## 3. Gerenciamento de Clientes
 
 ### 3.1. Cadastro/Atualização de Cliente
 
-#### Requisição
+**Requisição**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -73,10 +77,12 @@ O sistema é estruturado em cinco áreas principais:
 }
 ```
 
-#### Processo
-Os dados são inseridos ou atualizados na tabela de clientes. A margem consignável é calculada como remuneracaoLiquida * 0.35 - soma das parcelas ativas e armazenada para uso em solicitações futuras, refletindo o limite disponível para novos empréstimos.
+**Processo**
 
-#### Saída
+Os dados são inseridos ou atualizados na tabela de clientes. A margem consignável (`remuneracaoLiquida * 0.35 - soma das parcelas ativas`) é recalculada automaticamente sempre que há alterações em contratos ativos (ex.: pagamento ou novo empréstimo), garantindo que o valor reflita a disponibilidade atual para novas operações.
+
+**Saída**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -89,9 +95,12 @@ Os dados são inseridos ou atualizados na tabela de clientes. A margem consigná
 }
 ```
 
+# Emprest.AI
+
 ## 4. Consulta de Elegibilidade
 
 ### 4.1. Requisição
+
 ```json
 {
   "idCliente": "123.456.789-00"
@@ -99,9 +108,11 @@ Os dados são inseridos ou atualizados na tabela de clientes. A margem consigná
 ```
 
 ### 4.2. Processo
-O sistema consulta a tabela de clientes para recuperar remuneração líquida, margem consignável, idade e tipo de vínculo. Com base na idade, calcula o prazo máximo permitido (idade final ≤ 80) e verifica se a margem disponível suporta um empréstimo.
+
+O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. O prazo máximo permitido é calculado como `(80 - idade) * 12`, arredondado para o menor múltiplo de 12, garantindo que a idade final não exceda 80 anos. Verifica se a margem consignável é suficiente para suportar um empréstimo.
 
 ### 4.3. Saída
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -133,15 +144,17 @@ O sistema consulta a tabela de clientes para recuperar remuneração líquida, m
 | novaQuantidadeParcelas| Inteiro | Novo prazo (múltiplo de 12, ≥ 24)             | 48              | Sim (ref/port)|
 | bancoDestino         | String   | Banco receptor (portabilidade)                | "BANCOXYZ"      | Sim (port)   |
 
-### 5.2. Processo de Cálculo
+## 5.2. Processo de Cálculo
 
-#### Consulta Inicial
-O sistema valida o idCliente na tabela de clientes, obtendo remuneracaoLiquida, margemConsignavel, idade (atualizada na data atual), e tipoVinculo. Para refinanciamento ou portabilidade, consulta o idEmprestimoOriginal para recuperar o saldo devedor.
+### Consulta Inicial
 
-#### Validação
-- Cliente inexistente: "Erro: Cliente não encontrado".
-- Margem insuficiente: "Erro: Margem consignável insuficiente (X.XX)".
-- Data inválida: "Erro: Data de início de pagamento inválida".
+O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
+
+### Validação
+
+- **Cliente inexistente:** "Erro: Cliente não encontrado".
+- **Margem insuficiente:** "Erro: Margem consignável insuficiente (X.XX)".
+- **Data inválida:** "Erro: Data de início de pagamento inválida".
 
 #### Taxa de Juros
 A taxa de juros mensal é calculada com base no tipo de vínculo, na idade e na opção de seguro, ajustada pelo prazo escolhido:
@@ -158,11 +171,16 @@ A taxa de juros mensal é calculada com base no tipo de vínculo, na idade e na 
 #### Custo do Seguro, IOF, Valor Total Financiado, Parcela Mensal, CET
 Mesmas fórmulas da versão anterior.
 
-### 5.3. Saídas
+### Registro
 
-#### Com quantidadeParcelas Informada
+Após validação bem-sucedida, o contrato é registrado no banco de dados com status "ativo", associado ao `idCliente`, para acompanhamento futuro.
 
-##### Requisição
+## 5.3. Saídas
+
+### Com quantidadeParcelas Informada
+
+**Requisição**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -173,7 +191,8 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-##### Saída
+**Saída**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -222,11 +241,34 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-## 6. Refinanciamento e Portabilidade
+# 6. Refinanciamento e Portabilidade
 
-### 6.1. Refinanciamento
+Essa seção descreve os processos de refinanciamento e portabilidade de empréstimos consignados, que permitem ao cliente renegociar um contrato existente ou transferi-lo para outro banco, respectivamente. Ambos os processos utilizam o saldo devedor do contrato original como base e aplicam regras específicas para elegibilidade e cálculo.
 
-#### Requisição
+## 6.1. Refinanciamento
+
+O refinanciamento é uma operação que renegocia um empréstimo consignado existente no mesmo banco, possibilitando ao cliente estender o prazo, adicionar um valor extra ou ajustar as condições de pagamento. Isso geralmente é feito para reduzir a parcela mensal ou obter recursos adicionais.
+
+### Condições
+
+- **Pagamento Mínimo**: Pelo menos 20% das parcelas do contrato original devem estar pagas, verificado pela contagem de parcelas com status "paga" no banco de dados.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve garantir que a idade do cliente ao fim do contrato não exceda 80 anos.
+- **Margem Consignável**: A nova parcela deve ser inferior ou igual à margem consignável disponível, obtida da tabela de clientes.
+
+### Processo
+
+1. **Consulta ao Contrato Original**: O sistema busca o idEmprestimoOriginal no banco de dados para obter:
+   - Saldo devedor atual (saldoDevedorOriginal), calculado como o valor total financiado menos as amortizações das parcelas pagas.
+   - Quantidade de parcelas pagas e restantes.
+2. **Cálculo do Novo Empréstimo**:
+   - O valor base é o saldoDevedorOriginal, acrescido de novoValorEmprestimo (se fornecido), mais o custo do seguro (se contratado) e o IOF.
+   - A taxa de juros é recalculada com base no tipoVinculo e idade atuais do cliente, aplicando a fórmula TaxaJurosMensal = TaxaBase + 0.0025 * ((novaQuantidadeParcelas - 24) / 12), respeitando o teto de 2,14%.
+   - A nova parcela é calculada pelo método Price: Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-novaQuantidadeParcelas)].
+3. **Validação**: Confirma que a parcela não excede a margem consignável e que o prazo é compatível com a idade limite.
+4. **Atualização**: O contrato original é marcado como "refinanciado", e um novo contrato é gerado com os dados calculados.
+
+### Requisição
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -238,7 +280,8 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-#### Saída
+### Saída
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -258,9 +301,36 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-### 6.2. Portabilidade
+### Explicação do Exemplo
 
-#### Requisição
+O saldo devedor original (R$ 8.000,00) é combinado com o novo valor (R$ 2.000,00), mais seguro e IOF, resultando em valorTotalFinanciado de R$ 11.045,60.  
+A taxa de 1,7% (0,017) reflete a base de 1,6% (aposentado, 75 anos, com seguro) + 0,5% (incremento de 0,0025 * 2 para 48 meses).
+
+## 6.2. Portabilidade
+
+A portabilidade permite transferir um empréstimo consignado para outro banco, geralmente para aproveitar taxas de juros menores ou melhores condições. O saldo devedor é quitado pelo banco de destino, que assume o contrato com um novo prazo e taxa.
+
+### Condições
+
+- **Parcelas em Dia**: Todas as parcelas do contrato original devem estar pagas até a data atual (nenhuma com status "vencida").
+- **Aceitação do Banco Destino**: O banco receptor (bancoDestino) deve aceitar a portabilidade, o que pode ser validado por integração externa ou configuração manual.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve respeitar o limite de idade de 80 anos no fim do contrato.
+- **Margem Consignável**: A nova parcela deve caber na margem disponível.
+
+### Processo
+
+1. **Consulta ao Contrato Original**: O sistema busca o idEmprestimoOriginal para obter:
+   - Saldo devedor atual (saldoDevedorOriginal), calculado como o valor total financiado menos as amortizações pagas.
+   - Status de pagamento (confirma que está em dia).
+2. **Cálculo no Banco de Destino**:
+   - O valor base é o saldoDevedorOriginal, acrescido do custo do seguro (se contratado) e do IOF.
+   - A taxa de juros pode ser informada pelo banco de destino ou calculada com base nas regras do sistema (TaxaBase + 0.0025 * ((novaQuantidadeParcelas - 24) / 12)), limitada a 2,14%.
+   - A nova parcela é calculada pelo método Price, semelhante ao refinanciamento.
+3. **Validação**: Verifica a margem consignável e o limite de idade.
+4. **Transferência**: O contrato original é marcado como "portado", e o novo banco registra o contrato com os dados calculados.
+
+### Requisição
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -272,7 +342,8 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-#### Saída
+### Saída
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -293,42 +364,22 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
+### Explicação do Exemplo
+
+O saldo devedor original (R$ 8.000,00) é ajustado com IOF, resultando em valorTotalFinanciado de R$ 8.120,00 (sem seguro).  
+A taxa de 1,55% (0,0155) é assumida como fornecida pelo banco destino, inferior à base padrão, justificando a portabilidade.
+
+# Emprest.AI
+
 ## 7. Consulta e Atualização de Parcelas
 
 ### 7.1. Consulta
-
-#### Requisição
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP-00123"
-}
-```
-
-#### Saída
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP-00123",
-  "valorEmprestimo": 10000.00,
-  "quantidadeParcelas": 48,
-  "dataInicioPagamento": "01/04/2025",
-  "statusContrato": "ativo",
-  "saldoDevedor": 9650.87,
-  "totalPago": 350.13,
-  "totalDevido": 16456.11,
-  "margemUtilizada": 350.13,
-  "margemRestante": 599.87,
-  "parcelas": [
-    {"numeroParcela": 1, "dataVencimento": "01/05/2025", "dataPagamento": "30/04/2025", "valorParcelaOriginal": 350.13, "multaAtraso": 0.00, "jurosMora": 0.00, "valorPago": 350.13, "status": "paga"},
-    {"numeroParcela": 2, "dataVencimento": "01/06/2025", "dataPagamento": null, "valorParcelaOriginal": 350.13, "multaAtraso": 0.00, "jurosMora": 0.00, "valorPago": 0.00, "status": "a vencer"}
-  ]
-}
-```
+(Requisição e saída mantidas como na versão anterior)
 
 ### 7.2. Atualização
 
-#### Requisição
+**Requisição**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -339,7 +390,20 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-#### Saída (Pagamento Parcial)
+**Processo**
+
+- **Validação:** Confirma a existência de `idCliente`, `idEmprestimo` e `numeroParcela`. Verifica se a parcela não está paga, a menos que seja refinanciamento/portabilidade.
+- **Cálculo de Atraso:** Se `dataPagamento` > `dataVencimento`:
+  - **Multa:** `valorParcelaOriginal * 0.02`.
+  - **Juros de mora:** `valorParcelaOriginal * 0.000333 * diasAtraso`.
+  - **Valor total devido:** `valorParcelaOriginal + Multa + JurosMora`.
+- **Atualização:**
+  - **Pagamento total:** Atualiza `dataPagamento`, `valorPago`, `multaAtraso`, `jurosMora` e status para "paga".
+  - **Pagamento parcial (se configurado):** Registra o `valorPago`, calcula o `saldoDevedorParcela` (total devido - valor pago) e ajusta o saldoDevedor total do contrato proporcionalmente, mantendo status "parcialmente paga".
+  - **Impacto no Contrato:** O saldoDevedor do contrato é reduzido pelo valor amortizado (parcela - juros), refletido na próxima consulta.
+
+**Saída (Pagamento Parcial)**
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -360,7 +424,19 @@ Mesmas fórmulas da versão anterior.
 
 ## 8. Cancelamento de Contrato
 
-### 8.1. Requisição
+### 8.1. Condições
+
+- **Antes do Início:** Solicitação deve ocorrer antes da `dataInicioPagamento`, sem parcelas pagas.
+- **Reembolso:** Se o valor foi liberado antecipadamente, exige devolução com juros proporcionais ao período entre liberação e cancelamento.
+
+### 8.2. Processo
+
+- **Validação:** Confirma que o contrato existe, está ativo e não tem parcelas pagas.
+- **Cálculo de Reembolso (se aplicável):** `ValorReembolso = ValorEmprestimo * (1 + TaxaJurosMensal / 30) ^ DiasDesdeLiberacao`.
+- **Atualização:** Altera o `statusContrato` para "cancelado" no banco de dados.
+
+### 8.3. Requisição
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -368,7 +444,8 @@ Mesmas fórmulas da versão anterior.
 }
 ```
 
-### 8.2. Saída (Com Reembolso)
+### 8.4. Saída (Com Reembolso)
+
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -383,6 +460,7 @@ Mesmas fórmulas da versão anterior.
 - A margem consignável é mantida atualizada na tabela de clientes, refletindo o impacto de contratos ativos.
 - O incremento de 0,0025 na taxa de juros por cada 12 meses adicionais acima de 24 reflete o risco associado a prazos mais longos, sempre limitado a 2,14%.
 - Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
+
 # Tabelas Sugeridas e Campos  (Sem análise ainda de DER)
 
 ## 1. Tabela: Clientes
