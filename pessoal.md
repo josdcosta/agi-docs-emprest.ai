@@ -436,7 +436,7 @@ graph TD
     B2 -->|Não| B4[Inserir Cliente]
     B3 --> B5[Calcular Limite de Crédito]
     B4 --> B5
-    B5 -->|30% da renda líquida, ajustado por score e idade| B6[Saída: Cliente cadastrado/atualizado]
+    B5 --> B6[Saída: Cliente cadastrado/atualizado]
 
     %% 4. Concessão de Empréstimos
     B6 --> C1[4.1 Entrada de Dados]
@@ -444,7 +444,7 @@ graph TD
     C2 --> C3{Cliente existe e limite OK?}
     C3 -->|Sim| C4[Calcular Taxa de Juros]
     C3 -->|Não| C5[Erro: Cliente inválido ou limite excedido]
-    C4 -->|Baseada em score, idade e prazo| C6[Calcular Encargos: TAC, IOF, Seguro]
+    C4 --> C6[Calcular Encargos: TAC, IOF, Seguro]
     C6 --> C7[Calcular Parcela Mensal - Price]
     C7 --> C8{Parcela ≤ 30% da renda?}
     C8 -->|Sim| C9[Registrar Contrato]
@@ -460,7 +460,7 @@ graph TD
     C11 --> E1[5.2 Atualização]
     E1 --> E2[Validar Parcela]
     E2 --> E3{Parcela em atraso?}
-    E3 -->|Sim| E4[Calcular Multa/Juros]
+    E3 -->|Sim| E4[Calcular Multa e Juros]
     E3 -->|Não| E5[Atualizar como Paga]
     E4 --> E6[Registrar Pagamento]
     E5 --> E6
@@ -474,7 +474,7 @@ graph TD
     C11 --> F1[6.1 Antecipação de Parcelas]
     F1 --> F2[Validar Parcelas]
     F2 --> F3[Calcular Valor Presente]
-    F3 -->|ValorParcelaOriginal / (1 + Taxa)^MesesAntecipados| F4[Atualizar Saldo Devedor]
+    F3 --> F4[Atualizar Saldo Devedor]
     F4 --> F5[Saída: Parcelas antecipadas]
 
     %% Fim
