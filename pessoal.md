@@ -422,3 +422,62 @@ Exemplo: Antecipar duas parcelas (2 e 3) de R$ 525,50 cada, com taxa 1,8%:
 - Prazos máximos variam por idade: 60 meses (18-65 anos), 48 meses (66-70 anos), 36 meses (71-75 anos).
 - Pagamentos parciais e antecipações são flexíveis, permitindo ajustes no saldo devedor.
 - Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
+
+graph TD
+    %% Início
+    A[Requisição do Usuário] --> B1[3.1 Cadastro/Atualização de Cliente]
+
+    %% 3. Gerenciamento de Clientes
+    B1 --> B2{Cliente já existe?}
+    B2 -->|Sim| B3[Atualizar Cliente]
+    B2 -->|Não| B4[Inserir Cliente]
+    B3 --> B5[Calcular Limite de Crédito]
+    B4 --> B5
+    B5 -->|30% da renda líquida, ajustado por score e idade| B6[Saída: Cliente cadastrado/atualizado]
+
+    %% 4. Concessão de Empréstimos
+    B6 --> C1[4.1 Entrada de Dados]
+    C1 --> C2[4.2 Processo de Cálculo]
+    C2 --> C3{Cliente existe e limite OK?}
+    C3 -->|Sim| C4[Calcular Taxa de Juros]
+    C3 -->|Não| C5[Erro: Cliente inválido ou limite excedido]
+    C4 -->|Baseada em score, idade e prazo| C6[Calcular Encargos: TAC, IOF, Seguro]
+    C6 --> C7[Calcular Parcela Mensal - Price]
+    C7 --> C8{Parcela ≤ 30% da renda?}
+    C8 -->|Sim| C9[Registrar Contrato]
+    C8 -->|Não| C10[Erro: Parcela excede limite]
+    C9 --> C11[Saída: Contrato gerado]
+
+    %% 5. Consulta e Atualização de Parcelas
+    C11 --> D1[5.1 Consulta]
+    D1 --> D2[Consultar Tabela Parcelas]
+    D2 --> D3[Calcular Atrasos, Multa e Juros]
+    D3 --> D4[Saída: Dados das parcelas]
+
+    C11 --> E1[5.2 Atualização]
+    E1 --> E2[Validar Parcela]
+    E2 --> E3{Parcela em atraso?}
+    E3 -->|Sim| E4[Calcular Multa/Juros]
+    E3 -->|Não| E5[Atualizar como Paga]
+    E4 --> E6[Registrar Pagamento]
+    E5 --> E6
+    E6 --> E7{Pagamento parcial?}
+    E7 -->|Sim| E8[Atualizar Saldo Devedor Parcial]
+    E7 -->|Não| E9[Marcar como Paga]
+    E8 --> E10[Saída: Parcela parcialmente paga]
+    E9 --> E11[Saída: Parcela atualizada]
+
+    %% 6. Antecipação de Parcelas
+    C11 --> F1[6.1 Antecipação de Parcelas]
+    F1 --> F2[Validar Parcelas]
+    F2 --> F3[Calcular Valor Presente]
+    F3 -->|ValorParcelaOriginal / (1 + Taxa)^MesesAntecipados| F4[Atualizar Saldo Devedor]
+    F4 --> F5[Saída: Parcelas antecipadas]
+
+    %% Fim
+    B6 --> G[Processo Concluído]
+    C11 --> G
+    D4 --> G
+    E10 --> G
+    E11 --> G
+    F5 --> G
