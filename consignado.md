@@ -2,7 +2,6 @@
 
 ## Índice
 - [Autores](#autores)
-- [Cálculos](#calculos)
 - [Referências](#referencias)
 - [Objetivo](#1-objetivo)
 - [Visão Geral do Funcionamento](#2-visao-geral-do-funcionamento)
@@ -33,11 +32,9 @@
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
 - [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira)
 
-## Cálculos
-- [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 
 ## Referências
-- Planilha de Cálculo
+- [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
