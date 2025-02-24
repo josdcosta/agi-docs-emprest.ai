@@ -220,7 +220,6 @@ Transfere o empréstimo para outro banco.
 | idCliente   | String | CPF do cliente           | "123.456.789-00" | Sim          |
 | idEmprestimo| String | Identificador do empréstimo | "EMP-00123" | Não          |
 
-Nota: O campo dataConsulta foi removido, pois o sistema pode usar a data atual (ex.: 24/02/2025) por padrão.
 
 #### Processo
 Busca no banco de dados: dados gerais e tabela de parcelas (numeroParcela, dataVencimento, dataPagamento, valorParcelaOriginal, multaAtraso, jurosMora, valorPago, status).
@@ -257,8 +256,6 @@ Para parcelas vencidas:
 | numeroParcela | Inteiro| Parcela a atualizar      | 3                | Sim          |
 | dataPagamento | Data   | Data do pagamento        | "15/07/2025"     | Sim          |
 | valorPago     | Decimal| Valor pago               | 358.76           | Sim          |
-
-Nota: Os campos acao, idEmprestimoNovo e bancoDestino foram movidos para as seções específicas de refinanciamento e portabilidade, pois não são essenciais na atualização de parcelas.
 
 #### Processo
 - Multa: 2% (valorParcelaOriginal * 0.02).
