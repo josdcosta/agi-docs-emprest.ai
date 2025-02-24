@@ -58,8 +58,6 @@ O sistema é estruturado em cinco áreas principais:
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
 
-# Emprest.AI
-
 ## 3. Gerenciamento de Clientes
 
 ### 3.1. Cadastro/Atualização de Cliente
