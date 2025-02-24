@@ -7,7 +7,6 @@
 - [Objetivo](#1-objetivo)
 - [Visão Geral do Funcionamento](#2-visao-geral-do-funcionamento)
 - [Gerenciamento de Clientes](#3-gerenciamento-de-clientes)
-  - [Cadastro/Atualização de Cliente](#31-cadastroupdate-de-cliente)
 - [Consulta de Elegibilidade](#4-consulta-de-elegibilidade)
 - [Concessão de Empréstimos](#5-concessao-de-emprestimos)
 - [Refinanciamento e Portabilidade](#6-refinanciamento-e-portabilidade)
