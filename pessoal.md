@@ -112,7 +112,6 @@ Determinada por risco, score, idade e prazo:
 - **TAC:** 2% do valorEmprestimo.
 - **IOF:** (0,0038 * ValorEmprestimo) + (0,000082 * ValorEmprestimo * min(PrazoEmDias, 365)).
 - **Seguro (opcional):** 0,001 * idade * ValorEmprestimo.
-- **Taxa de Cadastro:** R$ 50 (fixa, novos clientes).
 
 #### Valor Total Financiado
 - **ValorInicial = ValorEmprestimo + TAC + IOF + CustoSeguro**
