@@ -1,5 +1,32 @@
 # Documentações Emprest.AI 📄
 
+## Índice
+- [Autores](#autores)
+- [Cálculos](#calculos)
+- [Referências](#referencias)
+- [Objetivo](#1-objetivo)
+- [Visão Geral do Funcionamento](#2-visao-geral-do-funcionamento)
+- [Gerenciamento de Clientes](#3-gerenciamento-de-clientes)
+  - [Cadastro/Atualização de Cliente](#31-cadastroupdate-cliente)
+- [Consulta de Elegibilidade](#4-consulta-de-elegibilidade)
+- [Concessão de Empréstimos](#5-concessao-de-emprestimos)
+  - [Entrada de Dados](#51-entrada-de-dados)
+  - [Processo de Cálculo](#52-processo-de-calculo)
+- [Refinanciamento e Portabilidade](#6-refinanciamento-e-portabilidade)
+  - [Refinanciamento](#61-refinanciamento)
+  - [Portabilidade](#62-portabilidade)
+- [Consulta e Atualização de Parcelas](#7-consulta-e-atualizacao-de-parcelas)
+  - [Consulta](#71-consulta)
+  - [Atualização](#72-atualizacao)
+- [Cancelamento de Contrato](#8-cancelamento-de-contrato)
+  - [Com Reembolso](#81-com-reembolso)
+- [Tabelas Sugeridas e Campos](#tabelas-sugeridas-e-campos)
+  - [Tabela: Clientes](#1-tabela-clientes)
+  - [Tabela: Empréstimos](#2-tabela-emprestimos)
+  - [Tabela: Parcelas](#3-tabela-parcelas)
+  - [Tabela: TaxasBase (Opcional)](#4-tabela-taxasbase-opcional)
+  - [Tabela: Logs (Opcional)](#5-tabela-logs-opcional)
+
 ## Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
