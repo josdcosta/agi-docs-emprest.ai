@@ -44,7 +44,7 @@ Parâmetros recebidos:
 
 Exemplo (empréstimo com parcelas em dia e atrasadas):
 
-````json
+```json
 {
     "idCliente": "987.654.321-09",
     "idEmprestimo": "EMP-00456",
@@ -93,9 +93,11 @@ Exemplo (empréstimo com parcelas em dia e atrasadas):
         "valorParcelaOriginal": 525.50
     }
 }
+```
 
 Exemplo: Parcela vencida
 
+```json
 {
     "idCliente": "987.654.321-09",
     "idEmprestimo": "EMP-00456",
@@ -130,7 +132,9 @@ Exemplo: Parcela vencida
     "status": "paga",
     "mensagem": "Parcela 3 atualizada com sucesso. Pagamento registrado com multa e juros por 5 dias de atraso."
 }
+```
 
+```json
 Exemplo:Pagamento parcial
 {
     "idCliente": "987.654.321-09",
@@ -147,6 +151,7 @@ Exemplo:Pagamento parcial
     "status": "vencida",
     "mensagem": "Pagamento parcial registrado. Resta 136.89 para quitar a parcela 3."
 }
+```
 ## 3. Estrutura dos Cálculos
 
 ### 3.1. Fórmulas
