@@ -1,6 +1,5 @@
-# Documentações Emprest.AI
+# Documentações Emprest.AI 📄
 
-> **📄 Documentação 1**
 ## Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
