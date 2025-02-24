@@ -1,5 +1,24 @@
 # Documentação do Emprest.AI - Backend de Empréstimo Pessoal
 
+## Índice
+1. [Autores](#autores)
+2. [Referências](#referencias)
+3. [Objetivo](#1-objetivo)
+4. [Visão Geral do Funcionamento](#2-visao-geral-do-funcionamento)
+    1. [Regras Principais](#regras-principais)
+5. [Gerenciamento de Clientes](#3-gerenciamento-de-clientes)
+    1. [Cadastro/Atualização de Cliente](#31-cadastroatualizacao-de-cliente)
+6. [Concessão de Empréstimos](#4-concessao-de-emprestimos)
+    1. [Entrada de Dados](#41-entrada-de-dados)
+    2. [Processo de Cálculo](#42-processo-de-calculo)
+    3. [Saídas](#43-saidas)
+7. [Consulta e Atualização de Parcelas](#5-consulta-e-atualizacao-de-parcelas)
+    1. [Consulta](#51-consulta)
+    2. [Atualização](#52-atualizacao)
+8. [Antecipação de Parcelas](#6-antecipacao-de-parcelas)
+    1. [Entrada](#61-entrada)
+9. [Observações](#7-observacoes)
+
 ## Autores
 - @Dalleth Martins
 - @Josué Davi da Costa
