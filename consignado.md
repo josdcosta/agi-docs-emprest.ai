@@ -597,7 +597,7 @@ Para auditoria de operações, como sugerido nas observações.
 | dataOperacao         | DATETIME     | Data e hora da operação                          | "2025-02-24 10:00"| -          |
 | detalhes             | TEXT         | Informações adicionais                           | "Empréstimo concedido" | -          |
 
-## 6. Tabela: ConfiguracoesLocais
+## 6. Tabela: ConfiguracoesLocais (Opcional)
 Armazena as configurações específicas da instalação atual do sistema, permitindo que regras como idade máxima, taxa de juros inicial e prazos sejam definidas localmente para o banco em que o sistema está instalado.
 
 | Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
