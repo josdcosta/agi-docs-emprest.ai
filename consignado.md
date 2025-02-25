@@ -26,70 +26,63 @@
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
-O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados. Isso inclui o cadastro de clientes, a análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações. O sistema respeita as normas brasileiras, como a margem consignável configurável (definida em `ConfiguracoesLocais` como `margemConsignavelPercentual`, padrão de 35% conforme Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS).
+O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados e pessoal. A análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações (consignado). O sistema respeita as normas brasileiras, como a margem consignável configurável padrão de 35% conforme Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final.
 
 ## 2. Visão Geral do Funcionamento
 O sistema é estruturado em cinco áreas principais:
 
-1. **Gerenciamento de Clientes:** Permite cadastrar e atualizar informações essenciais, como remuneração e margem consignável.
 2. **Concessão de Empréstimos:** Processa novos empréstimos, refinanciamentos e portabilidades com cálculos automáticos.
 3. **Consulta de Empréstimos:** Disponibiliza informações sobre elegibilidade, contratos ativos e parcelas.
 4. **Atualização de Dados:** Registra pagamentos e ajustes em contratos existentes.
-5. **Cancelamento de Contrato:** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
+5. **Cancelamento de Contrato (Consignado):** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
 
 ### Regras Principais
-- **Margem Consignável:** Calculada como `remuneracaoLiquida * margemConsignavelPercentual` (obtido de `ConfiguracoesLocais`, padrão 35%) menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
+**Consignado:**
+- **Margem:** Calculada como `remuneracaoLiquida * margemConsignavelPercentual` (35%) menos o valor das parcelas de outros empréstimos ativos.
 - **Taxas de Juros:** Iniciam em 1,80% ao mês para o prazo mínimo de 24 meses, aumentando gradualmente com um incremento fixo por mês adicional, até atingir o limite de 2,14% ao mês em 92 meses.
+**Pessoal:**
+- **Margem:** Calculada como `remuneracaoLiquida * ` (30%), ajustado com base no score e idade.
+- **Taxas de Juros:** Iniciam em 1,00% a 4% ao mês variando conforme o score.
+**Comuns**:
 - **Seguro:** Opcional, com custo baseado na idade e no valor do empréstimo.
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
-- **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
+- **Carência:** Período entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
 
-## 3. Gerenciamento de Clientes
-
-### 3.1. Cadastro/Atualização de Cliente
-
-**Requisição**
+## 3. Dados do Clientes
 
 ```json
 {
   "idCliente": "123.456.789-00",
   "nome": "João Silva",
-  "remuneracaoLiquida": 5000.00,
+  "remuneracaoLiquidaMensal": 5000.00,
   "idade": 75,
   "tipoVinculo": "aposentado",
-  "margemConsignavel": 950.00
+  "score": "599"
 }
 ```
 
-**Processo**
 
-Os dados são inseridos ou atualizados na tabela de clientes. A margem consignável (`remuneracaoLiquida * 0.35 - soma das parcelas ativas`) é recalculada automaticamente sempre que há alterações em contratos ativos (ex.: pagamento ou novo empréstimo), garantindo que o valor reflita a disponibilidade atual para novas operações.
+## 3. Consulta de Elegibilidade
 
-**Saída**
-
+### 3.1. Requisição
+**Consignado**:
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "nome": "João Silva",
-  "remuneracaoLiquida": 5000.00,
-  "idade": 75,
-  "tipoVinculo": "aposentado",
-  "margemConsignavel": 950.00,
-  "mensagem": "Cliente cadastrado/atualizado com sucesso."
+  "idCliente": "123.456.789-00"
 }
 ```
+Consulta somente o cliente para retornar dados de remuneração e tipo de vinculo.
 
-# Emprest.AI
-
-## 4. Consulta de Elegibilidade
-
-### 4.1. Requisição
+**Pessoal**:
 
 ```json
 {
   "idCliente": "123.456.789-00"
 }
 ```
+Resposta:
+
+Consulta somente o cliente para retornar dados de remuneração.
 
 ### 4.2. Processo
 O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. Em seguida, consulta a tabela **ConfiguracoesLocais** para obter `idadeMaxima`, `prazoMaximo` e `margemConsignavelPercentual`. O prazo máximo permitido é calculado como `((idadeMaxima - idade) * 12)`, limitado ao `prazoMaximo` da configuração local (ex.: 92 meses). Se o cálculo resultar em valor superior ao `prazoMaximo`, usa-se o `prazoMaximo`; se inferior, usa-se o valor calculado. Calcula a margem máxima como `remuneracaoLiquida * margemConsignavelPercentual` e verifica se a margem consignável atual é suficiente para suportar um empréstimo.
