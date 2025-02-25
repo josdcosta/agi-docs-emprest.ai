@@ -259,7 +259,7 @@ Taxas baseiam-se em `porteEmpresa` e `quantidadeParcelas`, com incremento de `0,
   - `Primeira parcela: 2.253,93 + (54.094,41 * 0.017) = 3.173,53`
 - **Saída**: Veja JSON em 2.6 (com seguro).
 ## 4. Observações
-  - Sem quantidadeParcelas, retorna opções viáveis até o prazo máximo por porte.
-  - Seguro é fixo (5% do valor) e incluído no ValorTotalFinanciado.
+  - Sem `quantidadeParcelas`, retorna opções viáveis até o prazo máximo por porte.
+  - Seguro é fixo (5% do valor) e incluído no `ValorTotalFinanciado`.
   - O SAC resulta em parcelas decrescentes, com a primeira sendo a mais alta, usada para validar a capacidade.
   - A taxa efetiva mensal (CET) reflete o custo total (juros, IOF, seguro).
