@@ -92,7 +92,7 @@ Os dados são inseridos ou atualizados na tabela de clientes. A margem consigná
 ```
 
 ### 4.2. Processo
-O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. O prazo máximo permitido é calculado como `(80 - idade) * 12`, limitado a 92 meses, garantindo que a idade final não exceda 80 anos. Se o cálculo resultar em mais de 92 meses, o máximo será 92; se menos, será o valor calculado. Verifica se a margem consignável é suficiente para suportar um empréstimo.
+O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. Em seguida, consulta a tabela **ConfiguracoesLocais** para obter a `idadeMaxima` e o `prazoMaximo`. O prazo máximo permitido é calculado como `((idadeMaxima - idade) * 12)`, limitado ao `prazoMaximo` da configuração local (ex.: 92 meses). Se o cálculo resultar em valor superior ao `prazoMaximo`, usa-se o `prazoMaximo`; se inferior, usa-se o valor calculado. Verifica se a margem consignável é suficiente para suportar um empréstimo.
 
 ### 4.3. Saída
 
@@ -127,25 +127,31 @@ O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `ma
 | novaQuantidadeParcelas| Inteiro | Novo prazo (múltiplo de 12, ≥ 24)             | 48              | Sim (ref/port)|
 | bancoDestino         | String   | Banco receptor (portabilidade)                | "BANCOXYZ"      | Sim (port)   |
 
-## 5.2. Processo de Cálculo
+### 5.2. Processo de Cálculo
 
-### Consulta Inicial
+#### Consulta Inicial
+O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Consulta a tabela **ConfiguracoesLocais** para recuperar `taxaInicial`, `incrementoMensal`, `tetoJuros`, `prazoMinimo`, `prazoMaximo`, `idadeMaxima` e `carenciaMaxima`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
 
-O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
-
-### Validação
-
+#### Validação
 - **Cliente inexistente:** "Erro: Cliente não encontrado".
 - **Margem insuficiente:** "Erro: Margem consignável insuficiente (X.XX)".
-- **Data inválida:** "Erro: Data de início de pagamento inválida".
+- **Data inválida:** "Erro: Data de início de pagamento inválida ou excede carenciaMaxima".
+- **Prazo inválido:** "Erro: Quantidade de parcelas fora do intervalo (prazoMinimo a prazoMaximo) ou idade final excede idadeMaxima".
 
 #### Taxa de Juros
-A taxa de juros mensal inicia em 1,80% para 24 meses e aumenta gradualmente com base no prazo escolhido, até o limite de 2,14% em 92 meses:
+A taxa de juros mensal é calculada com base nos valores locais:
+- **Fórmula:** TaxaJurosMensal = taxaInicial + incrementoMensal * (QuantidadeParcelas - prazoMinimo)
+- **Taxa Inicial:** Obtida de `taxaInicial` na tabela **ConfiguracoesLocais**.
+- **Incremento:** Usa `incrementoMensal` para cada mês acima do `prazoMinimo`.
+- **Teto:** Limitada ao valor de `tetoJuros`.
+- **Exemplo:** Para uma configuração com taxaInicial = 0.018, incrementoMensal = 0.00005, prazoMinimo = 24, e quantidadeParcelas = 48, a taxa será 0.0192 (0.018 + 0.00005 * (48 - 24)), limitada ao tetoJuros.
 
-- **Fórmula:** TaxaJurosMensal = 0,018 + 0,00005 * (QuantidadeParcelas - 24)
-- **Taxa Inicial:** Fixa em 1,80% (0,018) para o prazo mínimo de 24 meses.
-- **Incremento:** Para cada mês acima de 24, a taxa aumenta em 0,00005 (0,005%), alcançando 2,14% (0,0214) em 92 meses. Exemplo: 92 meses adiciona 0,0034 (0,34%) à taxa inicial.
-- **Teto:** Limitada a 2,14% (0,0214).
+#### Validação Final
+- Parcela ≤ margemConsignavel.
+- Idade final (idade + prazo em anos) ≤ idadeMaxima (obtida de ConfiguracoesLocais).
+- quantidadeParcelas entre prazoMinimo e prazoMaximo.
+- Dias de carência ≤ carenciaMaxima.
+- TaxaJurosMensal ≤ tetoJuros.
 
 #### Taxas Base por Vínculo e Idade
 - A taxa inicial é fixa em 1,80% (0,018) para todos os vínculos e idades em 24 meses, independentemente da opção de seguro, ajustada apenas pelo prazo conforme a fórmula TaxaJurosMensal = 0,018 + 0,00005 * (QuantidadeParcelas - 24).
@@ -282,7 +288,7 @@ O refinanciamento é uma operação que renegocia um empréstimo consignado exis
 
 ### Condições
 - **Pagamento Mínimo**: Pelo menos 20% das parcelas do contrato original devem estar pagas, verificado pela contagem de parcelas com status "paga" no banco de dados.
-- **Idade Final**: O novo prazo (novaQuantidadeParcelas), de até 92 meses, deve garantir que a idade do cliente ao fim do contrato não exceda 80 anos.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve garantir que a idade do cliente ao fim do contrato não exceda o valor de `idadeMaxima` obtido da tabela **ConfiguracoesLocais**, respeitando o limite de `prazoMaximo`.
 - **Margem Consignável**: A nova parcela deve ser inferior ou igual à margem consignável disponível, obtida da tabela de clientes.
 
 ### Processo
@@ -343,7 +349,7 @@ A portabilidade permite transferir um empréstimo consignado para outro banco, g
 ### Condições
 - **Parcelas em Dia**: Todas as parcelas do contrato original devem estar pagas até a data atual (nenhuma com status "vencida").
 - **Aceitação do Banco Destino**: O banco receptor (bancoDestino) deve aceitar a portabilidade, o que pode ser validado por integração externa ou configuração manual.
-- **Idade Final**: O novo prazo (novaQuantidadeParcelas), de até 92 meses, deve respeitar o limite de idade de 80 anos no fim do contrato.
+- **Idade Final**: O novo prazo (novaQuantidadeParcelas) deve respeitar o limite de `idadeMaxima` da instalação atual, obtido da tabela **ConfiguracoesLocais**, e estar dentro do `prazoMaximo`. (Nota: As regras do banco de destino não são aplicadas localmente, mas podem ser informadas externamente.)
 - **Margem Consignável**: A nova parcela deve caber na margem disponível.
 
 ### Processo
@@ -591,91 +597,26 @@ Para auditoria de operações, como sugerido nas observações.
 | dataOperacao         | DATETIME     | Data e hora da operação                          | "2025-02-24 10:00"| -          |
 | detalhes             | TEXT         | Informações adicionais                           | "Empréstimo concedido" | -          |
 
+## 6. Tabela: ConfiguracoesLocais
+Armazena as configurações específicas da instalação atual do sistema, permitindo que regras como idade máxima, taxa de juros inicial e prazos sejam definidas localmente para o banco em que o sistema está instalado.
+
+| Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
+|----------------------|--------------|--------------------------------------------------|------------------|------------|
+| idConfig             | INT          | Identificador único (esperado apenas 1 registro) | 1                | Primária   |
+| idadeMaxima          | INT          | Idade máxima permitida ao fim do contrato        | 80               | -          |
+| taxaInicial          | DECIMAL(6,5) | Taxa de juros inicial fixa                       | 0.018            | -          |
+| incrementoMensal     | DECIMAL(6,5) | Incremento na taxa por mês acima do prazo mínimo | 0.00005          | -          |
+| tetoJuros            | DECIMAL(6,5) | Limite máximo de juros mensal                    | 0.0214           | -          |
+| prazoMinimo          | INT          | Prazo mínimo em meses                            | 24               | -          |
+| prazoMaximo          | INT          | Prazo máximo em meses                            | 92               | -          |
+| carenciaMaxima       | INT          | Período máximo de carência em dias               | 60               | -          |
+
+### Notas:
+- Como cada instalação é independente, espera-se que esta tabela tenha apenas um registro (idConfig = 1), configurado durante a implantação do sistema no banco específico.
+- Os campos como **idadeMaxima**, **taxaInicial**, **incrementoMensal**, **tetoJuros**, **prazoMinimo**, **prazoMaximo** e **carenciaMaxima** substituem os valores fixos anteriormente definidos na lógica, permitindo personalização por instalação.
+- Caso os valores não sejam preenchidos, o sistema pode usar padrões (ex.: idadeMaxima = 80, taxaInicial = 0.018).
 
 # Fluxograma Completo
-```mermaid
-graph TD
-    %% Início
-    A[Requisição do Usuário] --> B1[3.1 Cadastro/Atualização de Cliente]
-
-    %% 3. Gerenciamento de Clientes
-    B1 --> B2{Cliente já existe?}
-    B2 -->|Sim| B3[Atualizar Cliente]
-    B2 -->|Não| B4[Inserir Cliente]
-    B3 --> B5[Recalcular Margem Consignável]
-    B4 --> B5
-    B5 --> B6[Saída: Cliente cadastrado/atualizado]
-
-    %% 4. Consulta de Elegibilidade
-    B6 --> C1[4.1 Consulta de Elegibilidade]
-    C1 --> C2[Consultar Tabela Clientes]
-    C2 --> C3[Calcular Prazo Máximo]
-    C3 --> C4{Margem suficiente?}
-    C4 -->|Sim| C5[Saída: Elegível]
-    C4 -->|Não| C6[Erro: Margem insuficiente]
-
-    %% 5. Concessão de Empréstimos
-    C5 --> D1[5.1 Entrada de Dados]
-    D1 --> D2[5.2 Processo de Cálculo]
-    D2 --> D3{Cliente existe e margem OK?}
-    D3 -->|Sim| D4[Calcular Taxa de Juros]
-    D3 -->|Não| D5[Erro: Cliente inválido ou margem insuficiente]
-    D4 --> D6[Calcular Seguro, IOF, Parcela]
-    D6 --> D7[Registrar Contrato]
-    D7 --> D8[Saída: Contrato gerado]
-
-    %% 6. Refinanciamento e Portabilidade
-    D8 --> E1[6.1 Refinanciamento]
-    E1 --> E2[Consultar Contrato Original]
-    E2 --> E3{20% pago e idade OK?}
-    E3 -->|Sim| E4[Calcular Novo Empréstimo]
-    E3 -->|Não| E5[Erro: Condições não atendidas]
-    E4 --> E6[Atualizar Contrato como 'refinanciado']
-    E6 --> E7[Registrar Novo Contrato]
-    E7 --> E8[Saída: Refinanciamento concluído]
-
-    D8 --> F1[6.2 Portabilidade]
-    F1 --> F2[Consultar Contrato Original]
-    F2 --> F3{Parcelas em dia e idade OK?}
-    F3 -->|Sim| F4[Calcular no Banco Destino]
-    F3 -->|Não| F5[Erro: Parcelas vencidas]
-    F4 --> F6[Marcar Contrato como 'portado']
-    F6 --> F7[Registrar no Banco Destino]
-    F7 --> F8[Saída: Portabilidade concluída]
-
-    %% 7. Consulta e Atualização de Parcelas
-    D8 --> G1[7.1 Consulta]
-    G1 --> G2[Consultar Tabela Parcelas]
-    G2 --> G3[Saída: Dados das parcelas]
-
-    D8 --> H1[7.2 Atualização]
-    H1 --> H2[Validar Parcela]
-    H2 --> H3{Parcela em atraso?}
-    H3 -->|Sim| H4[Calcular Multa/Juros]
-    H3 -->|Não| H5[Atualizar como Paga]
-    H4 --> H6[Registrar Pagamento]
-    H5 --> H6
-    H6 --> H7[Saída: Parcela atualizada]
-
-    %% 8. Cancelamento de Contrato
-    D8 --> I1[8.1 Cancelamento]
-    I1 --> I2[Validar Contrato]
-    I2 --> I3{Antes da dataInicioPagamento?}
-    I3 -->|Sim| I4[Calcular Reembolso]
-    I3 -->|Não| I5[Erro: Cancelamento não permitido]
-    I4 --> I6[Atualizar Status como 'cancelado']
-    I6 --> I7[Saída: Contrato cancelado]
-
-    %% Fim
-    B6 --> J[Processo Concluído]
-    C5 --> J
-    D8 --> J
-    E8 --> J
-    F8 --> J
-    G3 --> J
-    H7 --> J
-    I7 --> J
-```
 ```mermaid
 erDiagram
     CLIENTES ||--o{ EMPRESTIMOS : "possui"
@@ -683,7 +624,7 @@ erDiagram
     EMPRESTIMOS ||--o| EMPRESTIMOS : "refinancia/porta"
     CLIENTES ||--o{ LOGS : "registra"
     EMPRESTIMOS ||--o{ LOGS : "registra"
-    CLIENTES }o--o| TAXASBASE : "usa"
+    CONFIGURACOESLOCAIS ||--o{ EMPRESTIMOS : "configura"
 
     CLIENTES {
         string idCliente PK
@@ -732,13 +673,15 @@ erDiagram
         string status
     }
 
-    TAXASBASE {
-        string tipoVinculo PK
-        int idadeMin PK
-        int idadeMax PK
-        float taxaBaseComSeguro
-        float taxaBaseSemSeguro
+    CONFIGURACOESLOCAIS {
+        int idConfig PK
+        int idadeMaxima
+        float taxaInicial
+        float incrementoMensal
+        float tetoJuros
+        int prazoMinimo
         int prazoMaximo
+        int carenciaMaxima
     }
 
     LOGS {
@@ -749,3 +692,4 @@ erDiagram
         date dataOperacao
         string detalhes
     }
+```
