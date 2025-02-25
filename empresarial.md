@@ -1,3 +1,14 @@
+> **📄 Documentação 1**
+## Autores
+- [@Dalleth Martins](https://github.com/dalleth-martinss)
+- [@João Pedro de C. Formigari](https://github.com/Joao-Formigari)
+- [@Josué Davi da Costa](https://github.com/josdcosta)
+- [@Carollina Guedes](https://github.com/CarollinaGuedes)
+- [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira)
+
+## Referência
+- [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
+
 # Documentação - Empréstimo Empresarial
 
 ## 1. Objetivo
@@ -149,6 +160,22 @@ Taxas baseiam-se em `porteEmpresa` e `quantidadeParcelas`, com incremento de `0,
 - **Cálculo da Amortização (SAC)**:
  - Exemplo com ValorTotalFinanciado = 54.094,41, QuantidadeParcelas = 24, TaxaJurosMensal = 0.012:
  - Amortização = 54.094,41 / 24 = 2.253,93
+
+| Parcela | Saldo Devedor Anterior | Juros    | Amortização | Parcela  | Saldo Devedor Restante |
+|---------|-----------------------|----------|-------------|----------|------------------------|
+| 1       | 54.094,41             | 649,13   | 2.253,93    | 2.903,06 | 51.840,48              |
+| 2       | 51.840,48             | 622,09   | 2.253,93    | 2.876,02 | 49.586,55              |
+| 3       | 49.586,55             | 595,04   | 2.253,93    | 2.848,97 | 47.332,62              |
+| 4       | 47.332,62             | 568,00   | 2.253,93    | 2.821,93 | 45.078,69              |
+| 5       | 45.078,69             | 540,95   | 2.253,93    | 2.794,88 | 42.824,76              |
+| 6       | 42.824,76             | 513,90   | 2.253,93    | 2.767,83 | 40.570,83              |
+| 7       | 40.570,83             | 486,85   | 2.253,93    | 2.740,78 | 38.316,90              |
+| 8       | 38.316,90             | 459,80   | 2.253,93    | 2.713,73 | 36.062,97              |
+| 9       | 36.062,97             | 432,76   | 2.253,93    | 2.686,69 | 33.809,04              |
+| ...     | ...                   | ...      | ...         | ...      | ...                    |
+| 23      | 4.507,95              | 54,10    | 2.253,93    | 2.308,03 | 2.254,02               |
+| 24      | 2.254,02              | 27,05    | 2.253,93    | 2.280,98 | 0,09                   |
+
  - **Erro de Capacidade Excedida**:
  ```json
  {
