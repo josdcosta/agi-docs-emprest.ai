@@ -39,8 +39,7 @@ O sistema é estruturado em cinco áreas principais:
 
 ### Regras Principais
 - **Margem Consignável:** Calculada como 35% da remuneração líquida menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
-- **Taxas de Juros:** Determinadas pelo tipo de vínculo e idade do cliente, com um incremento específico por prazo, sempre respeitando o limite de 2,14% ao mês.
-- **Prazos:** Oferecidos de 24 até 92 meses, preferencialmente em múltiplos de 12 (ex.: 24, 36, 48, 60, 72, 84), com mínimo de 24 meses e máximo de 92 meses, ajustado para que a idade do cliente ao fim do contrato não ultrapasse 80 anos.
+- **Taxas de Juros:** Iniciam em 1,80% ao mês para o prazo mínimo de 24 meses, aumentando gradualmente com um incremento fixo por mês adicional, até atingir o limite de 2,14% ao mês em 92 meses.- **Prazos:** Oferecidos de 24 até 92 meses, preferencialmente em múltiplos de 12 (ex.: 24, 36, 48, 60, 72, 84), com mínimo de 24 meses e máximo de 92 meses, ajustado para que a idade do cliente ao fim do contrato não ultrapasse 80 anos.
 - **Seguro:** Opcional, com custo baseado na idade e no valor do empréstimo.
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
@@ -141,16 +140,16 @@ O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquid
 - **Data inválida:** "Erro: Data de início de pagamento inválida".
 
 #### Taxa de Juros
-A taxa de juros mensal é calculada com base no tipo de vínculo, na idade e na opção de seguro, ajustada pelo prazo escolhido:
+A taxa de juros mensal inicia em 1,80% para 24 meses e aumenta gradualmente com base no prazo escolhido, até o limite de 2,14% em 92 meses:
 
-- **Fórmula:** TaxaJurosMensal = TaxaBase + 0.000357 * (QuantidadeParcelas - 24)
-- **TaxaBase:** Definida por vínculo e idade (ex.: 1,6% para aposentado de 75-78 anos com seguro).
-- **Incremento:** Para cada mês acima de 24, a taxa aumenta em 0,000357 (aproximadamente 0,0357%), ajustado para atingir até 0,024 no máximo em 92 meses. Exemplo: 92 meses adiciona 0,024 (2,4%) à taxa base.
+- **Fórmula:** TaxaJurosMensal = 0,018 + 0,00005 * (QuantidadeParcelas - 24)
+- **Taxa Inicial:** Fixa em 1,80% (0,018) para o prazo mínimo de 24 meses.
+- **Incremento:** Para cada mês acima de 24, a taxa aumenta em 0,00005 (0,005%), alcançando 2,14% (0,0214) em 92 meses. Exemplo: 92 meses adiciona 0,0034 (0,34%) à taxa inicial.
 - **Teto:** Limitada a 2,14% (0,0214).
 
 #### Taxas Base por Vínculo e Idade
-- **Com Seguro:** Aposentado 75-78 anos: 1,6% (0,016), máximo 48 meses.
-- **Sem Seguro:** Taxa base + 0,2% (ex.: 1,8%), mesmo prazo.
+- A taxa inicial é fixa em 1,80% (0,018) para todos os vínculos e idades em 24 meses, independentemente da opção de seguro, ajustada apenas pelo prazo conforme a fórmula TaxaJurosMensal = 0,018 + 0,00005 * (QuantidadeParcelas - 24).
+- **Exemplo:** 48 meses resulta em 1,92% (0,0192), e 92 meses em 2,14% (0,0214).
 
 ### Custo do Seguro (se contratado)
 
@@ -293,7 +292,7 @@ O refinanciamento é uma operação que renegocia um empréstimo consignado exis
    - Quantidade de parcelas pagas e restantes.
 2. **Cálculo do Novo Empréstimo**:
    - O valor base é o saldoDevedorOriginal, acrescido de novoValorEmprestimo (se fornecido), mais o custo do seguro (se contratado) e o IOF.
-   - A taxa de juros é recalculada com base no tipoVinculo e idade atuais do cliente, aplicando a fórmula TaxaJurosMensal = TaxaBase + 0.0025 * ((novaQuantidadeParcelas - 24) / 12), respeitando o teto de 2,14%.
+   - A taxa de juros é recalculada com base na taxa inicial fixa de 1,80%, ajustada pelo prazo conforme a fórmula TaxaJurosMensal = 0,018 + 0,00005 * (novaQuantidadeParcelas - 24), respeitando o teto de 2,14%.
    - A nova parcela é calculada pelo método Price: Parcela = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-novaQuantidadeParcelas)].
 3. **Validação**: Confirma que a parcela não excede a margem consignável e que o prazo é compatível com a idade limite.
 4. **Atualização**: O contrato original é marcado como "refinanciado", e um novo contrato é gerado com os dados calculados.
@@ -353,8 +352,8 @@ A portabilidade permite transferir um empréstimo consignado para outro banco, g
    - Saldo devedor atual (saldoDevedorOriginal), calculado como o valor total financiado menos as amortizações pagas.
    - Status de pagamento (confirma que está em dia).
 2. **Cálculo no Banco de Destino**:
-   - O valor base é o saldoDevedorOriginal, acrescido do custo do seguro (se contratado) e do IOF.
-   - A taxa de juros pode ser informada pelo banco de destino ou calculada com base nas regras do sistema (TaxaBase + 0.0025 * ((novaQuantidadeParcelas - 24) / 12)), limitada a 2,14%.
+   - O valor base é o saldoDevedorOriginal, acrescido do custo do seguro (se contratado) e o IOF.
+   - A taxa de juros pode ser informada pelo banco de destino ou calculada com base na taxa inicial fixa de 1,80%, ajustada pelo prazo conforme a fórmula TaxaJurosMensal = 0,018 + 0,00005 * (novaQuantidadeParcelas - 24), limitada a 2,14%.
    - A nova parcela é calculada pelo método Price, semelhante ao refinanciamento.
 3. **Validação**: Verifica a margem consignável e o limite de idade.
 4. **Transferência**: O contrato original é marcado como "portado", e o novo banco registra o contrato com os dados calculados.
@@ -563,16 +562,18 @@ Registra as parcelas de cada empréstimo, incluindo pagamentos e atrasos.
 - Campos como **multaAtraso** e **jurosMora** permitem lidar com atrasos, conforme exemplo na atualização de parcelas.
 
 ## 4. Tabela: TaxasBase (Opcional)
-Armazena as taxas base por vínculo e faixa etária para cálculos dinâmicos.
+Não mais necessária, pois a taxa inicial é fixa em 1,80% para todos os casos, ajustada apenas pelo prazo conforme TaxaJurosMensal = 0,018 + 0,00005 * (QuantidadeParcelas - 24). Caso mantida para configuração, pode armazenar apenas o incremento e o limite:
 
 | Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
 |----------------------|--------------|--------------------------------------------------|------------------|------------|
-| tipoVinculo          | VARCHAR(20)  | Tipo de vínculo                                  | "aposentado"     | Primária (composta) |
-| idadeMin             | INT          | Faixa de idade mínima                            | 75               | Primária (composta) |
-| idadeMax             | INT          | Faixa de idade máxima                            | 78               | Primária (composta) |
-| taxaBaseComSeguro    | DECIMAL(6,5) | Taxa base com seguro                             | 0.016            | -          |
-| taxaBaseSemSeguro    | DECIMAL(6,5) | Taxa base sem seguro                             | 0.018            | -          |
-| prazoMaximo          | INT          | Prazo máximo em meses                            | 48               | -          |
+| taxaInicial          | DECIMAL(6,5) | Taxa inicial fixa                                | 0.018            | -          |
+| incrementoMensal     | DECIMAL(6,5) | Incremento por mês acima de 24                   | 0.00005          | -          |
+| tetoJuros            | DECIMAL(6,5) | Limite máximo de juros                           | 0.0214           | -          |
+| prazoMinimo          | INT          | Prazo mínimo em meses                            | 24               | -          |
+| prazoMaximo          | INT          | Prazo máximo em meses                            | 92               | -          |
+
+### Notas:
+- A tabela agora é simplificada, armazenando valores fixos globais em vez de taxas por vínculo e idade.
 
 ### Notas:
 - Essa tabela é opcional, mas facilita a manutenção das taxas base e prazos máximos mencionados na documentação (ex.: aposentado 75-78 anos, taxa 1,6%, prazo 48 meses).
