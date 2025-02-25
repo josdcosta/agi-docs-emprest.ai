@@ -607,6 +607,7 @@ Armazena as configurações específicas da instalação atual do sistema, permi
 | taxaInicial          | DECIMAL(6,5) | Taxa de juros inicial fixa                       | 0.018            | -          |
 | incrementoMensal     | DECIMAL(6,5) | Incremento na taxa por mês acima do prazo mínimo | 0.00005          | -          |
 | tetoJuros            | DECIMAL(6,5) | Limite máximo de juros mensal                    | 0.0214           | -          |
+| PercentMargemConsig  | DECIMAL(6,5) | Limite consignavel                               | 0.35             | -          |
 | prazoMinimo          | INT          | Prazo mínimo em meses                            | 24               | -          |
 | prazoMaximo          | INT          | Prazo máximo em meses                            | 92               | -          |
 | carenciaMaxima       | INT          | Período máximo de carência em dias               | 60               | -          |
