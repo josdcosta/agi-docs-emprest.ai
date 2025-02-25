@@ -88,8 +88,9 @@ Entrada:
       "score": 650,
     }
     ```
-[...Processamento]
+**Processamento**
 **Aplicação das regras de elegibilidade e processo de cálculo**
+![image](https://github.com/user-attachments/assets/c6e1b339-0d9d-47b6-b4d3-4829f66e415f)
 
 Resposta da solicitação:
 ```json
