@@ -685,66 +685,66 @@ erDiagram
     CLIENTES }o--o| TAXASBASE : "usa"
 
     CLIENTES {
-        VARCHAR(14) idCliente PK
-        VARCHAR(100) nome
-        DECIMAL(10,2) remuneracaoLiquida
-        DATE dataNascimento
-        VARCHAR(20) tipoVinculo
-        DECIMAL(10,2) margemConsignavel
-        DATE dataAtualizacao
+        string idCliente PK
+        string nome
+        float remuneracaoLiquida
+        date dataNascimento
+        string tipoVinculo
+        float margemConsignavel
+        date dataAtualizacao
     }
 
     EMPRESTIMOS {
-        VARCHAR(20) idEmprestimo PK
-        VARCHAR(14) idCliente FK
-        DECIMAL(12,2) valorEmprestimo
-        DECIMAL(12,2) valorTotalFinanciado
-        INT quantidadeParcelas
-        DECIMAL(6,5) taxaJurosMensal
-        DECIMAL(6,5) taxaEfetivaMensal
-        BOOLEAN contratarSeguro
-        DECIMAL(10,2) custoSeguro
-        DECIMAL(10,2) iof
-        DATE dataSolicitacao
-        DATE dataInicioPagamento
-        DATE dataFimContrato
-        DECIMAL(12,2) saldoDevedor
-        DECIMAL(12,2) totalPago
-        DECIMAL(12,2) totalDevido
-        DECIMAL(10,2) margemUtilizada
-        VARCHAR(20) statusContrato
-        VARCHAR(20) idEmprestimoOriginal FK "opcional"
-        VARCHAR(50) bancoDestino "opcional"
+        string idEmprestimo PK
+        string idCliente FK
+        float valorEmprestimo
+        float valorTotalFinanciado
+        int quantidadeParcelas
+        float taxaJurosMensal
+        float taxaEfetivaMensal
+        boolean contratarSeguro
+        float custoSeguro
+        float iof
+        date dataSolicitacao
+        date dataInicioPagamento
+        date dataFimContrato
+        float saldoDevedor
+        float totalPago
+        float totalDevido
+        float margemUtilizada
+        string statusContrato
+        string idEmprestimoOriginal FK "opcional"
+        string bancoDestino "opcional"
     }
 
     PARCELAS {
-        VARCHAR(25) idParcela PK
-        VARCHAR(20) idEmprestimo FK
-        INT numeroParcela
-        DATE dataVencimento
-        DATE dataPagamento
-        DECIMAL(10,2) valorParcelaOriginal
-        DECIMAL(10,2) multaAtraso
-        DECIMAL(10,2) jurosMora
-        DECIMAL(10,2) valorPago
-        DECIMAL(10,2) saldoDevedorParcela
-        VARCHAR(20) status
+        string idParcela PK
+        string idEmprestimo FK
+        int numeroParcela
+        date dataVencimento
+        date dataPagamento
+        float valorParcelaOriginal
+        float multaAtraso
+        float jurosMora
+        float valorPago
+        float saldoDevedorParcela
+        string status
     }
 
     TAXASBASE {
-        VARCHAR(20) tipoVinculo PK
-        INT idadeMin PK
-        INT idadeMax PK
-        DECIMAL(6,5) taxaBaseComSeguro
-        DECIMAL(6,5) taxaBaseSemSeguro
-        INT prazoMaximo
+        string tipoVinculo PK
+        int idadeMin PK
+        int idadeMax PK
+        float taxaBaseComSeguro
+        float taxaBaseSemSeguro
+        int prazoMaximo
     }
 
     LOGS {
-        BIGINT idLog PK
-        VARCHAR(14) idCliente FK "opcional"
-        VARCHAR(20) idEmprestimo FK "opcional"
-        VARCHAR(50) operacao
-        DATETIME dataOperacao
-        TEXT detalhes
+        int idLog PK
+        string idCliente FK "opcional"
+        string idEmprestimo FK "opcional"
+        string operacao
+        date dataOperacao
+        string detalhes
     }
