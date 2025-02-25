@@ -404,8 +404,6 @@ A portabilidade permite transferir um empréstimo consignado para outro banco, g
 O saldo devedor original (R$ 8.000,00) é ajustado com IOF, resultando em valorTotalFinanciado de R$ 8.120,00 (sem seguro).  
 A taxa de 1,55% (0,0155) é assumida como fornecida pelo banco destino, inferior à base padrão, justificando a portabilidade.
 
-# Emprest.AI
-
 ## 7. Consulta e Atualização de Parcelas
 
 ### 7.1. Consulta
