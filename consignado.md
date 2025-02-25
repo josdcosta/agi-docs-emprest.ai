@@ -611,7 +611,3 @@ Armazena as configurações específicas da instalação atual do sistema, permi
 | prazoMaximo           | INT          | Prazo máximo em meses                            | 92               | -          |
 | carenciaMaxima        | INT          | Período máximo de carência em dias               | 60               | -          |
 | margemConsignavelPercentual | DECIMAL(4,2) | Percentual da margem consignável (ex.: 0.35 = 35%) | 0.35          | -          |
-### Notas:
-- Como cada instalação é independente, espera-se que esta tabela tenha apenas um registro (idConfig = 1), configurado durante a implantação do sistema no banco específico.
-- Os campos como **idadeMaxima**, **taxaInicial**, **incrementoMensal**, **tetoJuros**, **prazoMinimo**, **prazoMaximo** e **carenciaMaxima** substituem os valores fixos anteriormente definidos na lógica, permitindo personalização por instalação.
-- Caso os valores não sejam preenchidos, o sistema pode usar padrões (ex.: idadeMaxima = 80, taxaInicial = 0.018).
