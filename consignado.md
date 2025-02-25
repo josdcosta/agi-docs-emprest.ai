@@ -26,7 +26,7 @@
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
-O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados. Isso inclui o cadastro de clientes, a análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações. O sistema respeita as normas brasileiras, como a margem consignável de 35% da remuneração líquida (Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS). As taxas de juros são calculadas com base no vínculo do cliente e na idade, ajustadas dinamicamente pelo prazo escolhido, enquanto os prazos são oferecidos de 24 até 92 meses, com preferência para múltiplos de 12, mas permitindo flexibilidade até o máximo de 92 meses, desde que a idade ao fim do contrato não ultrapasse 80 anos. O seguro é opcional, e, caso o cliente não especifique a quantidade de parcelas, o sistema sugere opções viáveis dentro desse intervalo.
+O Emprest.AI é um sistema backend desenvolvido para gerenciar de forma eficiente e automatizada todas as etapas relacionadas a empréstimos consignados. Isso inclui o cadastro de clientes, a análise de elegibilidade, a concessão de novos contratos (inclusive refinanciamentos e portabilidades), a consulta de status e parcelas, a atualização de pagamentos e o cancelamento de solicitações. O sistema respeita as normas brasileiras, como a margem consignável configurável (definida em `ConfiguracoesLocais` como `margemConsignavelPercentual`, padrão de 35% conforme Lei 14.509/2022), o teto de juros de 2,14% ao mês (Banco Central) e o limite de idade final de 80 anos (INSS).
 
 ## 2. Visão Geral do Funcionamento
 O sistema é estruturado em cinco áreas principais:
@@ -38,8 +38,8 @@ O sistema é estruturado em cinco áreas principais:
 5. **Cancelamento de Contrato:** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
 
 ### Regras Principais
-- **Margem Consignável:** Calculada como 35% da remuneração líquida menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
-- **Taxas de Juros:** Iniciam em 1,80% ao mês para o prazo mínimo de 24 meses, aumentando gradualmente com um incremento fixo por mês adicional, até atingir o limite de 2,14% ao mês em 92 meses.- **Prazos:** Oferecidos de 24 até 92 meses, preferencialmente em múltiplos de 12 (ex.: 24, 36, 48, 60, 72, 84), com mínimo de 24 meses e máximo de 92 meses, ajustado para que a idade do cliente ao fim do contrato não ultrapasse 80 anos.
+- **Margem Consignável:** Calculada como `remuneracaoLiquida * margemConsignavelPercentual` (obtido de `ConfiguracoesLocais`, padrão 35%) menos o valor das parcelas de outros empréstimos ativos, armazenada e obtida diretamente da tabela de clientes no banco de dados.
+- **Taxas de Juros:** Iniciam em 1,80% ao mês para o prazo mínimo de 24 meses, aumentando gradualmente com um incremento fixo por mês adicional, até atingir o limite de 2,14% ao mês em 92 meses.
 - **Seguro:** Opcional, com custo baseado na idade e no valor do empréstimo.
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período padrão de 30 dias entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
@@ -92,7 +92,7 @@ Os dados são inseridos ou atualizados na tabela de clientes. A margem consigná
 ```
 
 ### 4.2. Processo
-O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. Em seguida, consulta a tabela **ConfiguracoesLocais** para obter a `idadeMaxima` e o `prazoMaximo`. O prazo máximo permitido é calculado como `((idadeMaxima - idade) * 12)`, limitado ao `prazoMaximo` da configuração local (ex.: 92 meses). Se o cálculo resultar em valor superior ao `prazoMaximo`, usa-se o `prazoMaximo`; se inferior, usa-se o valor calculado. Verifica se a margem consignável é suficiente para suportar um empréstimo.
+O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `margemConsignavel`, `idade` e `tipoVinculo`. Em seguida, consulta a tabela **ConfiguracoesLocais** para obter `idadeMaxima`, `prazoMaximo` e `margemConsignavelPercentual`. O prazo máximo permitido é calculado como `((idadeMaxima - idade) * 12)`, limitado ao `prazoMaximo` da configuração local (ex.: 92 meses). Se o cálculo resultar em valor superior ao `prazoMaximo`, usa-se o `prazoMaximo`; se inferior, usa-se o valor calculado. Calcula a margem máxima como `remuneracaoLiquida * margemConsignavelPercentual` e verifica se a margem consignável atual é suficiente para suportar um empréstimo.
 
 ### 4.3. Saída
 
@@ -130,7 +130,7 @@ O sistema consulta a tabela de clientes para recuperar `remuneracaoLiquida`, `ma
 ### 5.2. Processo de Cálculo
 
 #### Consulta Inicial
-O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Consulta a tabela **ConfiguracoesLocais** para recuperar `taxaInicial`, `incrementoMensal`, `tetoJuros`, `prazoMinimo`, `prazoMaximo`, `idadeMaxima` e `carenciaMaxima`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
+O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Consulta a tabela **ConfiguracoesLocais** para recuperar `taxaInicial`, `incrementoMensal`, `tetoJuros`, `prazoMinimo`, `prazoMaximo`, `idadeMaxima`, `carenciaMaxima` e `margemConsignavelPercentual`. Calcula a margem máxima como `remuneracaoLiquida * margemConsignavelPercentual`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
 
 #### Validação
 - **Cliente inexistente:** "Erro: Cliente não encontrado".
@@ -598,20 +598,19 @@ Para auditoria de operações, como sugerido nas observações.
 | detalhes             | TEXT         | Informações adicionais                           | "Empréstimo concedido" | -          |
 
 ## 6. Tabela: ConfiguracoesLocais (Opcional)
-Armazena as configurações específicas da instalação atual do sistema, permitindo que regras como idade máxima, taxa de juros inicial e prazos sejam definidas localmente para o banco em que o sistema está instalado.
+Armazena as configurações específicas da instalação atual do sistema, permitindo que regras como idade máxima, taxa de juros inicial, prazos e margem consignável sejam definidas localmente para o banco em que o sistema está instalado.
 
-| Campo                | Tipo         | Descrição                                        | Exemplo          | Chave?     |
-|----------------------|--------------|--------------------------------------------------|------------------|------------|
-| idConfig             | INT          | Identificador único (esperado apenas 1 registro) | 1                | Primária   |
-| idadeMaxima          | INT          | Idade máxima permitida ao fim do contrato        | 80               | -          |
-| taxaInicial          | DECIMAL(6,5) | Taxa de juros inicial fixa                       | 0.018            | -          |
-| incrementoMensal     | DECIMAL(6,5) | Incremento na taxa por mês acima do prazo mínimo | 0.00005          | -          |
-| tetoJuros            | DECIMAL(6,5) | Limite máximo de juros mensal                    | 0.0214           | -          |
-| PercentMargemConsig  | DECIMAL(6,5) | Limite consignavel                               | 0.35             | -          |
-| prazoMinimo          | INT          | Prazo mínimo em meses                            | 24               | -          |
-| prazoMaximo          | INT          | Prazo máximo em meses                            | 92               | -          |
-| carenciaMaxima       | INT          | Período máximo de carência em dias               | 60               | -          |
-
+| Campo                  | Tipo         | Descrição                                        | Exemplo          | Chave?     |
+|-----------------------|--------------|--------------------------------------------------|------------------|------------|
+| idConfig              | INT          | Identificador único (esperado apenas 1 registro) | 1                | Primária   |
+| idadeMaxima           | INT          | Idade máxima permitida ao fim do contrato        | 80               | -          |
+| taxaInicial           | DECIMAL(6,5) | Taxa de juros inicial fixa                       | 0.018            | -          |
+| incrementoMensal      | DECIMAL(6,5) | Incremento na taxa por mês acima do prazo mínimo | 0.00005          | -          |
+| tetoJuros             | DECIMAL(6,5) | Limite máximo de juros mensal                    | 0.0214           | -          |
+| prazoMinimo           | INT          | Prazo mínimo em meses                            | 24               | -          |
+| prazoMaximo           | INT          | Prazo máximo em meses                            | 92               | -          |
+| carenciaMaxima        | INT          | Período máximo de carência em dias               | 60               | -          |
+| margemConsignavelPercentual | DECIMAL(4,2) | Percentual da margem consignável (ex.: 0.35 = 35%) | 0.35          | -          |
 ### Notas:
 - Como cada instalação é independente, espera-se que esta tabela tenha apenas um registro (idConfig = 1), configurado durante a implantação do sistema no banco específico.
 - Os campos como **idadeMaxima**, **taxaInicial**, **incrementoMensal**, **tetoJuros**, **prazoMinimo**, **prazoMaximo** e **carenciaMaxima** substituem os valores fixos anteriormente definidos na lógica, permitindo personalização por instalação.
