@@ -26,19 +26,17 @@
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
 ## 1. Objetivo
-O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades de empréstimo consignado, empréstimo pessoal e empréstimo empresarial. Suas funcionalidades incluem concessão de novos contratos, antecipação de pagamento, simulação de antecipação de parcela ou quitação do valor total, refinanciamento, portabilidade e cancelamentos para empréstimos consignados.
-
-Os critérios para liberação de crédito são realizados de acordo com renda, pontuação, idade, análise de risco verificada por perfil, alinhamento realizado de acordo com as práticas do mercado.
-
-A análise de crédito é específica para cada modalidade. No caso de empréstimo consignado, não há análise do score, pois o empréstimo é concedido com base na margem de crédito do cliente. Para clientes de empréstimos pessoais, a gestão é feita através da consulta do score de cada cliente, o que possibilita verificar seu histórico no mercado e oferecer as melhores taxas e condições de pagamento.
+O Emprest.AI é um sistema backend completo, desenvolvido para a gestão eficiente e segura de empréstimos, abrangendo as modalidades consignado e pessoal. Para empréstimos consignados, o sistema foca na análise da margem consignável do cliente, garantindo operações seguras e em conformidade com as regulamentações. Já para empréstimos pessoais, o Emprest.AI utiliza uma análise de crédito abrangente, considerando score de crédito, renda e idade, para determinar limites de crédito e taxas de juros personalizadas. O sistema automatiza o ciclo de vida completo do empréstimo, desde a concessão até o gerenciamento de pagamentos, refinanciamentos, portabilidades e cancelamentos, sempre em conformidade com as regulamentações vigentes.
 
 ## 2. Visão Geral do Funcionamento
+
 O sistema é estruturado em cinco áreas principais, projetadas para gerenciar de forma eficiente todas as etapas do ciclo de empréstimos, abrangendo tanto a modalidade de empréstimo consignado quanto o empréstimo pessoal.
 
-1. **Concessão de Empréstimos:** Análise de crédito específica para cada tipo (Consignado: verificação da margem; Pessoa física: análise de pontuação). Simulação e aprovação de novos contratos.
-2. **Consulta de Empréstimos:** Acompanhamento de status de contratos, parcelas e histórico de pagamentos. Disponibilização de informações sobre elegibilidade e contratos ativos.
-3. **Atualização de Dados:** Registro de pagamentos, incluindo antecipações e ajustes.
-4. **Cancelamento de Contrato (Consignado):** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável.
+1.  **Concessão de Empréstimos:** Análise de crédito específica para cada tipo (Consignado: verificação da margem e tipo de vinculo; Pessoa física: análise de score, renda e idade). Simulação e aprovação de novos contratos.
+2.  **Consulta de Empréstimos:** Acompanhamento de status de contratos, parcelas e histórico de pagamentos. Disponibilização de informações sobre elegibilidade e contratos ativos.
+3.  **Atualização de Dados:** Registro de pagamentos, incluindo antecipações e ajustes de parcelas.
+4.  **Cancelamento de Contrato:** Gerencia a finalização de solicitações antes do início ou com reembolso, se aplicável, para ambos os tipos de empréstimo.
+5.  **Renovação/Refinanciamento/Portabilidade de Contrato:** Processamento de novos empréstimos com base no saldo existente, permitindo a renegociação de contratos e a transferência de dívidas entre instituições.
 
 ### Regras Principais
 **Consignado:**
