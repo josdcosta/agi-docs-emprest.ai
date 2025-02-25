@@ -674,3 +674,77 @@ graph TD
     G3 --> J
     H7 --> J
     I7 --> J
+```
+```mermaid
+erDiagram
+    CLIENTES ||--o{ EMPRESTIMOS : "possui"
+    EMPRESTIMOS ||--o{ PARCELAS : "contém"
+    EMPRESTIMOS ||--o| EMPRESTIMOS : "refinancia/porta"
+    CLIENTES ||--o{ LOGS : "registra"
+    EMPRESTIMOS ||--o{ LOGS : "registra"
+    CLIENTES }o--o| TAXASBASE : "usa"
+
+    CLIENTES {
+        VARCHAR(14) idCliente PK
+        VARCHAR(100) nome
+        DECIMAL(10,2) remuneracaoLiquida
+        DATE dataNascimento
+        VARCHAR(20) tipoVinculo
+        DECIMAL(10,2) margemConsignavel
+        DATE dataAtualizacao
+    }
+
+    EMPRESTIMOS {
+        VARCHAR(20) idEmprestimo PK
+        VARCHAR(14) idCliente FK
+        DECIMAL(12,2) valorEmprestimo
+        DECIMAL(12,2) valorTotalFinanciado
+        INT quantidadeParcelas
+        DECIMAL(6,5) taxaJurosMensal
+        DECIMAL(6,5) taxaEfetivaMensal
+        BOOLEAN contratarSeguro
+        DECIMAL(10,2) custoSeguro
+        DECIMAL(10,2) iof
+        DATE dataSolicitacao
+        DATE dataInicioPagamento
+        DATE dataFimContrato
+        DECIMAL(12,2) saldoDevedor
+        DECIMAL(12,2) totalPago
+        DECIMAL(12,2) totalDevido
+        DECIMAL(10,2) margemUtilizada
+        VARCHAR(20) statusContrato
+        VARCHAR(20) idEmprestimoOriginal FK "opcional"
+        VARCHAR(50) bancoDestino "opcional"
+    }
+
+    PARCELAS {
+        VARCHAR(25) idParcela PK
+        VARCHAR(20) idEmprestimo FK
+        INT numeroParcela
+        DATE dataVencimento
+        DATE dataPagamento
+        DECIMAL(10,2) valorParcelaOriginal
+        DECIMAL(10,2) multaAtraso
+        DECIMAL(10,2) jurosMora
+        DECIMAL(10,2) valorPago
+        DECIMAL(10,2) saldoDevedorParcela
+        VARCHAR(20) status
+    }
+
+    TAXASBASE {
+        VARCHAR(20) tipoVinculo PK
+        INT idadeMin PK
+        INT idadeMax PK
+        DECIMAL(6,5) taxaBaseComSeguro
+        DECIMAL(6,5) taxaBaseSemSeguro
+        INT prazoMaximo
+    }
+
+    LOGS {
+        BIGINT idLog PK
+        VARCHAR(14) idCliente FK "opcional"
+        VARCHAR(20) idEmprestimo FK "opcional"
+        VARCHAR(50) operacao
+        DATETIME dataOperacao
+        TEXT detalhes
+    }
