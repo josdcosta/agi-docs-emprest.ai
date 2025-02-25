@@ -19,7 +19,7 @@
 - [@Josué Davi da Costa](https://github.com/josdcosta)
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
 - [@Victor Augusto Ferreira](https://github.com/Victor-augusto-ferreira)
-
+- [@Joao Formigari](https://github.com/Joao-Formigari)
 
 ## Referências
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
