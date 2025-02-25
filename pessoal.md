@@ -413,64 +413,31 @@ Exemplo: Antecipar duas parcelas (2 e 3) de R$ 525,50 cada, com taxa 1,8%:
 - Pagamentos parciais e antecipações são flexíveis, permitindo ajustes no saldo devedor.
 - Todas as operações podem gerar logs para auditoria, dependendo da implementação do banco de dados.
 
-# Fluxograma Completo
+## Glossário
 
-```mermaid
-graph TD
-    %% Início
-    A[Requisição do Usuário] --> B1[3.1 Cadastro/Atualização de Cliente]
+**Amortização**
+: Processo de pagamento de uma dívida em parcelas periódicas, que incluem tanto o valor principal quanto os juros.
 
-    %% 3. Gerenciamento de Clientes
-    B1 --> B2{Cliente já existe?}
-    B2 -->|Sim| B3[Atualizar Cliente]
-    B2 -->|Não| B4[Inserir Cliente]
-    B3 --> B5[Calcular Limite de Crédito]
-    B4 --> B5
-    B5 --> B6[Saída: Cliente cadastrado/atualizado]
+**CET (Custo Efetivo Total)**
+: Indicador que representa o custo total de um empréstimo, incluindo todas as taxas e encargos.
 
-    %% 4. Concessão de Empréstimos
-    B6 --> C1[4.1 Entrada de Dados]
-    C1 --> C2[4.2 Processo de Cálculo]
-    C2 --> C3{Cliente existe e limite OK?}
-    C3 -->|Sim| C4[Calcular Taxa de Juros]
-    C3 -->|Não| C5[Erro: Cliente inválido ou limite excedido]
-    C4 --> C6[Calcular Encargos: IOF, Seguro]
-    C6 --> C7[Calcular Parcela Mensal - Price]
-    C7 --> C8{Parcela ≤ 30% da renda?}
-    C8 -->|Sim| C9[Registrar Contrato]
-    C8 -->|Não| C10[Erro: Parcela excede limite]
-    C9 --> C11[Saída: Contrato gerado]
+**IOF (Imposto sobre Operações Financeiras)**
+: Imposto federal que incide sobre operações de crédito, câmbio, seguros e títulos.
 
-    %% 5. Consulta e Atualização de Parcelas
-    C11 --> D1[5.1 Consulta]
-    D1 --> D2[Consultar Tabela Parcelas]
-    D2 --> D3[Calcular Atrasos, Multa e Juros]
-    D3 --> D4[Saída: Dados das parcelas]
+**Score de crédito**
+: Pontuação que indica o risco de inadimplência de um cliente, com base em seu histórico de crédito.
 
-    C11 --> E1[5.2 Atualização]
-    E1 --> E2[Validar Parcela]
-    E2 --> E3{Parcela em atraso?}
-    E3 -->|Sim| E4[Calcular Multa e Juros]
-    E3 -->|Não| E5[Atualizar como Paga]
-    E4 --> E6[Registrar Pagamento]
-    E5 --> E6
-    E6 --> E7{Pagamento parcial?}
-    E7 -->|Sim| E8[Atualizar Saldo Devedor Parcial]
-    E7 -->|Não| E9[Marcar como Paga]
-    E8 --> E10[Saída: Parcela parcialmente paga]
-    E9 --> E11[Saída: Parcela atualizada]
+**TAC (Taxa de Abertura de Crédito)**
+: Taxa cobrada no momento da contratação do empréstimo, para cobrir os custos administrativos da instituição financeira.
 
-    %% 6. Antecipação de Parcelas
-    C11 --> F1[6.1 Antecipação de Parcelas]
-    F1 --> F2[Validar Parcelas]
-    F2 --> F3[Calcular Valor Presente]
-    F3 --> F4[Atualizar Saldo Devedor]
-    F4 --> F5[Saída: Parcelas antecipadas]
+**Taxa de Avaliação de Bens**
+: Taxa cobrada quando o empréstimo exige garantia de bens, para cobrir os custos de avaliação desses bens.
 
-    %% Fim
-    B6 --> G[Processo Concluído]
-    C11 --> G
-    D4 --> G
-    E10 --> G
-    E11 --> G
-    F5 --> G
+**Taxa de Cadastro**
+: Taxa cobrada para realizar o cadastro do cliente, especialmente se ele não possuir conta corrente no banco.
+
+**Taxa de Liquidação Antecipada**
+: Taxa cobrada quando o cliente quita o empréstimo antes do prazo previsto.
+
+**Taxa de Seguro (Seguro Prestamista)**
+: Taxa cobrada para garantir o pagamento do empréstimo em caso de morte ou invalidez do cliente.
