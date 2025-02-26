@@ -29,10 +29,6 @@
 - Planilha de cálculo
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
-- - Lei e regulamentações: - Código de Defesa do Consumidor (CDC): Lei nº 8.078/1990: Quando o empréstimo é oferecido por instituições financeiras a consumidores, o CDC se aplica, garantindo direitos como informações claras sobre taxas, juros e condições contratuais.
-  
-- Lei e Regulamentações: Lei da Usura (Decreto nº 22.626/1933): Limita os juros cobrados em operações de crédito, proibindo taxas abusivas (acima do dobro da taxa legal, que hoje segue a jurisprudência e regulações do Banco Central).
-
 ### 1. Objetivo
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado (total ou parcial), refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
@@ -148,7 +144,18 @@ Executa [12.7. Parcela Mensal](#127-parcela-mensal).
 Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
 Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
-**Passo 10: Retorno da Simulação**  
+**Passo 10: Geração da Tabela de Parcelas**
+
+Com base no valorTotalFinanciado, quantidadeParcelas, taxaJurosMensal e dataInicioPagamento, o sistema calcula e gera uma tabela detalhando cada parcela, incluindo:
+
+Número da parcela
+Data de vencimento (mensal a partir da dataInicioPagamento)
+Valor da parcela
+Juros da parcela
+Amortização do principal
+Saldo devedor restante
+
+**Passo 11: Retorno da Simulação**  
 Retorna os valores calculados sem gravar o contrato.
 
 #### 5.3. Saída
@@ -165,6 +172,33 @@ Retorna os valores calculados sem gravar o contrato.
   "valorTotalFinanciado": 10809.47,
   "parcelaMensal": 306.28,
   "cetMensal": 0.0201,
+  "tabelaParcelas": [
+    {
+      "numeroParcela": 1,
+      "dataVencimento": "01/04/2025",
+      "valorParcela": 306.28,
+      "juros": 207.54,
+      "amortizacao": 98.74,
+      "saldoDevedor": 10710.73
+    },
+    {
+      "numeroParcela": 2,
+      "dataVencimento": "01/05/2025",
+      "valorParcela": 306.28,
+      "juros": 205.65,
+      "amortizacao": 100.63,
+      "saldoDevedor": 10610.10
+    },
+    // ... (continua até a parcela 48)
+    {
+      "numeroParcela": 48,
+      "dataVencimento": "01/03/2029",
+      "valorParcela": 306.28,
+      "juros": 5.85,
+      "amortizacao": 300.43,
+      "saldoDevedor": 0.00
+    }
+  ],
   "mensagem": "Simulação realizada com sucesso."
 }
 ```
@@ -181,6 +215,33 @@ Retorna os valores calculados sem gravar o contrato.
   "valorTotalFinanciado": 5486.91,
   "parcelaMensal": 392.27,
   "cetMensal": 0.0940,
+  "tabelaParcelas": [
+    {
+      "numeroParcela": 1,
+      "dataVencimento": "01/04/2025",
+      "valorParcela": 392.27,
+      "juros": 506.99,
+      "amortizacao": -114.72,
+      "saldoDevedor": 5601.63
+    },
+    {
+      "numeroParcela": 2,
+      "dataVencimento": "01/05/2025",
+      "valorParcela": 392.27,
+      "juros": 517.59,
+      "amortizacao": -125.32,
+      "saldoDevedor": 5726.95
+    },
+    // ... (continua até a parcela 18)
+    {
+      "numeroParcela": 18,
+      "dataVencimento": "01/09/2026",
+      "valorParcela": 392.27,
+      "juros": 36.27,
+      "amortizacao": 356.00,
+      "saldoDevedor": 0.00
+    }
+  ],
   "mensagem": "Simulação realizada com sucesso."
 }
 ```
@@ -217,6 +278,7 @@ Empréstimo Pessoal
 - Cálculo do Valor Total Financiado: Mesmo que Simulação.
 - Cálculo da Parcela Mensal: Mesmo que Simulação.
 - Validação Final de Elegibilidade: Mesmo que Simulação.
+- Gera a tabela de parcelas para o contrato: Idêntico ao passo da simulação, gera a tabela de parcelas para o contrato.
 - Registro do Contrato: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
 #### 6.3. Saída
@@ -259,57 +321,97 @@ Empréstimo Pessoal
 
 ### 8. Pagamento de Empréstimo
 #### 8.1. Requisição
-##### Pagamento Parcial
+##### Pagamento Parcela
 ```json
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP001",
-  "tipoPagamento": "parcial",
-  "valorPagamento": 1000.00,
+  "valorPagamento": 306.28,
+  "numeroParcela": 6,
   "dataPagamento": "26/02/2025"
 }
 ```
-##### Pagamento Total
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "tipoPagamento": "total",
-  "dataPagamento": "26/02/2025"
-}
-```
-#### 8.2. Processo Passo a Passo
-- Consulta de Dados do Cliente: Valida `idCliente`.
-- Verificação do Empréstimo: Busca `idEmprestimo`.
-- Validação do Status do Empréstimo: Confirma se está ativo. Se quitado, "Erro: Empréstimo já liquidado".
-- Consulta do Saldo Devedor Atual: Executa 12.8. Saldo Devedor.
-- Processamento do Pagamento:
-  - Total: Registra quitação total.
-  - Parcial: Aplica o valor às parcelas mais antigas. Se insuficiente, "Erro: Valor insuficiente".
-- Atualização do Contrato: Marca como "quitado" (total) ou ajusta parcelas (parcial).
-- Retorno da Confirmação: Retorna status atualizado.
+
+
+### 8.2. Processo Passo a Passo
+
+1. **Consulta de Dados do Cliente:**
+   - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
+
+2. **Verificação do Empréstimo:**
+   - Busca `idEmprestimo`. Se inválido, retorna "Erro: Empréstimo não encontrado ou inválido".
+
+3. **Validação do Status do Empréstimo:**
+   - Confirma se está ativo. Se todas as parcelas estiverem quitadas, retorna "Erro: Empréstimo já liquidado".
+
+4. **Consulta do Saldo Devedor Atual:**
+   - Executa 12.8. Saldo Devedor com base nas parcelas pendentes.
+
+5. **Processamento do Pagamento:**
+   - Valida o `numeroParcela` informado. Se inválido (fora do intervalo ou já pago), retorna "Erro: Parcela inválida ou já quitada".
+   - Verifica se o `valorPagamento` é igual ou superior ao `valorParcela` da parcela escolhida. Se menor, retorna "Erro: Valor insuficiente para a parcela".
+   - Aplica o `valorPagamento` à parcela especificada, marcando-a como "paga" na `dataPagamento`. Se houver excedente (valor maior que a parcela), registra como crédito ou devolve (regra a definir).
+
+6. **Atualização do Contrato:**
+   - Atualiza a tabela de parcelas, refletindo a parcela paga, e recalcula o saldo devedor com base na amortização realizada.
+
+7. **Retorno da Confirmação:**
+   - Retorna o status atualizado, incluindo a tabela de parcelas revisada com a parcela paga.
 
 #### 8.3. Saída
-##### Pagamento Parcial
+##### Pagamento Parcela
 ```json
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP001",
-  "tipoPagamento": "parcial",
-  "valorPagamento": 1000.00,
-  "saldoDevedor": 8278.07,
-  "mensagem": "Pagamento parcial registrado com sucesso."
-}
-```
-##### Pagamento Total
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "tipoPagamento": "total",
-  "valorPagamento": 9278.07,
-  "saldoDevedor": 0.00,
-  "mensagem": "Empréstimo quitado com sucesso."
+  "valorPagamento": 306.28,
+  "numeroParcela": 6,
+  "saldoDevedor": 9278.07,
+  "tabelaParcelas": [
+    {
+      "numeroParcela": 1,
+      "dataVencimento": "01/04/2025",
+      "valorParcela": 306.28,
+      "juros": 207.54,
+      "amortizacao": 98.74,
+      "saldoDevedor": 10710.73,
+      "status": "paga",
+      "dataPagamento": "01/04/2025"
+    },
+    // ... (parcelas 2 a 5 já pagas anteriormente)
+    {
+      "numeroParcela": 6,
+      "dataVencimento": "01/09/2025",
+      "valorParcela": 306.28,
+      "juros": 198.00,
+      "amortizacao": 108.28,
+      "saldoDevedor": 9278.07,
+      "status": "paga",
+      "dataPagamento": "26/02/2025"
+    },
+    {
+      "numeroParcela": 7,
+      "dataVencimento": "01/10/2025",
+      "valorParcela": 306.28,
+      "juros": 195.92,
+      "amortizacao": 110.36,
+      "saldoDevedor": 9167.71,
+      "status": "pendente",
+      "dataPagamento": null
+    },
+    // ... (continua até a parcela 48)
+    {
+      "numeroParcela": 48,
+      "dataVencimento": "01/03/2029",
+      "valorParcela": 306.28,
+      "juros": 5.85,
+      "amortizacao": 300.43,
+      "saldoDevedor": 0.00,
+      "status": "pendente",
+      "dataPagamento": null
+    }
+  ],
+  "mensagem": "Pagamento da parcela 6 registrado com sucesso."
 }
 ```
 
