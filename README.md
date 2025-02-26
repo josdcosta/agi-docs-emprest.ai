@@ -70,12 +70,12 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 ### 4. Dados Armazenados do Cliente
 ```json
 {
-  "idCliente": "123.456.789-00",
+  "idCliente": [cpf],
   "nome": "João Silva",
-  "remuneracaoLiquidaMensal": 5000.00,
-  "idade": 70,
-  "tipoVinculo": "aposentado",
-  "scoreCredito": 600
+  "remuneracaoLiquidaMensal": "[valor em reais]",
+  "idade": "[número]",
+  "tipoVinculo": "[aposentado, servidor, pensionista, empregado ou nulo]",
+  "scoreCredito": "[valor]"
 }
 ```
 
@@ -84,23 +84,23 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 ##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 10000.00,
-  "tipoEmprestimo": "consignado",
-  "quantidadeParcelas": 48,
-  "contratarSeguro": true,
-  "dataInicioPagamento": "01/04/2025"
+  "idCliente": [cpf],
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "quantidadeParcelas": "[número]",
+  "contratarSeguro": "[true ou false]",
+  "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 ##### Empréstimo Pessoal
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 5000.00,
-  "tipoEmprestimo": "pessoal",
-  "quantidadeParcelas": 18,
-  "contratarSeguro": false,
-  "dataInicioPagamento": "01/04/2025"
+  "idCliente": [cpf]
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "quantidadeParcelas": "[número]",
+  "contratarSeguro": "[true ou false]",
+  "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 #### 5.2. Processo Passo a Passo
@@ -162,42 +162,26 @@ Retorna os valores calculados sem gravar o contrato.
 ##### Empréstimo Consignado
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 10000.00,
-  "tipoEmprestimo": "consignado",
-  "quantidadeParcelas": 48,
-  "taxaJurosMensal": 0.0192,
-  "custoSeguro": 240.00,  // Ajustado para idade 70: 10.000 * (0,0025 + 0,00005 * 70) * (48 / 12)
-  "iof": 337.30,
-  "valorTotalFinanciado": 10799.47,  // Ajustado: 10.000 + 337.30 + 240.00
-  "parcelaMensal": 305.96,  // Ajustado especulativamente com novo valorTotalFinanciado
-  "cetMensal": 0.0200,
+  "idCliente": [cpf]
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "quantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[valor decimal]",
+  "custoSeguro": "[valor em reais]",
+  "iof": "[valor em reais]",
+  "valorTotalFinanciado": "[valor em reais]",
+  "parcelaMensal": "[valor em reais]",
+  "cetMensal": "[valor decimal]",
   "tabelaParcelas": [
     {
-      "numeroParcela": 1,
-      "dataVencimento": "01/04/2025",
-      "valorParcela": 305.96,
-      "juros": 207.36,
-      "amortizacao": 98.60,
-      "saldoDevedor": 10700.87
-    },
-    {
-      "numeroParcela": 2,
-      "dataVencimento": "01/05/2025",
-      "valorParcela": 305.96,
-      "juros": 205.46,
-      "amortizacao": 100.50,
-      "saldoDevedor": 10600.37
-    },
-    // ... (continua até a parcela 48)
-    {
-      "numeroParcela": 48,
-      "dataVencimento": "01/03/2029",
-      "valorParcela": 305.96,
-      "juros": 5.84,
-      "amortizacao": 300.12,
-      "saldoDevedor": 0.00
+      "numeroParcela": "[número]",
+      "dataVencimento": "[data no formato DD/MM/AAAA]",
+      "valorParcela": "[valor em reais]",
+      "juros": "[valor em reais]",
+      "amortizacao": "[valor em reais]",
+      "saldoDevedor": "[valor em reais]"
     }
+    ... Demais parcelas
   ],
   "mensagem": "Simulação realizada com sucesso."
 }
@@ -205,50 +189,30 @@ Retorna os valores calculados sem gravar o contrato.
 ##### Empréstimo Pessoal
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 5000.00,
-  "tipoEmprestimo": "pessoal",
-  "quantidadeParcelas": 18,
-  "taxaJurosMensal": 0.0924,
-  "custoSeguro": 0.00,
-  "iof": 168.65,
-  "valorTotalFinanciado": 5486.91,
-  "parcelaMensal": 639.99,
-  "cetMensal": 0.0940,
+  "idCliente": [cpf],
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "quantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[valor decimal]",
+  "custoSeguro": "[valor em reais]",
+  "iof": "[valor em reais]",
+  "valorTotalFinanciado": "[valor em reais]",
+  "parcelaMensal": "[valor em reais]",
+  "cetMensal": "[valor decimal]",
   "tabelaParcelas": [
     {
-      "numeroParcela": 1,
-      "dataVencimento": "01/04/2025",
-      "valorParcela": 639.99,
-      "juros": 507.00,
-      "amortizacao": 132.99,
-      "saldoDevedor": 5353.92,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    {
-      "numeroParcela": 2,
-      "dataVencimento": "01/05/2025",
-      "valorParcela": 639.99,
-      "juros": 494.70,
-      "amortizacao": 145.29,
-      "saldoDevedor": 5208.63,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    // ... (continua até a parcela 18)
-    {
-      "numeroParcela": 18,
-      "dataVencimento": "01/09/2026",
-      "valorParcela": 639.99,
-      "juros": 8.09,
-      "amortizacao": 631.90,
-      "saldoDevedor": 0.00,
-      "status": "pendente",
-      "dataPagamento": null
+      "numeroParcela": "[número]",
+      "dataVencimento": "[data no formato DD/MM/AAAA]",
+      "valorParcela": "[valor em reais]",
+      "juros": "[valor em reais]",
+      "amortizacao": "[valor em reais]",
+      "saldoDevedor": "[valor em reais]",
+      "status": "[paga ou pendente]",
+      "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
+    ... Demais parcelas
   ],
-  "mensagem": "Empréstimo concedido com sucesso."
+  "mensagem": "Simulação realizada com sucesso."
 }
 ```
 
@@ -257,12 +221,12 @@ Retorna os valores calculados sem gravar o contrato.
 Empréstimo Consignado
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 10000.00,
-  "tipoEmprestimo": "consignado",
-  "quantidadeParcelas": 48,
-  "contratarSeguro": true,
-  "dataInicioPagamento": "01/04/2025"
+  "idCliente": [cpf],
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "quantidadeParcelas": "[número]",
+  "contratarSeguro": "[true ou false]",
+  "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 
@@ -298,8 +262,8 @@ Empréstimo Pessoal
 #### 7.1. Requisição
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001"
+  "idCliente": [cpf],
+  "idEmprestimo": "[identificador único]"
 }
 ```
 ### 7.2. Processo Passo a Passo
