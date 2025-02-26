@@ -139,7 +139,7 @@ Empréstimo Pessoal:
 - Calcula dias de carência e aplica [11.2.6. Carência](#1126-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-- Consignado: Executa [13.1. Margem Consignável](#132-margem-consignável).  
+- Consignado: Executa [13.2. Margem Consignável](#132-margem-consignável).  
 - Pessoal: Executa [13.1. Capacidade de Pagamento](#131-capacidade-de-pagamento).
 
 **Passo 4: Definição da Taxa de Juros**  
