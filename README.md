@@ -25,7 +25,6 @@
 - @Joao Formigari
 
 <br>
-<br>
 
 ### Referências
 - Planilha de cálculo
