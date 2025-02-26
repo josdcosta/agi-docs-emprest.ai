@@ -32,8 +32,8 @@
 ### 1. Objetivo
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado (total ou parcial), refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
-### 2. Variáveis Configuráveis
-Os parâmetros abaixo são ajustáveis no sistema Emprest.AI, podendo ser alterados conforme políticas internas, regulamentações ou condições comerciais:
+### 2. Variáveis
+Os parâmetros abaixo do sistema Emprest.AI:
 
 | Variável                   | Descrição                                                 | Valor Padrão            |
 |----------------------------|-----------------------------------------------------------|-------------------------|
@@ -471,11 +471,11 @@ bancoDestino deve aceitar a portabilidade.
 
 ## 12.1. Margem Consignável (Consignado)
 
-margemMaxima = remuneracaoLiquida * 0,35
+margemMaxima = remuneracaoLiquida * margemConsignavel
 
 ## 12.2. Capacidade de Pagamento (Pessoal)
 
-capacidadeMaxima = remuneracaoLiquida * 0,30
+capacidadeMaxima = remuneracaoLiquida * percentualRendaPessoal
 
 ## 12.3. Taxa de Juros Mensal
 
