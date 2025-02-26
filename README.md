@@ -132,10 +132,10 @@ Empréstimo Consignado:
 - Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
 
 Empréstimo Pessoal:
-- Aplica [11.2.1. Idade Máxima](#1122-idade-máxima).
-- Aplica [11.2.2. Valor do Empréstimo](#1121-valor-do-empréstimo).
-- Aplica [11.2.3. Quantidade de Parcelas](#1122-quantidade-de-parcelas).
-- Aplica [11.2.4. Score de Crédito](#1123-score-de-crédito).
+- Aplica [11.2.1. Idade Máxima](#1121-idade-máxima).
+- Aplica [11.2.2. Valor do Empréstimo](#1122-valor-do-empréstimo).
+- Aplica [11.2.3. Quantidade de Parcelas](#1124-quantidade-de-parcelas).
+- Aplica [11.2.4. Score de Crédito](#1124-score-de-crédito).
 - Calcula dias de carência e aplica [11.2.5. Carência](#1125-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
