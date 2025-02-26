@@ -600,7 +600,7 @@ margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos A
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
 **Pessoal**:
-Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com base em scoreCredito.
+Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.
 | Faixa de Score | Nível de Risco     | Taxa               | 
 |----------------|--------------------|--------------------|
 | 0-200          | Altíssimo risco    | N/A                | 
@@ -609,7 +609,7 @@ Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com
 | 601-800        | Risco baixo        | 8,99% a 9,49%      | 
 | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
-Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
+Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)
 
 ## 13.4. Custo do Seguro
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
