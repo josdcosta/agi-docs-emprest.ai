@@ -159,7 +159,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 Retorna os valores calculados sem gravar o contrato.
 
 #### 5.3. Saída
-##### Empréstimo Consignado
+##### Empréstimo Consignado/Pessoal
 ```json
 {
   "idCliente": [cpf]
@@ -180,35 +180,6 @@ Retorna os valores calculados sem gravar o contrato.
       "juros": "[valor em reais]",
       "amortizacao": "[valor em reais]",
       "saldoDevedor": "[valor em reais]"
-    }
-    ... Demais parcelas
-  ],
-  "mensagem": "Simulação realizada com sucesso."
-}
-```
-##### Empréstimo Pessoal
-```json
-{
-  "idCliente": [cpf],
-  "valorEmprestimo": "[valor em reais]",
-  "tipoEmprestimo": "[consignado ou pessoal]",
-  "quantidadeParcelas": "[número]",
-  "taxaJurosMensal": "[valor decimal]",
-  "custoSeguro": "[valor em reais]",
-  "iof": "[valor em reais]",
-  "valorTotalFinanciado": "[valor em reais]",
-  "parcelaMensal": "[valor em reais]",
-  "cetMensal": "[valor decimal]",
-  "tabelaParcelas": [
-    {
-      "numeroParcela": "[número]",
-      "dataVencimento": "[data no formato DD/MM/AAAA]",
-      "valorParcela": "[valor em reais]",
-      "juros": "[valor em reais]",
-      "amortizacao": "[valor em reais]",
-      "saldoDevedor": "[valor em reais]",
-      "status": "[paga ou pendente]",
-      "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
     ... Demais parcelas
   ],
