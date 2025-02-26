@@ -144,7 +144,7 @@ Empréstimo Pessoal:
 
 **Passo 4: Definição da Taxa de Juros**  
 - Consignado: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
-- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
+- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-taxa-de-juros).
 
 **Passo 5: Cálculo do Custo do Seguro**  
 - Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
