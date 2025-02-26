@@ -585,15 +585,15 @@ bancoDestino deve aceitar a portabilidade.
 ## 13. CÁLCULOS
 
 ### 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
-rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.  
-capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
+- rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.  
+- capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
 ### 13.2. Margem Consignável (Empréstimo Consignado)
-margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
+- margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
 
 ### 13.3. Taxa de Juros Mensal
 **Consignado**:  
-TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
+- taxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
 **Pessoal**:  
 Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.  
@@ -605,25 +605,25 @@ Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCred
 | 601-800        | Risco baixo        | 8,99% a 9,49%      | 
 | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
-Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)
+- Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)
 
 ### 13.4. Custo do Seguro
-CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
+- CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
 ### 13.5. IOF
-percentualFixo = 0,0038  
-percentualVariado = 0,000082  
-IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
+- percentualFixo = 0,0038  
+- percentualVariado = 0,000082  
+- IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
 ### 13.6. Valor Total Financiado
-ValorInicial = valorBase + IOF + CustoSeguro  
-ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
+- ValorInicial = valorBase + IOF + CustoSeguro  
+- ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
 ### 13.7. Parcela Mensal
-ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
+- ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
 ### 13.8. Saldo Devedor
-SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
+- SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
 
 ### 13.9 Juros Mora e Multa por Atraso
   - Multa = `valorParcela * percentualJurosMora`.
