@@ -139,28 +139,28 @@ Empréstimo Pessoal:
 - Calcula dias de carência e aplica [11.2.5. Carência](#1125-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-Consignado: Executa [12.1. Margem Consignável](#121-margem-consignável).  
-Pessoal: Executa [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento).
+- Consignado: Executa [12.1. Margem Consignável](#121-margem-consignável).  
+- Pessoal: Executa [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento).
 
 **Passo 4: Definição da Taxa de Juros**  
-Consignado: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
-Pessoal: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
+- Consignado: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
+- Pessoal: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
 
 **Passo 5: Cálculo do Custo do Seguro**  
-Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
+- Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
 
 **Passo 6: Cálculo do IOF**  
-Executa [12.5. IOF](#125-iof).
+- Executa [12.5. IOF](#125-iof).
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado).
+- Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado).
 
 **Passo 8: Cálculo da Parcela Mensal**  
-Executa [12.7. Parcela Mensal](#127-parcela-mensal).
+- Executa [12.7. Parcela Mensal](#127-parcela-mensal).
 
 **Passo 9: Validação Final de Elegibilidade**  
-Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
-Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
+- Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
+- Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
 **Passo 10: Geração da Tabela de Parcelas**
 
@@ -174,7 +174,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 6. **Saldo devedor restante**
 
 **Passo 11: Retorno da Simulação**  
-Retorna os valores calculados sem gravar o contrato.
+- Retorna os valores calculados sem gravar o contrato.
 
 # 5.3. Saída
 ## Empréstimo Consignado/Pessoal
