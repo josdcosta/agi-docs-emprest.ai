@@ -290,59 +290,27 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "valorEmprestimo": 10000.00,
-  "quantidadeParcelas": 48,
-  "taxaJurosMensal": 0.0192,
-  "custoSeguro": 240.00,  // Ajustado para idade 70
-  "iof": 337.30,
-  "valorTotalFinanciado": 10799.47,  // Ajustado
-  "parcelaMensal": 305.96,  // Ajustado
-  "totalParcelasPagas": 5,
-  "totalParcelasRestantes": 43,
-  "saldoDevedor": 9278.07,
+  "idEmprestimo": "[identificador único]",
+  "valorEmprestimo": "[valor em reais]",
+  "quantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[valor decimal]",
+  "custoSeguro": "[valor em reais]",
+  "iof": "[valor em reais]",
+  "valorTotalFinanciado": "[valor em reais]",
+  "parcelaMensal": "[valor em reais]",
+  "totalParcelasPagas": "[número]",
+  "totalParcelasRestantes": "[número]",
+  "saldoDevedor": "[valor em reais]",
   "tabelaParcelas": [
     {
-      "numeroParcela": 1,
-      "dataVencimento": "01/04/2025",
-      "valorParcela": 305.96,
-      "juros": 207.36,
-      "amortizacao": 98.60,
-      "saldoDevedor": 10700.87,
-      "status": "paga",
-      "dataPagamento": "01/04/2025"
-    },
-    {
-      "numeroParcela": 2,
-      "dataVencimento": "01/05/2025",
-      "valorParcela": 305.96,
-      "juros": 205.46,
-      "amortizacao": 100.50,
-      "saldoDevedor": 10600.37,
-      "status": "paga",
-      "dataPagamento": "01/05/2025"
-    },
-    // ... (parcelas 3 a 5 também "paga")
-    {
-      "numeroParcela": 6,
-      "dataVencimento": "01/09/2025",
-      "valorParcela": 305.96,
-      "juros": 197.76,
-      "amortizacao": 108.20,
-      "saldoDevedor": 9278.07,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    // ... (continua até a parcela 48)
-    {
-      "numeroParcela": 48,
-      "dataVencimento": "01/03/2029",
-      "valorParcela": 305.96,
-      "juros": 5.84,
-      "amortizacao": 300.12,
-      "saldoDevedor": 0.00,
-      "status": "pendente",
-      "dataPagamento": null
+      "numeroParcela": "[número]",
+      "dataVencimento": "[data no formato DD/MM/AAAA]",
+      "valorParcela": "[valor em reais]",
+      "juros": "[valor em reais]",
+      "amortizacao": "[valor em reais]",
+      "saldoDevedor": "[valor em reais]",
+      "status": "[paga ou pendente]",
+      "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
   ],
   "mensagem": "Consulta realizada com sucesso."
@@ -355,10 +323,10 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
-  "numeroParcela": 6,
-  "dataPagamento": "11/09/2025"  // Corrigido para refletir atraso
+  "idEmprestimo": "[identificador único]",
+  "valorPagamento": "[valor em reais]",
+  "numeroParcela": "[parcelas1, parcela2, ...]",
+  "dataPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 
@@ -396,58 +364,26 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
-  "numeroParcela": 6,
-  "saldoDevedor": 9278.07,
+  "idEmprestimo": "[identificador único]",
+  "valorPagamento": "[valor em reais]",
+  "numeroParcela": "[número]",
+  "saldoDevedor": "[valor em reais]",
   "tabelaParcelas": [
     {
-      "numeroParcela": 1,
-      "dataVencimento": "01/04/2025",
-      "valorParcela": 305.96,
-      "juros": 207.36,
-      "amortizacao": 98.60,
-      "saldoDevedor": 10700.87,
-      "status": "paga",
-      "dataPagamento": "01/04/2025"
-    },
-    // ... (parcelas 2 a 5 já pagas)
-    {
-      "numeroParcela": 6,
-      "dataVencimento": "01/09/2025",
-      "valorParcela": 305.96,
-      "multa": 6.12,  // 2% de 305.96
-      "jurosMora": 1.00,  // 0,033% ao dia por 10 dias
-      "valorTotalAjustado": 313.08,  // 305.96 + 6.12 + 1.00
-      "juros": 197.76,
-      "amortizacao": 108.20,
-      "saldoDevedor": 9278.07,
-      "status": "paga",
-      "dataPagamento": "11/09/2025"  // Atraso de 10 dias
-    },
-    {
-      "numeroParcela": 7,
-      "dataVencimento": "01/10/2025",
-      "valorParcela": 305.96,
-      "juros": 195.68,
-      "amortizacao": 110.28,
-      "saldoDevedor": 9167.79,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    // ... (continua até a parcela 48)
-    {
-      "numeroParcela": 48,
-      "dataVencimento": "01/03/2029",
-      "valorParcela": 305.96,
-      "juros": 5.84,
-      "amortizacao": 300.12,
-      "saldoDevedor": 0.00,
-      "status": "pendente",
-      "dataPagamento": null
+      "numeroParcela": "[número]",
+      "dataVencimento": "[data no formato DD/MM/AAAA]",
+      "valorParcela": "[valor em reais]",
+      "multa": "[valor em reais ou null]",
+      "jurosMora": "[valor em reais ou null]",
+      "valorTotalAjustado": "[valor em reais ou null]",
+      "juros": "[valor em reais]",
+      "amortizacao": "[valor em reais]",
+      "saldoDevedor": "[valor em reais]",
+      "status": "[paga ou pendente]",
+      "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
   ],
-  "mensagem": "Pagamento da parcela 6 registrado com sucesso, com multa e juros de mora aplicados."
+  "mensagem": "Pagamento da parcela registrado com sucesso."
 }
 ```
 
@@ -466,11 +402,11 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "EMP001",
-  "novoValorEmprestimo": 2000.00,
-  "novaQuantidadeParcelas": 60,
-  "contratarSeguro": true,
-  "dataInicioPagamento": "01/04/2025"
+  "idEmprestimoOriginal": "[identificador único]",
+  "novoValorEmprestimo": "[valor em reais]",
+  "novaQuantidadeParcelas": "[número]",
+  "contratarSeguro": "[true ou false]",
+  "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 
@@ -535,47 +471,26 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "EMP001",
-  "idNovoEmprestimo": "EMP002",
-  "saldoDevedorOriginal": 9278.07,
-  "novoValorEmprestimo": 2000.00,
-  "novaQuantidadeParcelas": 60,
-  "taxaJurosMensal": 0.0198,
-  "custoSeguro": 300.75,  // Ajustado para idade 70: 11278.07 * (0,0025 + 0,00005 * 70) * (60 / 12)
-  "iof": 438.70,
-  "valorTotalFinanciado": 14017.52,  // Ajustado: 9278.07 + 2000 + 300.75 + 438.70
-  "parcelaMensal": 353.12,  // Ajustado especulativamente
+  "idEmprestimoOriginal": "[identificador único]",
+  "idNovoEmprestimo": "[identificador único]",
+  "saldoDevedorOriginal": "[valor em reais]",
+  "novoValorEmprestimo": "[valor em reais]",
+  "novaQuantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[valor decimal]",
+  "custoSeguro": "[valor em reais]",
+  "iof": "[valor em reais]",
+  "valorTotalFinanciado": "[valor em reais]",
+  "parcelaMensal": "[valor em reais]",
   "tabelaParcelas": [
     {
-      "numeroParcela": 1,
-      "dataVencimento": "01/04/2025",
-      "valorParcela": 353.12,
-      "juros": 277.55,
-      "amortizacao": 75.57,
-      "saldoDevedor": 13941.95,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    {
-      "numeroParcela": 2,
-      "dataVencimento": "01/05/2025",
-      "valorParcela": 353.12,
-      "juros": 276.05,
-      "amortizacao": 77.07,
-      "saldoDevedor": 13864.88,
-      "status": "pendente",
-      "dataPagamento": null
-    },
-    // ... (continua até a parcela 60)
-    {
-      "numeroParcela": 60,
-      "dataVencimento": "01/03/2030",
-      "valorParcela": 353.12,
-      "juros": 6.98,
-      "amortizacao": 346.14,
-      "saldoDevedor": 0.00,
-      "status": "pendente",
-      "dataPagamento": null
+      "numeroParcela": "[número]",
+      "dataVencimento": "[data no formato DD/MM/AAAA]",
+      "valorParcela": "[valor em reais]",
+      "juros": "[valor em reais]",
+      "amortizacao": "[valor em reais]",
+      "saldoDevedor": "[valor em reais]",
+      "status": "[paga ou pendente]",
+      "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
   ],
   "mensagem": "Refinanciamento realizado com sucesso."
