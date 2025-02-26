@@ -596,10 +596,10 @@ capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos Ativos
 
 ## 13.3. Taxa de Juros Mensal
-**Consignado**:
+**Consignado**:  
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
-**Pessoal**:
+**Pessoal**:  
 Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.
 | Faixa de Score | Nível de Risco     | Taxa               | 
 |----------------|--------------------|--------------------|
