@@ -52,35 +52,36 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | carenciaMaximaPessoal      | Período máximo de carência (Empréstimo Pessoal)           | 30 dias                 |
 | carenciaMaximaConsignado   | Período máximo de carência (Empréstimo Consignado)        | 60 dias                 |
 | idadeMaximaConsignado      | Idade máxima ao final (Empréstimo Consignado)             | 80 anos                 |
+| idadeMaximaPessoal         | Idade máxima ao final (Empréstimo Pessoal)                | 75 anos                 |
 | margemConsignavel          | Percentual da remuneração líquida para margem             | 35%                     |
 | iof                        | Imposto sobre Operações Financeiras                       | Conforme legislação     |
 | percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%            |
 | percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                     |
+
 ### 3. Visão Geral do Funcionamento
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
 - Consulta de Empréstimos: Acompanhamento de status, parcelas e histórico de pagamentos.
-- Pagamento de Empréstimos: Registro de pagamentos (totais ou parciais), incluindo antecipações.
+- Pagamento de Empréstimos: Registro de pagamentos, incluindo antecipações.
 - Refinanciamento: Renegociação de contratos existentes (ambas as modalidades).
-- Portabilidade: Transferência de consignados para outro banco.
+- Portabilidade: Transferência de consignados e empréstimo pessoal para outro banco.
 - Cancelamento de Contrato: Gestão de desistências ou finalizações.
 
 ### 4. Dados Armazenados do Cliente
 ```json
 {
   "idCliente": [cpf],
-  "nome": "João Silva",
+  "nome": "[nome]",
   "remuneracaoLiquidaMensal": "[valor em reais]",
   "idade": "[número]",
   "tipoVinculo": "[aposentado, servidor, pensionista, empregado ou nulo]",
-  "scoreCredito": "[valor]"
 }
 ```
 
 ### 5. Simulação de Empréstimo
 #### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
-##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos
+##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
 {
   "idCliente": [cpf],
@@ -104,7 +105,8 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 ```
 #### 5.2. Processo Passo a Passo
 **Passo 1: Consulta de Dados do Cliente**  
-O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
+O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio
+do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
 
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:
@@ -114,6 +116,7 @@ Empréstimo Consignado:
 - Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
 
 Empréstimo Pessoal:
+- Aplica [11.1.2. Idade Máxima](#1112-idade-máxima).
 - Aplica [11.2.1. Valor do Empréstimo](#1121-valor-do-empréstimo).
 - Aplica [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas).
 - Aplica [11.2.3. Score de Crédito](#1123-score-de-crédito).
@@ -191,7 +194,7 @@ Retorna os valores calculados sem gravar o contrato.
 Empréstimo Consignado
 ```json
 {
-  "idCliente": [cpf],
+  "idCliente": "[cpf]",
   "valorEmprestimo": "[valor em reais]",
   "tipoEmprestimo": "[consignado ou pessoal]",
   "quantidadeParcelas": "[número]",
@@ -203,12 +206,12 @@ Empréstimo Consignado
 Empréstimo Pessoal
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "valorEmprestimo": 5000.00,
-  "tipoEmprestimo": "pessoal",
-  "quantidadeParcelas": 18,
-  "contratarSeguro": false,
-  "dataInicioPagamento": "01/04/2025"
+  "idCliente": "[cpf]",
+  "valorEmprestimo": "[valor em reais]",
+  "tipoEmprestimo": "[pessoal]",
+  "quantidadeParcelas": "[número]",
+  "contratarSeguro": "[false]",
+  "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
 
@@ -259,7 +262,7 @@ Empréstimo Pessoal
 #### 7.3. Saída
 ```json
 {
-  "idCliente": "123.456.789-00",
+  "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]",
   "valorEmprestimo": "[valor em reais]",
   "quantidadeParcelas": "[número]",
@@ -270,15 +273,16 @@ Empréstimo Pessoal
   "parcelaMensal": "[valor em reais]",
   "totalParcelasPagas": "[número]",
   "totalParcelasRestantes": "[número]",
-  "saldoDevedor": "[valor em reais]",
+  "saldoDevedorAtualizado": "[valor em reais]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
       "dataVencimento": "[data no formato DD/MM/AAAA]",
-      "valorParcela": "[valor em reais]",
+      "valorPresenteParcela": "[valor em reais]",
       "juros": "[valor em reais]",
+      "multa": "[valor em reais ou null]",
+      "jurosMora": "[valor em reais ou null]",
       "amortizacao": "[valor em reais]",
-      "saldoDevedor": "[valor em reais]",
       "status": "[paga ou pendente]",
       "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
@@ -292,7 +296,7 @@ Empréstimo Pessoal
 ##### Pagamento Parcela
 ```json
 {
-  "idCliente": "123.456.789-00",
+  "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]",
   "valorPagamento": "[valor em reais]",
   "numeroParcela": "[parcelas1, parcela2, ...]",
@@ -333,22 +337,27 @@ Empréstimo Pessoal
 ##### Pagamento Parcela
 ```json
 {
-  "idCliente": "123.456.789-00",
+  "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]",
-  "valorPagamento": "[valor em reais]",
-  "numeroParcela": "[número]",
-  "saldoDevedor": "[valor em reais]",
+  "valorEmprestimo": "[valor em reais]",
+  "quantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[valor decimal]",
+  "custoSeguro": "[valor em reais]",
+  "iof": "[valor em reais]",
+  "valorTotalFinanciado": "[valor em reais]",
+  "parcelaMensal": "[valor em reais]",
+  "totalParcelasPagas": "[número]",
+  "totalParcelasRestantes": "[número]",
+  "saldoDevedorAtualizado": "[valor em reais]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
       "dataVencimento": "[data no formato DD/MM/AAAA]",
-      "valorParcela": "[valor em reais]",
+      "valorPresenteParcela": "[valor em reais]",
+      "juros": "[valor em reais]",
       "multa": "[valor em reais ou null]",
       "jurosMora": "[valor em reais ou null]",
-      "valorTotalAjustado": "[valor em reais ou null]",
-      "juros": "[valor em reais]",
       "amortizacao": "[valor em reais]",
-      "saldoDevedor": "[valor em reais]",
       "status": "[paga ou pendente]",
       "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
@@ -371,7 +380,7 @@ Empréstimo Pessoal
 
 ```json
 {
-  "idCliente": "123.456.789-00",
+  "idCliente": "[cpf]",
   "idEmprestimoOriginal": "[identificador único]",
   "novoValorEmprestimo": "[valor em reais]",
   "novaQuantidadeParcelas": "[número]",
@@ -440,25 +449,27 @@ Empréstimo Pessoal
 
 ```json
 {
-  "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "[identificador único]",
-  "idNovoEmprestimo": "[identificador único]",
-  "saldoDevedorOriginal": "[valor em reais]",
-  "novoValorEmprestimo": "[valor em reais]",
-  "novaQuantidadeParcelas": "[número]",
+  "idCliente": "[cpf]",
+  "idEmprestimo": "[identificador único]",
+  "valorEmprestimo": "[valor em reais]",
+  "quantidadeParcelas": "[número]",
   "taxaJurosMensal": "[valor decimal]",
   "custoSeguro": "[valor em reais]",
   "iof": "[valor em reais]",
   "valorTotalFinanciado": "[valor em reais]",
   "parcelaMensal": "[valor em reais]",
+  "totalParcelasPagas": "[número]",
+  "totalParcelasRestantes": "[número]",
+  "saldoDevedorAtualizado": "[valor em reais]",
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
       "dataVencimento": "[data no formato DD/MM/AAAA]",
-      "valorParcela": "[valor em reais]",
+      "valorPresenteParcela": "[valor em reais]",
       "juros": "[valor em reais]",
+      "multa": "[valor em reais ou null]",
+      "jurosMora": "[valor em reais ou null]",
       "amortizacao": "[valor em reais]",
-      "saldoDevedor": "[valor em reais]",
       "status": "[paga ou pendente]",
       "dataPagamento": "[data no formato DD/MM/AAAA ou null]"
     }
@@ -496,31 +507,51 @@ Dias até o primeiro pagamento ≤ 60.
 
 ## 11.2. Empréstimo Pessoal
 
-### 11.2.1. Valor do Empréstimo
+### 11.2.1. Idade Máxima
+`idade + quantidadeParcelas / 12 < 80 anos`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder 75 anos.
 
-valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal.
+### 11.2.2. Valor do Empréstimo
 
-### 11.2.2. Quantidade de Parcelas
+| Faixa de Score | Nível de Risco     | Limite Crédito     |  
+|----------------|--------------------|--------------------|
+| 0-200          | Altíssimo risco    | N/A                |
+| 201-400        | Alto risco         | R$ 100 a R$ 1.000  |
+| 401-600        | Risco moderado     | R$ 100 a R$ 5.000  | 
+| 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
+| 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 | 
+|----------------|--------------------|--------------------|
+
+valorMinimoPessoal ≤ valorEmprestimo ≤ margemConsignavel.
+Limite = Limite_mín + [(Limite_máx - Limite_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
+
+### 11.2.3. Quantidade de Parcelas
 
 prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
-- 201-400: 6-12.
-- 401-600: 6-18.
-- 601-800: 6-24.
-- 801-1000: 6-30.
 
-### 11.2.3. Score de Crédito
+| Faixa de Score | Nível de Risco     |  Meses              |
+|----------------|--------------------|---------------------| 
+| 0-200          | Altíssimo risco    |  N/A                |
+| 201-400        | Alto risco         |  6 a 12             |
+| 401-600        | Risco moderado     |  6 a 18             |
+| 601-800        | Risco baixo        |  6 a 24             |
+| 801-1000       | Risco muito baixo  |  6 a 30             |
+|----------------|--------------------|---------------------|
+
+Meses = Meses_mín + [(Meses_máx - Meses_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
+
+### 11.2.4. Score de Crédito
 
 scoreCredito ≥ 201.
 
-### 11.2.4. Capacidade de Pagamento
+### 11.2.5. Capacidade de Pagamento
 
 Parcela ≤ percentualRendaPessoal * remuneracaoLiquida.
 
-### 11.2.5. Renda Per Capita
+### 11.2.6. Renda Per Capita
 
-Renda Familiar = Σ Rendas Individuais - Σ Despesas Fixas
+rendaTotalLiquida =( Σ Rendas Individuais - Σ Despesas Fixas)/ quantidadeMembrosFamilia.
 
-### 11.2.6 Carência
+### 11.2.7 Carência
 
 Dias até o primeiro pagamento ≤ 30.
 
@@ -530,7 +561,7 @@ Dias até o primeiro pagamento ≤ 30.
 
 ≥ 20% das parcelas pagas.
 
-## 11.4. Portabilidade (Empréstimo Consignado)
+## 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
 
 ### 11.4.1. Parcelas em Dia
 
@@ -546,14 +577,25 @@ bancoDestino deve aceitar a portabilidade.
 
 margemMaxima = remuneracaoLiquida * margemConsignavel
 
-## 12.2. Capacidade de Pagamento (Empréstimo Pessoal)
+## 12.2. Capacidade de Pagamento (Empréstimo Consignado,Empréstimo Pessoal)
 
-capacidadeMaxima = remuneracaoLiquida * percentualRendaPessoal
+capacidadeMaxima = remuneracaoLiquida * percentualRendaConsignado  ou  parcela = percentualRendaPessoal * remuneracaoLiquida
 
 ## 12.3. Taxa de Juros Mensal
 
 - Consignado: TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 - Pessoal: Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com base em scoreCredito.
+
+| Faixa de Score | Nível de Risco     | Taxa               | 
+|----------------|--------------------|--------------------|
+| 0-200          | Altíssimo risco    | N/A                | 
+| 201-400        | Alto risco         | 9,99%              | 
+| 401-600        | Risco moderado     | 9,49% a 9,99%      | 
+| 601-800        | Risco baixo        | 8,99% a 9,49%      | 
+| 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
+|----------------|--------------------|--------------------|
+  
+- Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
 ## 12.4. Custo do Seguro
 
