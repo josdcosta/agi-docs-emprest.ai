@@ -14,7 +14,7 @@
 - [Cancelamento de Contrato](#8-cancelamento-de-contrato)
 - [Tabelas Sugeridas e Campos](#tabelas-sugeridas-e-campos)
 
-##Autores
+## Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
@@ -116,7 +116,7 @@ Resposta da solicitação:
 ```
 
 ## Consulta de elegibilidade
-###4.1. Processos
+### 4.1. Processos
 1. O sistema consulta a tabela de clientes com base no CPF.
 2. Recupera `remuneracaoLiquida`, `idade` e `tipoVinculo`.
 3. Em seguida, consulta variaveis locais para cada tipo de empréstimo:
@@ -141,7 +141,7 @@ Resposta da solicitação:
 
 6.  Calcula a margem máxima como `remuneracaoLiquida * margemConsignavel ou MargemPessoal` e verifica se a margem atual é suficiente para suportar um empréstimo.
 
-##5. Concessão de Empréstimos
+## 5. Concessão de Empréstimos
 
 ### 5.1. Entrada de Dados
 | Campo               | Descrição                                     | Exemplo         | Obrigatório? |
@@ -349,7 +349,7 @@ Após validação bem-sucedida, o contrato é registrado no banco de dados com s
 }
 ```
 
-#6.Refinanciamento e Portabilidade
+# 6.Refinanciamento e Portabilidade
 
 Essa seção descreve os processos de refinanciamento e portabilidade de empréstimos consignados, que permitem ao cliente renegociar um contrato existente ou transferi-lo para outro banco, respectivamente. Ambos os processos utilizam o saldo devedor do contrato original como base e aplicam regras específicas para elegibilidade e cálculo.
 
@@ -535,7 +535,7 @@ A taxa de 1,55% (0,0155) é assumida como fornecida pelo banco destino, inferior
 }
 ```
 
-##8.Cancelamento de Contrato
+## 8.Cancelamento de Contrato
 
 ### 8.1. Condições
 
