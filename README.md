@@ -14,9 +14,8 @@
 9. [7. Consulta de Dados de Empréstimo](#7-consulta-de-dados-de-empréstimo)
 10. [8. Pagamento de Empréstimo](#8-pagamento-de-empréstimo)
 11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-de-empréstimo)
-12. [10. Portabilidade de Empréstimo](#10-portabilidade-de-empréstimo)
-13. [11. Elegibilidade](#11-elegibilidade)
-14. [12. Cálculos](#12-cálculos)
+12. [11. Elegibilidade](#11-elegibilidade)
+13. [12. Cálculos](#12-cálculos)
 
 ### Autores
 - @Dalleth Martins
@@ -35,6 +34,9 @@ O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transpa
 ### 2. Variáveis
 Os parâmetros abaixo do sistema Emprest.AI:
 
+### 2. Variáveis
+Os parâmetros abaixo do sistema Emprest.AI:
+
 | Variável                   | Descrição                                                 | Valor Padrão            |
 |----------------------------|-----------------------------------------------------------|-------------------------|
 | jurosMinimoPessoal         | Taxa mínima de juros mensal (Empréstimo Pessoal)          | 8,49% ao mês            |
@@ -43,7 +45,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês            |
 | valorMinimoPessoal         | Valor mínimo do Empréstimo Pessoal                        | R$ 100,00               |
 | valorMaximoPessoal         | Valor máximo do Empréstimo Pessoal                        | R$ 20.000,00            |
-| valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | 1.000,00                |
+| valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | R$ 1.000,00             |
 | prazoMinimoPessoal         | Prazo mínimo em parcelas (Empréstimo Pessoal)             | 6 parcelas              |
 | prazoMaximoPessoal         | Prazo máximo em parcelas (Empréstimo Pessoal)             | 30 parcelas             |
 | prazoMinimoConsignado      | Prazo mínimo em parcelas (Empréstimo Consignado)          | 24 parcelas             |
@@ -55,7 +57,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | iof                        | Imposto sobre Operações Financeiras                       | Conforme legislação     |
 | percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%            |
 | percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                     |
-| taxaMaximaSeguroAnual      | Taxa máxima anual permitida para seguro                   | 0,01 (1%)               |
+| taxaMaximaSeguroAnual      | Taxa máxima anual permitida para seguro                   | 1%                      |
 
 ### 3. Visão Geral do Funcionamento
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
@@ -163,39 +165,39 @@ Retorna os valores calculados sem gravar o contrato.
 ```json
 {
   "idCliente": "123.456.789-00",
-  "valorEmprestimo": 5000.00,
-  "tipoEmprestimo": "pessoal",
-  "quantidadeParcelas": 18,
-  "taxaJurosMensal": 0.0924,
-  "custoSeguro": 0.00,
-  "iof": 168.65,
-  "valorTotalFinanciado": 5486.91,
-  "parcelaMensal": 639.99,
-  "cetMensal": 0.0940,
+  "valorEmprestimo": 10000.00,
+  "tipoEmprestimo": "consignado",
+  "quantidadeParcelas": 48,
+  "taxaJurosMensal": 0.0192,
+  "custoSeguro": 250.00,
+  "iof": 337.30,
+  "valorTotalFinanciado": 10809.47,
+  "parcelaMensal": 306.28,
+  "cetMensal": 0.0200,
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 639.99,
-      "juros": 507.00,
-      "amortizacao": 132.99,
-      "saldoDevedor": 5353.92
+      "valorParcela": 306.28,
+      "juros": 207.54,
+      "amortizacao": 98.74,
+      "saldoDevedor": 10710.73
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 639.99,
-      "juros": 494.70,
-      "amortizacao": 145.29,
-      "saldoDevedor": 5208.63
+      "valorParcela": 306.28,
+      "juros": 205.65,
+      "amortizacao": 100.63,
+      "saldoDevedor": 10610.10
     },
-    // ... (continua até a parcela 18)
+    // ... (continua até a parcela 48)
     {
-      "numeroParcela": 18,
-      "dataVencimento": "01/09/2026",
-      "valorParcela": 639.99,
-      "juros": 8.09,
-      "amortizacao": 631.90,
+      "numeroParcela": 48,
+      "dataVencimento": "01/03/2029",
+      "valorParcela": 306.28,
+      "juros": 5.85,
+      "amortizacao": 300.43,
       "saldoDevedor": 0.00
     }
   ],
@@ -481,8 +483,7 @@ Empréstimo Pessoal
 }
 ```
 
-# 9. Refinanciamento de Empréstimo
-
+## 9. Refinanciamento de Empréstimo
 ## 9.1. Requisição
 
 ```json
