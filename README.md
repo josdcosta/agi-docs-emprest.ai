@@ -480,7 +480,6 @@ Empréstimo Pessoal
 <br>
 <br>
 <br>
-<br>
 
 # 11. ELEGIBILIDADE
 
@@ -546,7 +545,6 @@ Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 <br>
 <br>
 <br>
-<br>
 
 # 12. REFINANCIAMENTO (COMUM)
 
@@ -560,7 +558,6 @@ Sem parcelas vencidas.
 
 ### 12.4. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
-<br>
 <br>
 <br>
 <br>
