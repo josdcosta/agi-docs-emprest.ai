@@ -17,7 +17,7 @@
 12. [11. Elegibilidade](#11-elegibilidade)
 13. [12. Cálculos](#12-cálculos)
 
-### Autores
+### AUTORES
 - @Dalleth Martins
 - @Josué Davi da Costa
 - @Carollina Guedes
@@ -26,19 +26,19 @@
 
 <br>
 
-### Referências
+### REFERÊNCIAS
 - Planilha de cálculo
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 - Leis e Regulamentações: Lei nº 8.078/1990: O Código de Defesa do Consumidor (CDC). Esta lei protege você quando contrata um empréstimo pessoal, garantindo informações claras, proibindo cobranças abusivas, protegendo contra problemas e ajudando a evitar o superendividamento.
 
 <br>
 
-### 1. Objetivo
+### 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
 <br>
 
-### 2. Variáveis
+### 2. VARIÁVEIS
 Os parâmetros abaixo do sistema Emprest.AI:
 
 
@@ -66,7 +66,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 
 <br>
 
-### 3. Visão Geral do Funcionamento
+### 3. VISÃO GERAL DE FUNCIONAMENTO
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
@@ -78,7 +78,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-### 4. Dados Armazenados do Cliente
+### 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
   "idCliente": [cpf],
@@ -91,7 +91,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-### 5. Simulação de Empréstimo
+### 5. SIMULAÇÃO DE EMPRESTIMO
 #### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
 ##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
@@ -203,7 +203,7 @@ Retorna os valores calculados sem gravar o contrato.
 
 <br>
 
-### 6. Concessão de Empréstimo
+### 6. CONCESSÃO DE EMPRÉSTIMO
 #### 6.1. Requisição
 Empréstimo Consignado
 ```json
@@ -247,7 +247,7 @@ Empréstimo Pessoal
 
 <br>
 
-### 7. Consulta de Dados de Empréstimo
+### 7. CONSULTA DE DADOS DE EMPRÉSTIMO
 #### 7.1. Requisição
 ```json
 {
@@ -309,7 +309,7 @@ Empréstimo Pessoal
 
 <br>
 
-### 8. Pagamento de Empréstimo
+### 8. PAGAMENTO DO EMPRÉSTIMO
 #### 8.1. Requisição
 ##### Pagamento Parcela
 ```json
@@ -395,7 +395,7 @@ Empréstimo Pessoal
 
 <br>
 
-## 9. Refinanciamento de Empréstimo
+## 9. REFINANCIAMENTO DO EMPRÉSTIMO
 ## 9.1. Requisição
 
 ```json
