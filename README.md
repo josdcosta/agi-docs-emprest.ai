@@ -109,40 +109,40 @@ O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `ida
 
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:
-- Aplica 11.1.5. Tipo de Vínculo.
-- Usa 11.1.2. Idade Máxima para calcular idade + quantidadeParcelas / 12.
-- Aplica 11.1.3. Quantidade de Parcelas.
-- Calcula dias de carência e aplica 11.1.6. Carência.  
+- Aplica [11.1.5. Tipo de Vínculo](#1115-tipo-de-vínculo).
+- Usa [11.1.2. Idade Máxima](#1112-idade-máxima) para calcular idade + quantidadeParcelas / 12.
+- Aplica [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas).
+- Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
 
 Empréstimo Pessoal:
-- Aplica 11.2.1. Valor do Empréstimo.
-- Aplica 11.2.2. Quantidade de Parcelas.
-- Aplica 11.2.3. Score de Crédito.
-- Calcula dias de carência e aplica 11.2.5. Carência.
+- Aplica [11.2.1. Valor do Empréstimo](#1121-valor-do-empréstimo).
+- Aplica [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas).
+- Aplica [11.2.3. Score de Crédito](#1123-score-de-crédito).
+- Calcula dias de carência e aplica [11.2.5. Carência](#1125-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-Consignado: Executa 12.1. Margem Consignável.  
-Pessoal: Executa 12.2. Capacidade de Pagamento.
+Consignado: Executa [12.1. Margem Consignável](#121-margem-consignável).  
+Pessoal: Executa [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento).
 
 **Passo 4: Definição da Taxa de Juros**  
-Consignado: Aplica 12.3. Taxa de Juros Mensal (Consignado) e verifica 11.1.4. Taxa de Juros.  
-Pessoal: Aplica 12.3. Taxa de Juros Mensal (Pessoal) e verifica 11.2.4. Taxa de Juros.
+Consignado: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
+Pessoal: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
 
 **Passo 5: Cálculo do Custo do Seguro**  
-Se `contratarSeguro = true`, aplica 12.4. Custo do Seguro.
+Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
 
 **Passo 6: Cálculo do IOF**  
-Executa 12.5. IOF.
+Executa [12.5. IOF](#125-iof).
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-Aplica 12.6. Valor Total Financiado.
+Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado).
 
 **Passo 8: Cálculo da Parcela Mensal**  
-Executa 12.7. Parcela Mensal.
+Executa [12.7. Parcela Mensal](#127-parcela-mensal).
 
 **Passo 9: Validação Final de Elegibilidade**  
-Consignado: Aplica 11.1.1. Margem Consignável.  
-Pessoal: Aplica 11.2.4. Capacidade de Pagamento.
+Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
+Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
 **Passo 10: Retorno da Simulação**  
 Retorna os valores calculados sem gravar o contrato.
@@ -326,25 +326,25 @@ Empréstimo Pessoal
 
 ## 9.2. Processo Passo a Passo
 
-1. Consulta de Dados do Cliente: Valida idCliente.
-2. Verificação do Empréstimo Original: Busca idEmprestimoOriginal.
+1. Consulta de Dados do Cliente: Valida `idCliente`.
+2. Verificação do Empréstimo Original: Busca `idEmprestimoOriginal`.
 3. Validação do Status: Confirma se ativo.
 4. Verificação de Elegibilidade:
-   - Aplica 11.3.1. Percentual Mínimo Pago.
-   - Consignado: 11.1.2, 11.1.3, 11.1.6.
-   - Pessoal: 11.2.2, 11.2.5.
-5. Cálculo do Saldo Devedor: Executa 12.8. Saldo Devedor.
+   - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).
+   - Consignado: [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
+   - Pessoal: [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
+5. Cálculo do Saldo Devedor: Executa [12.8. Saldo Devedor](#128-saldo-devedor).
 6. Determinação da Capacidade:
-   - Consignado: 12.1
-   - Pessoal: 12.2
-7. Definição da Taxa de Juros: 12.3.
-8. Cálculo do Custo do Seguro: 12.4.
-9. Cálculo do IOF: 12.5.
-10. Cálculo do Valor Total Financiado: 12.6.
-11. Cálculo da Nova Parcela: 12.7.
+   - Consignado: [12.1. Margem Consignável](#121-margem-consignável)
+   - Pessoal: [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento)
+7. Definição da Taxa de Juros: [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal).
+8. Cálculo do Custo do Seguro: [12.4. Custo do Seguro](#124-custo-do-seguro).
+9. Cálculo do IOF: [12.5. IOF](#125-iof).
+10. Cálculo do Valor Total Financiado: [12.6. Valor Total Financiado](#126-valor-total-financiado).
+11. Cálculo da Nova Parcela: [12.7. Parcela Mensal](#127-parcela-mensal).
 12. Validação Final:
-    - Consignado: 11.1.1
-    - Pessoal: 11.2.4
+    - Consignado: [11.1.1. Margem Consignável](#1111-margem-consignável)
+    - Pessoal: [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento)
 13. Registro do Refinanciamento: Cria novo contrato e marca o original como "refinanciado".
 
 ## 9.3. Saída
@@ -383,18 +383,18 @@ Empréstimo Pessoal
 
 ## 10.2. Processo Passo a Passo
 
-1. Consulta de Dados do Cliente: Valida idCliente.
-2. Verificação do Empréstimo Original: Busca idEmprestimoOriginal.
+1. Consulta de Dados do Cliente: Valida `idCliente`.
+2. Verificação do Empréstimo Original: Busca `idEmprestimoOriginal`.
 3. Validação do Status: Confirma se ativo.
-4. Verificação de Elegibilidade: Aplica 11.4.1, 11.4.2, 11.1.2, 11.1.3, 11.1.6.
-5. Cálculo do Saldo Devedor: 12.8.
-6. Determinação da Margem: 12.1.
-7. Definição da Taxa de Juros: 12.3.
-8. Cálculo do Custo do Seguro: 12.4.
-9. Cálculo do IOF: 12.5.
-10. Cálculo do Valor Total Financiado: 12.6.
-11. Cálculo da Nova Parcela: 12.7.
-12. Validação Final: 11.1.1.
+4. Verificação de Elegibilidade: Aplica [11.4.1. Parcelas em Dia](#1141-parcelas-em-dia), [11.4.2. Aceitação do Banco Destino](#1142-aceitação-do-banco-destino), [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
+5. Cálculo do Saldo Devedor: [12.8. Saldo Devedor](#128-saldo-devedor).
+6. Determinação da Margem: [12.1. Margem Consignável](#121-margem-consignável).
+7. Definição da Taxa de Juros: [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal).
+8. Cálculo do Custo do Seguro: [12.4. Custo do Seguro](#124-custo-do-seguro).
+9. Cálculo do IOF: [12.5. IOF](#125-iof).
+10. Cálculo do Valor Total Financiado: [12.6. Valor Total Financiado](#126-valor-total-financiado).
+11. Cálculo da Nova Parcela: [12.7. Parcela Mensal](#127-parcela-mensal).
+12. Validação Final: [11.1.1. Margem Consignável](#1111-margem-consignável).
 13. Registro da Portabilidade: Marca como "portado" e notifica o banco destino.
 
 ## 10.3. Saída
