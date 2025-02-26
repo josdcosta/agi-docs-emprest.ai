@@ -96,7 +96,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 #### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
 {
-  "idCliente": [cpf],
+  "idCliente": "[cpf]",
   "valorEmprestimo": "[valor em reais]",
   "tipoEmprestimo": "[consignado ou pessoal]",
   "quantidadeParcelas": "[número]",
