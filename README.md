@@ -14,8 +14,9 @@
 9. [7. Consulta de Dados de Empréstimo](#7-consulta-de-dados-de-empréstimo)
 10. [8. Pagamento de Empréstimo](#8-pagamento-de-empréstimo)
 11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-de-empréstimo)
-12. [11. Elegibilidade](#11-elegibilidade)
-13. [12. Cálculos](#12-cálculos)
+12. [10. Empréstimo consignado](#10-empréstimo-consignado)
+13. [11. Cálculos](#12-cálculos)
+14. [12. Glossário](#12-Glossário)
 
 # AUTORES
 - @Dalleth Martins
