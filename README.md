@@ -587,20 +587,19 @@ bancoDestino deve aceitar a portabilidade.
 
 # 13. CÁLCULOS
 
-
 ## 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
-rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.
+rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.  
 capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
 ## 13.2. Margem Consignável (Empréstimo Consignado)
-margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos Ativos
+margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
 
 ## 13.3. Taxa de Juros Mensal
 **Consignado**:  
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
 **Pessoal**:  
-Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.
+Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.  
 | Faixa de Score | Nível de Risco     | Taxa               | 
 |----------------|--------------------|--------------------|
 | 0-200          | Altíssimo risco    | N/A                | 
@@ -615,12 +614,12 @@ Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - Score
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
 ## 13.5. IOF
-percentualFixo = 0,0038
-percentualVariado = 0,000082
+percentualFixo = 0,0038  
+percentualVariado = 0,000082  
 IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
 ## 13.6. Valor Total Financiado
-ValorInicial = valorBase + IOF + CustoSeguro
+ValorInicial = valorBase + IOF + CustoSeguro  
 ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
 ## 13.7. Parcela Mensal
