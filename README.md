@@ -2,16 +2,15 @@
 # **EMPRÉSTIMO CONSIGNADO**
 
 ## Índice
-## Índice
 - [Autores](#autores)
-- [Referências](#referencias)
+- [Referências](#referências)
 - [Objetivo](#1-objetivo)
-- [Variáveis Configuráveis](#variaveis-configuraveis)
-- [Visão Geral do Funcionamento](#2-visao-geral-do-funcionamento)
-- [Dados Armazenados do Cliente](#3-dados-armazenados-do-clientes)
-- [Simulação de Empréstimo](#4-simulacao-de-emprestimo)
-- [Concessão de Empréstimo](#5-concessao-de-emprestimo)
-- [Cálculos](#6-calculos)
+- [Variáveis Configuráveis](#variáveis-configuráveis)
+- [Visão Geral do Funcionamento](#2-visão-geral-do-funcionamento)
+- [Dados Armazenados do Cliente](#3-dados-armazenados-do-cliente)
+- [Simulação de Empréstimo](#4-simulação-de-empréstimo)
+- [Concessão de Empréstimo](#5-concessão-de-empréstimo)
+- [Cálculos](#6-cálculos)
 - [Elegibilidade](#7-elegibilidade)
 ## Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
@@ -119,7 +118,7 @@ Exemplo:
 
 ## 4.2. Processo
 - **Consulta de Elegibilidade**: Verifica em [Elegibilidade](#7-elegibilidade).
-- **Cálculo**: Executa [Calculos](#6-calculos) do Empréstimo sem registrar o contrato.
+- **Cálculo**: Executa [Calculos](#6-cálculos) do Empréstimo sem registrar o contrato.
 - **Saída Simulada**: Retorna os valores calculados ou erro.
 
 ## 4.3. Saída
