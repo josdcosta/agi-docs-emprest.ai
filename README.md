@@ -81,7 +81,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 # 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
-  "idCliente": [cpf],
+  "idCliente": "[cpf]",
   "nome": "[nome]",
   "remuneracaoLiquidaMensal": "[valor em reais]",
   "idade": "[número]",
@@ -107,7 +107,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 ### Empréstimo Pessoal
 ```json
 {
-  "idCliente": [cpf]
+  "idCliente": "[cpf]",
   "valorEmprestimo": "[valor em reais]",
   "tipoEmprestimo": "[consignado ou pessoal]",
   "quantidadeParcelas": "[número]",
@@ -176,7 +176,7 @@ Retorna os valores calculados sem gravar o contrato.
 ## Empréstimo Consignado/Pessoal
 ```json
 {
-  "idCliente": [cpf]
+  "idCliente": "[cpf]",
   "valorEmprestimo": "[valor em reais]",
   "tipoEmprestimo": "[consignado ou pessoal]",
   "quantidadeParcelas": "[número]",
@@ -251,7 +251,7 @@ Empréstimo Pessoal
 ## 7.1. Requisição
 ```json
 {
-  "idCliente": [cpf],
+  "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]"
 }
 ```
