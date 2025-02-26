@@ -478,6 +478,9 @@ Empréstimo Pessoal
 }
 ```
 
+---
+---
+---
 # 11. Elegibilidade
 
 ## 11.1. Empréstimo CONSIGNADO
@@ -501,12 +504,15 @@ Taxa mensal ≤ 2,14%.
 Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
 ---
+---
+---
 ## 11.2. Empréstimo PESSOAL
 
 ### 11.2.1. Idade Máxima
 `idade + quantidadeParcelas / 12 < idadeMaximaPessoal`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
 
 ### 11.2.2. Valor do Empréstimo
+valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 
 | Faixa de Score | Nível de Risco     | Limite Crédito     |  
 |----------------|--------------------|--------------------|
@@ -517,11 +523,8 @@ Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 | 
 |----------------|--------------------|--------------------|
 
-valorMinimoPessoal ≤ valorEmprestimo ≤ margemConsignavel.
-Limite = Limite_mín + [(Limite_máx - Limite_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
 ### 11.2.3. Quantidade de Parcelas
-
 prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
 
 | Faixa de Score | Nível de Risco     |  Meses              |
@@ -533,55 +536,53 @@ prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score
 | 801-1000       | Risco muito baixo  |  6 a 30             |
 |----------------|--------------------|---------------------|
 
-Meses = Meses_mín + [(Meses_máx - Meses_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
-
 ### 11.2.4. Score de Crédito
-
 scoreCredito ≥ 201.
 
 ### 11.2.5. Capacidade de Pagamento
+Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
-Parcela ≤ percentualRendaPessoal * remuneracaoLiquida.
+### 11.2.6 Carência
+Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
-### 11.2.6. Renda Per Capita
-
-rendaTotalLiquida =( Σ Rendas Individuais - Σ Despesas Fixas)/ quantidadeMembrosFamilia.
-
-### 11.2.7 Carência
-
-Dias até o primeiro pagamento ≤ 30.
+---
+---
+---
 
 ## 11.3. Refinanciamento (Comum)
 
 ### 11.3.1. Percentual Mínimo Pago
-
 ≥ 20% das parcelas pagas.
 
 ## 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
 
 ### 11.4.1. Parcelas em Dia
-
 Sem parcelas vencidas.
 
 ### 11.4.2. Aceitação do Banco Destino
-
 bancoDestino deve aceitar a portabilidade.
+
+---
+---
+---
 
 # 12. Cálculos
 
-## 12.1. Margem Consignável (Empréstimo Consignado)
+### 12.1. Renda Total Liquida
+rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.
 
-margemMaxima = remuneracaoLiquida * margemConsignavel - 
+## 12.2. Margem Consignável (Empréstimo Consignado)
+margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos Ativos
 
-## 12.2. Capacidade de Pagamento (Empréstimo Pessoal)
+## 12.3. Capacidade de Pagamento (Empréstimo Pessoal)
+capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
-capacidadeMaxima = remuneracaoLiquida * percentualRendaPessoal
+## 12.4. Taxa de Juros Mensal
+**Consignado**:
+TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
-## 12.3. Taxa de Juros Mensal
-
-- Consignado: TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
-- Pessoal: Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com base em scoreCredito.
-
+**Pessoal**:
+Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com base em scoreCredito.
 | Faixa de Score | Nível de Risco     | Taxa               | 
 |----------------|--------------------|--------------------|
 | 0-200          | Altíssimo risco    | N/A                | 
@@ -590,26 +591,23 @@ capacidadeMaxima = remuneracaoLiquida * percentualRendaPessoal
 | 601-800        | Risco baixo        | 8,99% a 9,49%      | 
 | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 |----------------|--------------------|--------------------|
-  
-- Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
-## 12.4. Custo do Seguro
+Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
+## 12.5. Custo do Seguro
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-## 12.5. IOF
+## 12.6. IOF
+percentualFixo = 0,0038
+percentualVariado = 0,000082
+IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-IOF = (0,0038 * valorBase) + (0,000082 * valorBase * min(diasFinanciamento, 365))
-
-## 12.6. Valor Total Financiado
-
+## 12.7. Valor Total Financiado
 ValorInicial = valorBase + IOF + CustoSeguro
 ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
-## 12.7. Parcela Mensal
-
+## 12.8. Parcela Mensal
 ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-## 12.8. Saldo Devedor
-
+## 12.9. Saldo Devedor
 SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
