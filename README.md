@@ -150,13 +150,13 @@ Empréstimo Pessoal:
 - Se `contratarSeguro = true`, aplica [13.4. Custo do Seguro](#134-custo-do-seguro).
 
 **Passo 6: Cálculo do IOF**  
-- Executa [12.5. IOF](#135-iof).
+- Executa [13.5. IOF](#135-iof).
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-- Aplica [12.6. Valor Total Financiado](#136-valor-total-financiado).
+- Aplica [13.6. Valor Total Financiado](#136-valor-total-financiado).
 
 **Passo 8: Cálculo da Parcela Mensal**  
-- Executa [12.7. Parcela Mensal](#137-parcela-mensal).
+- Executa [13.7. Parcela Mensal](#137-parcela-mensal).
 
 **Passo 9: Validação Final de Elegibilidade**  
 - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
@@ -265,10 +265,11 @@ Empréstimo Pessoal
    - Verifica parcelas pagas e restantes, atualizando o status de cada parcela na tabela ("paga" ou "pendente").
 
 5. **Cálculo do Saldo Devedor:**
-   - Executa 12.8. Saldo Devedor.
+   - Executa [13.8. Saldo Devedor](#138-saldo-devedor).
 
 6. **Retorno dos Dados:**
    - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
+
 
 ### 7.3. Saída
 ```json
@@ -330,7 +331,7 @@ Empréstimo Pessoal
    - Confirma se está ativo. Se todas as parcelas estiverem quitadas, retorna "Erro: Empréstimo já liquidado".
 
 4. **Consulta do Saldo Devedor Atual:**
-   - Executa 12.8. Saldo Devedor com base nas parcelas pendentes.
+   - Executa [13.8. Saldo Devedor](#138-saldo-devedor) com base nas parcelas pendentes.
 
 5. **Processamento do Pagamento:**
    - Valida o `numeroParcela` informado. Se inválido (fora do intervalo ou já pago), retorna "Erro: Parcela inválida ou já quitada".
@@ -424,23 +425,24 @@ Empréstimo Pessoal
    - Executa 12.8. Saldo Devedor do contrato original.
 
 6. **Determinação da Capacidade:**
-   - Consignado: 12.1. Margem Consignável.
-   - Pessoal: 12.2. Capacidade de Pagamento.
+   - Consignado: [13.2. Margem Consignável](#132-margem-consignável).
+   - Pessoal: [13.1. Capacidade de Pagamento](#131-capacidade-de-pagamento).
 
 7. **Definição da Taxa de Juros:**
-   - Aplica 12.3. Taxa de Juros Mensal.
+   - Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal).
 
 8. **Cálculo do Custo do Seguro:**
-   - Aplica 12.4. Custo do Seguro se `contratarSeguro = true`.
+   - Aplica [13.4. Custo do Seguro](#134-custo-do-seguro) se `contratarSeguro = true`.
 
 9. **Cálculo do IOF:**
-   - Executa 12.5. IOF.
+   - Executa [13.5. IOF](#135-iof).
 
 10. **Cálculo do Valor Total Financiado:**
-    - Aplica 12.6. Valor Total Financiado, somando `saldoDevedorOriginal` e `novoValorEmprestimo`.
+    - valorBase = saldoDevedorOriginal + novoValorEmprestimo
+    - Aplica [13.6. Valor Total Financiado](#136-valor-total-financiado) usando o valorBase calculado.
 
 11. **Cálculo da Nova Parcela:**
-    - Executa 12.7. Parcela Mensal.
+    - Executa [13.7. Parcela Mensal](#137-parcela-mensal).
 
 12. **Geração da Tabela de Parcelas:**
     - Com base no `valorTotalFinanciado`, `novaQuantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, gera a tabela com:
@@ -509,7 +511,7 @@ Empréstimo Pessoal
     Entre 24 e 92 parcelas.
 
 #### 11.1.4. Taxa de Juros
-    jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMinimoConsignado.
+    jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMaximoConsignado.
 
 #### 11.1.5. Tipo de Vínculo
     "Aposentado", "servidor público" ou outro válido.
@@ -559,7 +561,7 @@ Empréstimo Pessoal
     scoreCredito ≥ 201.
 
 #### 11.2.6. Capacidade de Pagamento
-    Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
+    Parcela ≤ rendaTotalLiquida * percentualRendaPessoal.
 
 #### 11.2.7. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
