@@ -60,11 +60,11 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | idadeMaximaConsignado      | Idade máxima ao final (Empréstimo Consignado)             | 80 anos                 |
 | idadeMaximaPessoal         | Idade máxima ao final (Empréstimo Pessoal)                | 75 anos                 |
 | margemConsignavel          | Percentual da remuneração líquida para margem             | 35%                     |
-| iof                        | Imposto sobre Operações Financeiras                       | Conforme legislação     |
+| iof                        | Imposto sobre Operações Financeiras                       | 0,38% fixo + 0,0082% por dia (máx. 365 dias) |
 | percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%         |
 | percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                 |
-| percentualJurosMora        | Percentual máximo de juros mora dia                       | 0,0033%/dia             |
-| percentualMultaAtraso      | Percentual máximo para multa por atraso                   | 1%                      |
+| percentualJurosMora        | Percentual máximo de juros mora por dia                   | 0,033%/dia (1% ao mês)  |
+| percentualMultaAtraso      | Percentual máximo para multa por atraso                   | 2%                      |
 
 
 
@@ -234,17 +234,8 @@ Empréstimo Pessoal
 ```
 
 ### 6.2. Processo Passo a Passo
-- Consulta de Dados do Cliente: Mesmo que Simulação.
-- Verificação Inicial de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
-- Determinação da Capacidade de Pagamento: Mesmo que Simulação.
-- Definição da Taxa de Juros: Mesmo que Simulação.
-- Cálculo do Custo do Seguro: Mesmo que Simulação.
-- Cálculo do IOF: Mesmo que Simulação.
-- Cálculo do Valor Total Financiado: Mesmo que Simulação.
-- Cálculo da Parcela Mensal: Mesmo que Simulação.
-- Validação Final de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
-- Gera a tabela de parcelas para o contrato: Idêntico ao passo da simulação, gera a tabela de parcelas para o contrato.
-- Registro do Contrato: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
+- Executa os passos 1 a 9 da Simulação (ver [5.2](#52-processo-passo-a-passo)) para determinar elegibilidade, cálculos e tabela de parcelas.
+- **Registro do Contrato**: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
 ### 6.3. Saída
 (Idêntica à Simulação, com "mensagem": "Empréstimo concedido com sucesso.")
@@ -554,7 +545,15 @@ Empréstimo Pessoal
     | 801-1000       | Risco muito baixo  | 6 a 30   |
 
 #### 11.2.4. Taxa de Juros
-    jurosMinimoPessoal ≤ Taxa mensal ≤ jurosMaximoPessoal.
+    jurosMinimoPessoal ≤ Taxa mensal ≤ jurosMaximoPessoal, conforme score:
+    
+    | Faixa de Score | Nível de Risco     | Taxa               |
+    |----------------|--------------------|--------------------|
+    | 0-200          | Altíssimo risco    | N/A                |
+    | 201-400        | Alto risco         | 9,99%              |
+    | 401-600        | Risco moderado     | 9,49% a 9,99%      |
+    | 601-800        | Risco baixo        | 8,99% a 9,49%      |
+    | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
 #### 11.2.5. Score de Crédito
     scoreCredito ≥ 201.
@@ -585,7 +584,7 @@ Empréstimo Pessoal
 ## 13. CÁLCULOS
 
 ### 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
-    rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia  
+    rendaTotalLiquida = remuneracaoLiquida - Total de Despesas  
     capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
 ### 13.2. Margem Consignável (Empréstimo Consignado)
@@ -596,16 +595,16 @@ Empréstimo Pessoal
         taxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
     **Pessoal**:  
-        Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCredito.  
-        | Faixa de Score | Nível de Risco     | Taxa               | 
+        Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)  
+        | Faixa de Score | Nível de Risco     | Taxa               |
         |----------------|--------------------|--------------------|
-        | 0-200          | Altíssimo risco    | N/A                | 
-        | 201-400        | Alto risco         | 9,99%              | 
-        | 401-600        | Risco moderado     | 9,49% a 9,99%      | 
-        | 601-800        | Risco baixo        | 8,99% a 9,49%      | 
+        | 0-200          | Altíssimo risco    | N/A                |
+        | 201-400        | Alto risco         | 9,99%              |
+        | 401-600        | Risco moderado     | 9,49% a 9,99%      |
+        | 601-800        | Risco baixo        | 8,99% a 9,49%      |
         | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
-        Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)
+        Exemplo: Score 500 (401-600): Taxa = 9,49 + [(9,99 - 9,49) * (500 - 401)] / (600 - 401) = 9,49 + 0,25 = 9,74%.
 
 ### 13.4. Custo do Seguro
     CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
@@ -616,15 +615,14 @@ Empréstimo Pessoal
     IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
 ### 13.6. Valor Total Financiado
-    ValorInicial = valorBase + IOF + CustoSeguro  
-    ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
+    ValorTotalFinanciado = valorBase + IOF + CustoSeguro
 
 ### 13.7. Parcela Mensal
     ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
 ### 13.8. Saldo Devedor
-    SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
+    SaldoDevedor = ParcelaMensal * [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelasRestantes)] / TaxaJurosMensal
 
 ### 13.9. Juros Mora e Multa por Atraso
-    Multa = valorParcela * percentualJurosMora  
+    Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
