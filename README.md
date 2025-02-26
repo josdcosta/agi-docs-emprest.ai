@@ -255,6 +255,7 @@ Retorna os valores calculados sem gravar o contrato.
 ### 6. Concessão de Empréstimo
 #### 6.1. Requisição
 Empréstimo Consignado
+```json
 {
   "idCliente": "123.456.789-00",
   "valorEmprestimo": 10000.00,
@@ -263,8 +264,10 @@ Empréstimo Consignado
   "contratarSeguro": true,
   "dataInicioPagamento": "01/04/2025"
 }
+```
 
 Empréstimo Pessoal
+```json
 {
   "idCliente": "123.456.789-00",
   "valorEmprestimo": 5000.00,
@@ -273,6 +276,7 @@ Empréstimo Pessoal
   "contratarSeguro": false,
   "dataInicioPagamento": "01/04/2025"
 }
+```
 
 #### 6.2. Processo Passo a Passo
 - Consulta de Dados do Cliente: Mesmo que Simulação.
