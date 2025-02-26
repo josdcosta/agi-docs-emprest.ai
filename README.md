@@ -136,7 +136,7 @@ Empréstimo Pessoal:
 - Aplica [11.2.2. Valor do Empréstimo](#1122-valor-do-empréstimo).
 - Aplica [11.2.3. Quantidade de Parcelas](#1124-quantidade-de-parcelas).
 - Aplica [11.2.4. Score de Crédito](#1124-score-de-crédito).
-- Calcula dias de carência e aplica [11.2.5. Carência](#1125-carência).
+- Calcula dias de carência e aplica [11.2.6. Carência](#1125-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
 - Consignado: Executa [12.1. Margem Consignável](#121-margem-consignável).  
