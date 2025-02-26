@@ -587,16 +587,15 @@ bancoDestino deve aceitar a portabilidade.
 
 # 13. CÁLCULOS
 
-### 13.1. Renda Total Liquida
+
+## 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
 rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.
+capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
 ## 13.2. Margem Consignável (Empréstimo Consignado)
 margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos Ativos
 
-## 13.3. Capacidade de Pagamento (Empréstimo Pessoal)
-capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
-
-## 13.4. Taxa de Juros Mensal
+## 13.3. Taxa de Juros Mensal
 **Consignado**:
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
@@ -612,20 +611,20 @@ Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com
 
 Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
-## 13.5. Custo do Seguro
+## 13.4. Custo do Seguro
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-## 13.6. IOF
+## 13.5. IOF
 percentualFixo = 0,0038
 percentualVariado = 0,000082
 IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-## 13.7. Valor Total Financiado
+## 13.6. Valor Total Financiado
 ValorInicial = valorBase + IOF + CustoSeguro
 ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
-## 13.8. Parcela Mensal
+## 13.7. Parcela Mensal
 ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-## 13.9. Saldo Devedor
+## 13.8. Saldo Devedor
 SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
