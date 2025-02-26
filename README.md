@@ -163,39 +163,39 @@ Retorna os valores calculados sem gravar o contrato.
 ```json
 {
   "idCliente": "123.456.789-00",
-  "valorEmprestimo": 10000.00,
-  "tipoEmprestimo": "consignado",
-  "quantidadeParcelas": 48,
-  "taxaJurosMensal": 0.0192,
-  "custoSeguro": 250.00,
-  "iof": 337.30,
-  "valorTotalFinanciado": 10809.47,
-  "parcelaMensal": 306.28,
-  "cetMensal": 0.0201,
+  "valorEmprestimo": 5000.00,
+  "tipoEmprestimo": "pessoal",
+  "quantidadeParcelas": 18,
+  "taxaJurosMensal": 0.0924,
+  "custoSeguro": 0.00,
+  "iof": 168.65,
+  "valorTotalFinanciado": 5486.91,
+  "parcelaMensal": 639.99,
+  "cetMensal": 0.0940,
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 306.28,
-      "juros": 207.54,
-      "amortizacao": 98.74,
-      "saldoDevedor": 10710.73
+      "valorParcela": 639.99,
+      "juros": 507.00,
+      "amortizacao": 132.99,
+      "saldoDevedor": 5353.92
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 306.28,
-      "juros": 205.65,
-      "amortizacao": 100.63,
-      "saldoDevedor": 10610.10
+      "valorParcela": 639.99,
+      "juros": 494.70,
+      "amortizacao": 145.29,
+      "saldoDevedor": 5208.63
     },
-    // ... (continua até a parcela 48)
+    // ... (continua até a parcela 18)
     {
-      "numeroParcela": 48,
-      "dataVencimento": "01/03/2029",
-      "valorParcela": 306.28,
-      "juros": 5.85,
-      "amortizacao": 300.43,
+      "numeroParcela": 18,
+      "dataVencimento": "01/09/2026",
+      "valorParcela": 639.99,
+      "juros": 8.09,
+      "amortizacao": 631.90,
       "saldoDevedor": 0.00
     }
   ],
@@ -213,36 +213,42 @@ Retorna os valores calculados sem gravar o contrato.
   "custoSeguro": 0.00,
   "iof": 168.65,
   "valorTotalFinanciado": 5486.91,
-  "parcelaMensal": 392.27,
+  "parcelaMensal": 639.99,
   "cetMensal": 0.0940,
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 392.27,
-      "juros": 506.99,
-      "amortizacao": -114.72,
-      "saldoDevedor": 5601.63
+      "valorParcela": 639.99,
+      "juros": 507.00,
+      "amortizacao": 132.99,
+      "saldoDevedor": 5353.92,
+      "status": "pendente",
+      "dataPagamento": null
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 392.27,
-      "juros": 517.59,
-      "amortizacao": -125.32,
-      "saldoDevedor": 5726.95
+      "valorParcela": 639.99,
+      "juros": 494.70,
+      "amortizacao": 145.29,
+      "saldoDevedor": 5208.63,
+      "status": "pendente",
+      "dataPagamento": null
     },
     // ... (continua até a parcela 18)
     {
       "numeroParcela": 18,
       "dataVencimento": "01/09/2026",
-      "valorParcela": 392.27,
-      "juros": 36.27,
-      "amortizacao": 356.00,
-      "saldoDevedor": 0.00
+      "valorParcela": 639.99,
+      "juros": 8.09,
+      "amortizacao": 631.90,
+      "saldoDevedor": 0.00,
+      "status": "pendente",
+      "dataPagamento": null
     }
   ],
-  "mensagem": "Simulação realizada com sucesso."
+  "mensagem": "Empréstimo concedido com sucesso."
 }
 ```
 
