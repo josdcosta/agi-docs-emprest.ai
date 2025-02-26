@@ -575,10 +575,10 @@ Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 ### 12.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
 
 #### 12.3. Parcelas em Dia
-Sem parcelas vencidas.
+  Sem parcelas vencidas.
 
 #### 12.4. Aceitação do Banco Destino
-bancoDestino deve aceitar a portabilidade.
+  bancoDestino deve aceitar a portabilidade.
 
 <br>
 
