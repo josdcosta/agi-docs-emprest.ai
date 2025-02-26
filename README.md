@@ -160,7 +160,7 @@ Empréstimo Pessoal:
 
 **Passo 9: Validação Final de Elegibilidade**  
 - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
-- Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
+- Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 **Passo 10: Geração da Tabela de Parcelas**
 
@@ -422,7 +422,7 @@ Empréstimo Pessoal
    - Pessoal: Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
 
 5. **Cálculo do Saldo Devedor:**
-   - Executa 12.8. Saldo Devedor do contrato original.
+   - Executa [13.8. Saldo Devedor](#138-saldo-devedor) do contrato original.
 
 6. **Determinação da Capacidade:**
    - Consignado: [13.2. Margem Consignável](#132-margem-consignável).
@@ -457,7 +457,7 @@ Empréstimo Pessoal
 
 13. **Validação Final:**
     - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).
-    - Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
+    - Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 14. **Registro do Refinanciamento:**
     - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
