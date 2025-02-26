@@ -183,7 +183,25 @@ Retorna os valores calculados sem gravar o contrato.
 
 ### 6. Concessão de Empréstimo
 #### 6.1. Requisição
-(Idêntica à Simulação)
+Empréstimo Consignado
+{
+  "idCliente": "123.456.789-00",
+  "valorEmprestimo": 10000.00,
+  "tipoEmprestimo": "consignado",
+  "quantidadeParcelas": 48,
+  "contratarSeguro": true,
+  "dataInicioPagamento": "01/04/2025"
+}
+
+Empréstimo Pessoal
+{
+  "idCliente": "123.456.789-00",
+  "valorEmprestimo": 5000.00,
+  "tipoEmprestimo": "pessoal",
+  "quantidadeParcelas": 18,
+  "contratarSeguro": false,
+  "dataInicioPagamento": "01/04/2025"
+}
 
 #### 6.2. Processo Passo a Passo
 - Consulta de Dados do Cliente: Mesmo que Simulação.
