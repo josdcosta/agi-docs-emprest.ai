@@ -1,6 +1,6 @@
 # Documentações Emprest.AI 📄
 
-## EMPRÉSTIMO EMPRESARIAL
+## EMPRÉSTIMO EMPRESARIAL     ->     DESCONTINUADO, FOCAR EM CONSIGNADO E PESSOAL
 
 ### Índice
 1. [Autores](#autores)
