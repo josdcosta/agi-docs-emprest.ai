@@ -32,7 +32,6 @@
 - Leis e Regulamentações: Lei nº 8.078/1990: O Código de Defesa do Consumidor (CDC). Esta lei protege você quando contrata um empréstimo pessoal, garantindo informações claras, proibindo cobranças abusivas, protegendo contra problemas e ajudando a evitar o superendividamento.
 
 <br>
-<br>
 
 ### 1. Objetivo
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
