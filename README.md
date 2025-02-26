@@ -139,12 +139,12 @@ Empréstimo Pessoal:
 - Calcula dias de carência e aplica [11.2.6. Carência](#1126-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-- Consignado: Executa [12.1. Margem Consignável](#121-margem-consignável).  
-- Pessoal: Executa [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento).
+- Consignado: Executa [13.1. Margem Consignável](#132-margem-consignável).  
+- Pessoal: Executa [13.1. Capacidade de Pagamento](#131-capacidade-de-pagamento).
 
 **Passo 4: Definição da Taxa de Juros**  
-- Consignado: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
-- Pessoal: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
+- Consignado: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
+- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-capacidade-de-pagamento).
 
 **Passo 5: Cálculo do Custo do Seguro**  
 - Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
@@ -518,7 +518,7 @@ Empréstimo Pessoal
     Entre 24 e 92 parcelas.
 
 #### 11.1.4. Taxa de Juros
-    Taxa mensal ≤ 2,14%.
+    jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMinimoConsignado.
 
 #### 11.1.5. Tipo de Vínculo
     "Aposentado", "servidor público" ou outro válido.
@@ -553,13 +553,16 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | 6 a 24   |
     | 801-1000       | Risco muito baixo  | 6 a 30   |
 
-#### 11.2.4. Score de Crédito
+#### 11.2.4. Taxa de Juros
+    jurosMinimoPessoal ≤ Taxa mensal ≤ jurosMaximoPessoal.
+
+#### 11.2.5. Score de Crédito
     scoreCredito ≥ 201.
 
-#### 11.2.5. Capacidade de Pagamento
+#### 11.2.6. Capacidade de Pagamento
     Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
-#### 11.2.6. Carência
+#### 11.2.7. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 <br>
