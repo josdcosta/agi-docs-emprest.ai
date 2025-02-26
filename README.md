@@ -43,7 +43,7 @@ Os parâmetros abaixo são ajustáveis no sistema Emprest.AI, podendo ser altera
 | jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês            |
 | valorMinimoPessoal         | Valor mínimo do Empréstimo Pessoal                        | R$ 100,00               |
 | valorMaximoPessoal         | Valor máximo do Empréstimo Pessoal                        | R$ 20.000,00            |
-| valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | Depende de margemConsignavel (35%) |
+| valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | 1.000,00                |
 | prazoMinimoPessoal         | Prazo mínimo em parcelas (Empréstimo Pessoal)             | 6 parcelas              |
 | prazoMaximoPessoal         | Prazo máximo em parcelas (Empréstimo Pessoal)             | 30 parcelas             |
 | prazoMinimoConsignado      | Prazo mínimo em parcelas (Empréstimo Consignado)          | 24 parcelas             |
