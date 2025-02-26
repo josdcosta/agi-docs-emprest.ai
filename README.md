@@ -80,8 +80,8 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 ```
 
 ### 5. Simulação de Empréstimo
-#### 5.1. Requisição
-##### Empréstimo Consignado
+#### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
+##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos
 ```json
 {
   "idCliente": "123.456.789-00",
@@ -108,13 +108,13 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
 
 **Passo 2: Verificação Inicial de Elegibilidade**  
-Consignado:
+Empréstimo Consignado:
 - Aplica 11.1.5. Tipo de Vínculo.
 - Usa 11.1.2. Idade Máxima para calcular idade + quantidadeParcelas / 12.
 - Aplica 11.1.3. Quantidade de Parcelas.
 - Calcula dias de carência e aplica 11.1.6. Carência.  
 
-Pessoal:
+Empréstimo Pessoal:
 - Aplica 11.2.1. Valor do Empréstimo.
 - Aplica 11.2.2. Quantidade de Parcelas.
 - Aplica 11.2.3. Score de Crédito.
@@ -475,7 +475,7 @@ Dias até o primeiro pagamento ≤ 30.
 
 ≥ 20% das parcelas pagas.
 
-## 11.4. Portabilidade (Consignado)
+## 11.4. Portabilidade (Empréstimo Consignado)
 
 ### 11.4.1. Parcelas em Dia
 
@@ -487,11 +487,11 @@ bancoDestino deve aceitar a portabilidade.
 
 # 12. Cálculos
 
-## 12.1. Margem Consignável (Consignado)
+## 12.1. Margem Consignável (Empréstimo Consignado)
 
 margemMaxima = remuneracaoLiquida * margemConsignavel
 
-## 12.2. Capacidade de Pagamento (Pessoal)
+## 12.2. Capacidade de Pagamento (Empréstimo Pessoal)
 
 capacidadeMaxima = remuneracaoLiquida * percentualRendaPessoal
 
