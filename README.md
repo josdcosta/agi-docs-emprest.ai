@@ -542,32 +542,32 @@ Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 
-## 11.3. REFINANCIAMENTO (COMUM)
+# 12. REFINANCIAMENTO (COMUM)
 
-### 11.3.1. Percentual Mínimo Pago
+### 12.1. Percentual Mínimo Pago
 ≥ 20% das parcelas pagas.
 
-## 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
+## 12.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
 
-### 11.4.1. Parcelas em Dia
+### 12.3. Parcelas em Dia
 Sem parcelas vencidas.
 
-### 11.4.2. Aceitação do Banco Destino
+### 12.4. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
 
 
-# 12. CÁLCULOS
+# 13. CÁLCULOS
 
-### 12.1. Renda Total Liquida
+### 13.1. Renda Total Liquida
 rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.
 
-## 12.2. Margem Consignável (Empréstimo Consignado)
+## 13.2. Margem Consignável (Empréstimo Consignado)
 margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Emprestimos Ativos
 
-## 12.3. Capacidade de Pagamento (Empréstimo Pessoal)
+## 13.3. Capacidade de Pagamento (Empréstimo Pessoal)
 capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
-## 12.4. Taxa de Juros Mensal
+## 13.4. Taxa de Juros Mensal
 **Consignado**:
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
@@ -584,20 +584,20 @@ Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com
 
 Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
-## 12.5. Custo do Seguro
+## 13.5. Custo do Seguro
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-## 12.6. IOF
+## 13.6. IOF
 percentualFixo = 0,0038
 percentualVariado = 0,000082
 IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-## 12.7. Valor Total Financiado
+## 13.7. Valor Total Financiado
 ValorInicial = valorBase + IOF + CustoSeguro
 ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
-## 12.8. Parcela Mensal
+## 13.8. Parcela Mensal
 ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-## 12.9. Saldo Devedor
+## 13.9. Saldo Devedor
 SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
