@@ -471,6 +471,7 @@ Empréstimo Pessoal
 {
   "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]",
+  "idEmprestimoOriginal": "[identificador único]", (Autoreferenciamento)
   "valorEmprestimo": "[valor em reais]",
   "quantidadeParcelas": "[número]",
   "taxaJurosMensal": "[valor decimal]",
