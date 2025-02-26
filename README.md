@@ -506,64 +506,61 @@ Empréstimo Pessoal
 <br>
 <br>
 
-## 11. ELEGIBILIDADE
-
-### 11.1. Empréstimo **Consignado**
+## 11.1. Empréstimo Consignado
 
 #### 11.1.1. Margem Consignável
-Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
+    Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
 
 #### 11.1.2. Idade Máxima
-`idade + quantidadeParcelas / 12 < idadeMaximaConsignado`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
+    idade + quantidadeParcelas / 12 < idadeMaximaConsignado: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
 
 #### 11.1.3. Quantidade de Parcelas
-Entre 24 e 92 parcelas.
+    Entre 24 e 92 parcelas.
 
 #### 11.1.4. Taxa de Juros
-Taxa mensal ≤ 2,14%.
+    Taxa mensal ≤ 2,14%.
 
 #### 11.1.5. Tipo de Vínculo
-"Aposentado", "servidor público" ou outro válido.
+    "Aposentado", "servidor público" ou outro válido.
 
 #### 11.1.6. Carência
-Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
+    Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
-### 11.2. Empréstimo **Pessoal**
+## 11.2. Empréstimo Pessoal
 
 #### 11.2.1. Idade Máxima
-`idade + quantidadeParcelas / 12 < idadeMaximaPessoal`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
+    idade + quantidadeParcelas / 12 < idadeMaximaPessoal: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
 
 #### 11.2.2. Valor do Empréstimo
-valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
+    valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 
-| Faixa de Score | Nível de Risco     | Limite Crédito     |  
-|----------------|--------------------|--------------------|
-| 0-200          | Altíssimo risco    | N/A                |
-| 201-400        | Alto risco         | R$ 100 a R$ 1.000  |
-| 401-600        | Risco moderado     | R$ 100 a R$ 5.000  | 
-| 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
-| 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 | 
-
+    | Faixa de Score | Nível de Risco     | Limite Crédito     |
+    |----------------|--------------------|--------------------|
+    | 0-200          | Altíssimo risco    | N/A                |
+    | 201-400        | Alto risco         | R$ 100 a R$ 1.000  |
+    | 401-600        | Risco moderado     | R$ 100 a R$ 5.000  |
+    | 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
+    | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 |
 
 #### 11.2.3. Quantidade de Parcelas
-prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
+    prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
 
-| Faixa de Score | Nível de Risco     |  Meses              |
-|----------------|--------------------|---------------------| 
-| 0-200          | Altíssimo risco    |  N/A                |
-| 201-400        | Alto risco         |  6 a 12             |
-| 401-600        | Risco moderado     |  6 a 18             |
-| 601-800        | Risco baixo        |  6 a 24             |
-| 801-1000       | Risco muito baixo  |  6 a 30             |
+    | Faixa de Score | Nível de Risco     | Meses    |
+    |----------------|--------------------|----------|
+    | 0-200          | Altíssimo risco    | N/A      |
+    | 201-400        | Alto risco         | 6 a 12   |
+    | 401-600        | Risco moderado     | 6 a 18   |
+    | 601-800        | Risco baixo        | 6 a 24   |
+    | 801-1000       | Risco muito baixo  | 6 a 30   |
 
 #### 11.2.4. Score de Crédito
-scoreCredito ≥ 201.
+    scoreCredito ≥ 201.
 
 #### 11.2.5. Capacidade de Pagamento
-Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
+    Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
-#### 11.2.6 Carência
-Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
+#### 11.2.6. Carência
+    Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 <br>
 
