@@ -144,23 +144,23 @@ Empréstimo Pessoal:
 
 **Passo 4: Definição da Taxa de Juros**  
 - Consignado: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
-- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-taxa-de-juros).
+- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.7. Taxa de Juros](#1127-taxa-de-juros).
 
 **Passo 5: Cálculo do Custo do Seguro**  
-- Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).
+- Se `contratarSeguro = true`, aplica [13.4. Custo do Seguro](#134-custo-do-seguro).
 
 **Passo 6: Cálculo do IOF**  
-- Executa [12.5. IOF](#125-iof).
+- Executa [12.5. IOF](#135-iof).
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-- Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado).
+- Aplica [12.6. Valor Total Financiado](#136-valor-total-financiado).
 
 **Passo 8: Cálculo da Parcela Mensal**  
-- Executa [12.7. Parcela Mensal](#127-parcela-mensal).
+- Executa [12.7. Parcela Mensal](#137-parcela-mensal).
 
 **Passo 9: Validação Final de Elegibilidade**  
 - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
-- Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
+- Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 **Passo 10: Geração da Tabela de Parcelas**
 
@@ -427,7 +427,7 @@ Empréstimo Pessoal
 4. **Verificação de Elegibilidade:**
    - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).
    - Consignado: Aplica [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
-   - Pessoal: Aplica [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
+   - Pessoal: Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
 
 5. **Cálculo do Saldo Devedor:**
    - Executa 12.8. Saldo Devedor do contrato original.
@@ -464,7 +464,7 @@ Empréstimo Pessoal
 
 13. **Validação Final:**
     - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).
-    - Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
+    - Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 14. **Registro do Refinanciamento:**
     - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
@@ -567,17 +567,17 @@ Empréstimo Pessoal
 
 <br>
 
-## 12. REFINANCIAMENTO (COMUM)
+## 11.3. REFINANCIAMENTO (COMUM)
 
-#### 12.1. Percentual Mínimo Pago
+#### 11.3.1. Percentual Mínimo Pago
     ≥ 20% das parcelas pagas.
 
-#### 12.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+#### 11.3.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
 
-#### 12.3. Parcelas em Dia
+#### 11.3.3. Parcelas em Dia
     Sem parcelas vencidas.
 
-#### 12.4. Aceitação do Banco Destino
+#### 11.3.4. Aceitação do Banco Destino
     bancoDestino deve aceitar a portabilidade.
 
 <br>
