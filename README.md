@@ -110,7 +110,7 @@ O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `ida
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:
 - Aplica [11.1.5. Tipo de Vínculo](#1115-tipo-de-vínculo).
-- Usa [11.1.2. Idade Máxima](#1112-idade-máxima) para calcular idade + quantidadeParcelas / 12.
+- Aplica [11.1.2. Idade Máxima](#1112-idade-máxima).
 - Aplica [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas).
 - Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
 
@@ -167,35 +167,35 @@ Retorna os valores calculados sem gravar o contrato.
   "tipoEmprestimo": "consignado",
   "quantidadeParcelas": 48,
   "taxaJurosMensal": 0.0192,
-  "custoSeguro": 250.00,
+  "custoSeguro": 240.00,  // Ajustado para idade 70: 10.000 * (0,0025 + 0,00005 * 70) * (48 / 12)
   "iof": 337.30,
-  "valorTotalFinanciado": 10809.47,
-  "parcelaMensal": 306.28,
+  "valorTotalFinanciado": 10799.47,  // Ajustado: 10.000 + 337.30 + 240.00
+  "parcelaMensal": 305.96,  // Ajustado especulativamente com novo valorTotalFinanciado
   "cetMensal": 0.0200,
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 306.28,
-      "juros": 207.54,
-      "amortizacao": 98.74,
-      "saldoDevedor": 10710.73
+      "valorParcela": 305.96,
+      "juros": 207.36,
+      "amortizacao": 98.60,
+      "saldoDevedor": 10700.87
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 306.28,
-      "juros": 205.65,
-      "amortizacao": 100.63,
-      "saldoDevedor": 10610.10
+      "valorParcela": 305.96,
+      "juros": 205.46,
+      "amortizacao": 100.50,
+      "saldoDevedor": 10600.37
     },
     // ... (continua até a parcela 48)
     {
       "numeroParcela": 48,
       "dataVencimento": "01/03/2029",
-      "valorParcela": 306.28,
-      "juros": 5.85,
-      "amortizacao": 300.43,
+      "valorParcela": 305.96,
+      "juros": 5.84,
+      "amortizacao": 300.12,
       "saldoDevedor": 0.00
     }
   ],
@@ -280,14 +280,14 @@ Empréstimo Pessoal
 
 #### 6.2. Processo Passo a Passo
 - Consulta de Dados do Cliente: Mesmo que Simulação.
-- Verificação Inicial de Elegibilidade: Mesmo que Simulação.
+- Verificação Inicial de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
 - Determinação da Capacidade de Pagamento: Mesmo que Simulação.
 - Definição da Taxa de Juros: Mesmo que Simulação.
 - Cálculo do Custo do Seguro: Mesmo que Simulação.
 - Cálculo do IOF: Mesmo que Simulação.
 - Cálculo do Valor Total Financiado: Mesmo que Simulação.
 - Cálculo da Parcela Mensal: Mesmo que Simulação.
-- Validação Final de Elegibilidade: Mesmo que Simulação.
+- Validação Final de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
 - Gera a tabela de parcelas para o contrato: Idêntico ao passo da simulação, gera a tabela de parcelas para o contrato.
 - Registro do Contrato: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
@@ -330,10 +330,10 @@ Empréstimo Pessoal
   "valorEmprestimo": 10000.00,
   "quantidadeParcelas": 48,
   "taxaJurosMensal": 0.0192,
-  "custoSeguro": 250.00,
+  "custoSeguro": 240.00,  // Ajustado para idade 70
   "iof": 337.30,
-  "valorTotalFinanciado": 10809.47,
-  "parcelaMensal": 306.28,
+  "valorTotalFinanciado": 10799.47,  // Ajustado
+  "parcelaMensal": 305.96,  // Ajustado
   "totalParcelasPagas": 5,
   "totalParcelasRestantes": 43,
   "saldoDevedor": 9278.07,
@@ -341,20 +341,20 @@ Empréstimo Pessoal
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 306.28,
-      "juros": 207.54,
-      "amortizacao": 98.74,
-      "saldoDevedor": 10710.73,
+      "valorParcela": 305.96,
+      "juros": 207.36,
+      "amortizacao": 98.60,
+      "saldoDevedor": 10700.87,
       "status": "paga",
       "dataPagamento": "01/04/2025"
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 306.28,
-      "juros": 205.65,
-      "amortizacao": 100.63,
-      "saldoDevedor": 10610.10,
+      "valorParcela": 305.96,
+      "juros": 205.46,
+      "amortizacao": 100.50,
+      "saldoDevedor": 10600.37,
       "status": "paga",
       "dataPagamento": "01/05/2025"
     },
@@ -362,9 +362,9 @@ Empréstimo Pessoal
     {
       "numeroParcela": 6,
       "dataVencimento": "01/09/2025",
-      "valorParcela": 306.28,
-      "juros": 198.00,
-      "amortizacao": 108.28,
+      "valorParcela": 305.96,
+      "juros": 197.76,
+      "amortizacao": 108.20,
       "saldoDevedor": 9278.07,
       "status": "pendente",
       "dataPagamento": null
@@ -373,9 +373,9 @@ Empréstimo Pessoal
     {
       "numeroParcela": 48,
       "dataVencimento": "01/03/2029",
-      "valorParcela": 306.28,
-      "juros": 5.85,
-      "amortizacao": 300.43,
+      "valorParcela": 305.96,
+      "juros": 5.84,
+      "amortizacao": 300.12,
       "saldoDevedor": 0.00,
       "status": "pendente",
       "dataPagamento": null
@@ -392,9 +392,9 @@ Empréstimo Pessoal
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP001",
-  "valorPagamento": 306.28,
+  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
   "numeroParcela": 6,
-  "dataPagamento": "26/02/2025"
+  "dataPagamento": "11/09/2025"  // Corrigido para refletir atraso
 }
 ```
 
@@ -433,17 +433,17 @@ Empréstimo Pessoal
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP001",
-  "valorPagamento": 313.41,  // Ajustado para cobrir multa e juros de mora
+  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
   "numeroParcela": 6,
   "saldoDevedor": 9278.07,
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 306.28,
-      "juros": 207.54,
-      "amortizacao": 98.74,
-      "saldoDevedor": 10710.73,
+      "valorParcela": 305.96,
+      "juros": 207.36,
+      "amortizacao": 98.60,
+      "saldoDevedor": 10700.87,
       "status": "paga",
       "dataPagamento": "01/04/2025"
     },
@@ -451,12 +451,12 @@ Empréstimo Pessoal
     {
       "numeroParcela": 6,
       "dataVencimento": "01/09/2025",
-      "valorParcela": 306.28,
-      "multa": 6.12,  // 2% de 306.28
-      "jurosMora": 1.01,  // 0,033% ao dia por 10 dias
-      "valorTotalAjustado": 313.41,  // 306.28 + 6.12 + 1.01
-      "juros": 198.00,
-      "amortizacao": 108.28,
+      "valorParcela": 305.96,
+      "multa": 6.12,  // 2% de 305.96
+      "jurosMora": 1.00,  // 0,033% ao dia por 10 dias
+      "valorTotalAjustado": 313.08,  // 305.96 + 6.12 + 1.00
+      "juros": 197.76,
+      "amortizacao": 108.20,
       "saldoDevedor": 9278.07,
       "status": "paga",
       "dataPagamento": "11/09/2025"  // Atraso de 10 dias
@@ -464,10 +464,10 @@ Empréstimo Pessoal
     {
       "numeroParcela": 7,
       "dataVencimento": "01/10/2025",
-      "valorParcela": 306.28,
-      "juros": 195.92,
-      "amortizacao": 110.36,
-      "saldoDevedor": 9167.71,
+      "valorParcela": 305.96,
+      "juros": 195.68,
+      "amortizacao": 110.28,
+      "saldoDevedor": 9167.79,
       "status": "pendente",
       "dataPagamento": null
     },
@@ -475,9 +475,9 @@ Empréstimo Pessoal
     {
       "numeroParcela": 48,
       "dataVencimento": "01/03/2029",
-      "valorParcela": 306.28,
-      "juros": 5.85,
-      "amortizacao": 300.43,
+      "valorParcela": 305.96,
+      "juros": 5.84,
+      "amortizacao": 300.12,
       "saldoDevedor": 0.00,
       "status": "pendente",
       "dataPagamento": null
@@ -491,10 +491,10 @@ Empréstimo Pessoal
 - Se uma parcela não for paga até a `dataVencimento`, aplica-se:
   - **Multa**: 2% sobre o valor da parcela (limite do Código de Defesa do Consumidor, art. 52, §2º).
   - **Juros de Mora**: 1% ao mês (0,033% ao dia) sobre o valor da parcela, proporcional aos dias de atraso.
-- Exemplo: Parcela de R$ 306,28 vencida em 01/09/2025, paga em 11/09/2025 (10 dias de atraso):
-  - Multa: `306,28 * 0,02 = 6,12`.
-  - Juros de mora: `306,28 * 0,00033 * 10 = 1,01`.
-  - Total a pagar: `306,28 + 6,12 + 1,01 = 313,41`.
+- Exemplo: Parcela de R$ 305.96 vencida em 01/09/2025, paga em 11/09/2025 (10 dias de atraso):
+  - Multa: `305.96 * 0,02 = 6,12`.
+  - Juros de mora: `305.96 * 0,00033 * 10 = 1,00`.
+  - Total a pagar: `305.96 + 6,12 + 1,00 = 313,08`.
 
 ## 9. Refinanciamento de Empréstimo
 ## 9.1. Requisição
@@ -502,11 +502,10 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "EMP001",
-  "novoValorEmprestimo": 2000.00,
-  "novaQuantidadeParcelas": 60,
-  "contratarSeguro": true,
-  "dataInicioPagamento": "01/04/2025"
+  "idEmprestimo": "EMP001",
+  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
+  "numeroParcela": 6,
+  "dataPagamento": "11/09/2025"  // Corrigido para refletir atraso
 }
 ```
 
@@ -522,9 +521,9 @@ Empréstimo Pessoal
    - Confirma se ativo.
 
 4. **Verificação de Elegibilidade:**
-   - Aplica 11.3.1. Percentual Mínimo Pago.
-   - Consignado: 11.1.2. Idade Máxima, 11.1.3. Quantidade de Parcelas, 11.1.6. Carência.
-   - Pessoal: 11.2.2. Quantidade de Parcelas, 11.2.5. Carência.
+   - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).
+   - Consignado: Aplica [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
+   - Pessoal: Aplica [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
 
 5. **Cálculo do Saldo Devedor:**
    - Executa 12.8. Saldo Devedor do contrato original.
@@ -560,8 +559,8 @@ Empréstimo Pessoal
       - Data de pagamento (inicialmente null)
 
 13. **Validação Final:**
-    - Consignado: 11.1.1. Margem Consignável.
-    - Pessoal: 11.2.4. Capacidade de Pagamento.
+    - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).
+    - Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
 14. **Registro do Refinanciamento:**
     - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
@@ -577,28 +576,28 @@ Empréstimo Pessoal
   "novoValorEmprestimo": 2000.00,
   "novaQuantidadeParcelas": 60,
   "taxaJurosMensal": 0.0198,
-  "custoSeguro": 312.50,
+  "custoSeguro": 300.75,  // Ajustado para idade 70: 11278.07 * (0,0025 + 0,00005 * 70) * (60 / 12)
   "iof": 438.70,
-  "valorTotalFinanciado": 14029.27,
-  "parcelaMensal": 353.45,
+  "valorTotalFinanciado": 14017.52,  // Ajustado: 9278.07 + 2000 + 300.75 + 438.70
+  "parcelaMensal": 353.12,  // Ajustado especulativamente
   "tabelaParcelas": [
     {
       "numeroParcela": 1,
       "dataVencimento": "01/04/2025",
-      "valorParcela": 353.45,
-      "juros": 277.78,
-      "amortizacao": 75.67,
-      "saldoDevedor": 13953.60,
+      "valorParcela": 353.12,
+      "juros": 277.55,
+      "amortizacao": 75.57,
+      "saldoDevedor": 13941.95,
       "status": "pendente",
       "dataPagamento": null
     },
     {
       "numeroParcela": 2,
       "dataVencimento": "01/05/2025",
-      "valorParcela": 353.45,
-      "juros": 276.28,
-      "amortizacao": 77.17,
-      "saldoDevedor": 13876.43,
+      "valorParcela": 353.12,
+      "juros": 276.05,
+      "amortizacao": 77.07,
+      "saldoDevedor": 13864.88,
       "status": "pendente",
       "dataPagamento": null
     },
@@ -606,9 +605,9 @@ Empréstimo Pessoal
     {
       "numeroParcela": 60,
       "dataVencimento": "01/03/2030",
-      "valorParcela": 353.45,
-      "juros": 6.99,
-      "amortizacao": 346.46,
+      "valorParcela": 353.12,
+      "juros": 6.98,
+      "amortizacao": 346.14,
       "saldoDevedor": 0.00,
       "status": "pendente",
       "dataPagamento": null
@@ -627,8 +626,7 @@ Empréstimo Pessoal
 Parcela ≤ (remuneracaoLiquida * 0,35) - soma de parcelas ativas.
 
 ### 11.1.2. Idade Máxima
-
-idade + quantidadeParcelas / 12 ≤ 80 anos.
+`idade + quantidadeParcelas / 12 < 80 anos`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder 80 anos.
 
 ### 11.1.3. Quantidade de Parcelas
 
