@@ -525,10 +525,6 @@ Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
 <br>
 
----
-
-<br>
-
 ## 11.2. Empréstimo **Pessoal**
 
 ### 11.2.1. Idade Máxima
