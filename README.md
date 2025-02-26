@@ -29,6 +29,10 @@
 - Planilha de cálculo
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
+- - Lei e regulamentações: - Código de Defesa do Consumidor (CDC): Lei nº 8.078/1990: Quando o empréstimo é oferecido por instituições financeiras a consumidores, o CDC se aplica, garantindo direitos como informações claras sobre taxas, juros e condições contratuais.
+  
+- Lei e Regulamentações: Lei da Usura (Decreto nº 22.626/1933): Limita os juros cobrados em operações de crédito, proibindo taxas abusivas (acima do dobro da taxa legal, que hoje segue a jurisprudência e regulações do Banco Central).
+
 ### 1. Objetivo
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado (total ou parcial), refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
