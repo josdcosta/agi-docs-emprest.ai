@@ -33,12 +33,12 @@
 
 <br>
 
-# 1. OBJETIVO
+## 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
 <br>
 
-# 2. VARIÁVEIS
+## 2. VARIÁVEIS
 Os parâmetros abaixo do sistema Emprest.AI:
 
 
@@ -66,7 +66,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 
 <br>
 
-# 3. VISÃO GERAL DE FUNCIONAMENTO
+## 3. VISÃO GERAL DE FUNCIONAMENTO
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
@@ -78,7 +78,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-# 4. DADOS ARMAZENADOS DO CLIENTE
+## 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
   "idCliente": "[cpf]",
@@ -91,9 +91,9 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-# 5. SIMULAÇÃO DE EMPRÉSTIMO
-## 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
-### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
+## 5. SIMULAÇÃO DE EMPRÉSTIMO
+### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
+#### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
 {
   "idCliente": [cpf],
@@ -104,7 +104,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
-### Empréstimo Pessoal
+#### Empréstimo Pessoal
 ```json
 {
   "idCliente": "[cpf]",
@@ -115,7 +115,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
-## 5.2. Processo Passo a Passo
+### 5.2. Processo Passo a Passo
 **Passo 1: Consulta de Dados do Cliente**  
 O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio
 do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
@@ -203,8 +203,8 @@ Retorna os valores calculados sem gravar o contrato.
 
 <br>
 
-# 6. CONCESSÃO DE EMPRÉSTIMO
-## 6.1. Requisição
+## 6. CONCESSÃO DE EMPRÉSTIMO
+### 6.1. Requisição
 Empréstimo Consignado
 ```json
 {
@@ -229,7 +229,7 @@ Empréstimo Pessoal
 }
 ```
 
-## 6.2. Processo Passo a Passo
+### 6.2. Processo Passo a Passo
 - Consulta de Dados do Cliente: Mesmo que Simulação.
 - Verificação Inicial de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
 - Determinação da Capacidade de Pagamento: Mesmo que Simulação.
@@ -242,20 +242,20 @@ Empréstimo Pessoal
 - Gera a tabela de parcelas para o contrato: Idêntico ao passo da simulação, gera a tabela de parcelas para o contrato.
 - Registro do Contrato: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
-## 6.3. Saída
+### 6.3. Saída
 (Idêntica à Simulação, com "mensagem": "Empréstimo concedido com sucesso.")
 
 <br>
 
-# 7. CONSULTA DE DADOS DE EMPRÉSTIMO
-## 7.1. Requisição
+## 7. CONSULTA DE DADOS DE EMPRÉSTIMO
+### 7.1. Requisição
 ```json
 {
   "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]"
 }
 ```
-## 7.2. Processo Passo a Passo
+### 7.2. Processo Passo a Passo
 
 1. **Consulta de Dados do Cliente:**
    - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
@@ -275,7 +275,7 @@ Empréstimo Pessoal
 6. **Retorno dos Dados:**
    - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
 
-## 7.3. Saída
+### 7.3. Saída
 ```json
 {
   "idCliente": "[cpf]",
@@ -309,9 +309,9 @@ Empréstimo Pessoal
 
 <br>
 
-# 8. PAGAMENTO DO EMPRÉSTIMO
-## 8.1. Requisição
-### Pagamento Parcela
+## 8. PAGAMENTO DO EMPRÉSTIMO
+### 8.1. Requisição
+#### Pagamento Parcela
 ```json
 {
   "idCliente": "[cpf]",
@@ -323,7 +323,7 @@ Empréstimo Pessoal
 ```
 
 
-## 8.2. Processo Passo a Passo
+### 8.2. Processo Passo a Passo
 
 1. **Consulta de Dados do Cliente:**
    - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
@@ -351,8 +351,8 @@ Empréstimo Pessoal
 7. **Retorno da Confirmação:**
    - Retorna o status atualizado, incluindo a tabela de parcelas revisada com a parcela paga.
 
-## 8.3. Saída
-### Pagamento Parcela
+### 8.3. Saída
+#### Pagamento Parcela
 ```json
 {
   "idCliente": "[cpf]",
@@ -384,7 +384,7 @@ Empréstimo Pessoal
 }
 ```
 
-## 8.4. Tratamento de Atrasos
+### 8.4. Tratamento de Atrasos
 - Se uma parcela não for paga até a `dataVencimento`, aplica-se:
   - **Multa**: 2% sobre o valor da parcela (limite do Código de Defesa do Consumidor, art. 52, §2º).
   - **Juros de Mora**: 1% ao mês (0,033% ao dia) sobre o valor da parcela, proporcional aos dias de atraso.
@@ -395,8 +395,8 @@ Empréstimo Pessoal
 
 <br>
 
-# 9. REFINANCIAMENTO DO EMPRÉSTIMO
-## 9.1. Requisição
+## 9. REFINANCIAMENTO DO EMPRÉSTIMO
+### 9.1. Requisição
 
 ```json
 {
@@ -409,7 +409,7 @@ Empréstimo Pessoal
 }
 ```
 
-## 9.2. Processo Passo a Passo
+### 9.2. Processo Passo a Passo
 
 1. **Consulta de Dados do Cliente:**
    - Valida `idCliente`.
@@ -502,34 +502,34 @@ Empréstimo Pessoal
 <br>
 <br>
 
-# 11. ELEGIBILIDADE
+## 11. ELEGIBILIDADE
 
-## 11.1. Empréstimo **Consignado**
+### 11.1. Empréstimo **Consignado**
 
-### 11.1.1. Margem Consignável
+#### 11.1.1. Margem Consignável
 Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
 
-### 11.1.2. Idade Máxima
+#### 11.1.2. Idade Máxima
 `idade + quantidadeParcelas / 12 < idadeMaximaConsignado`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
 
-### 11.1.3. Quantidade de Parcelas
+#### 11.1.3. Quantidade de Parcelas
 Entre 24 e 92 parcelas.
 
-### 11.1.4. Taxa de Juros
+#### 11.1.4. Taxa de Juros
 Taxa mensal ≤ 2,14%.
 
-### 11.1.5. Tipo de Vínculo
+#### 11.1.5. Tipo de Vínculo
 "Aposentado", "servidor público" ou outro válido.
 
-### 11.1.6. Carência
+#### 11.1.6. Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
-## 11.2. Empréstimo **Pessoal**
+### 11.2. Empréstimo **Pessoal**
 
-### 11.2.1. Idade Máxima
+#### 11.2.1. Idade Máxima
 `idade + quantidadeParcelas / 12 < idadeMaximaPessoal`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
 
-### 11.2.2. Valor do Empréstimo
+#### 11.2.2. Valor do Empréstimo
 valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 
 | Faixa de Score | Nível de Risco     | Limite Crédito     |  
@@ -541,7 +541,7 @@ valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 | 
 
 
-### 11.2.3. Quantidade de Parcelas
+#### 11.2.3. Quantidade de Parcelas
 prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
 
 | Faixa de Score | Nível de Risco     |  Meses              |
@@ -552,42 +552,42 @@ prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score
 | 601-800        | Risco baixo        |  6 a 24             |
 | 801-1000       | Risco muito baixo  |  6 a 30             |
 
-### 11.2.4. Score de Crédito
+#### 11.2.4. Score de Crédito
 scoreCredito ≥ 201.
 
-### 11.2.5. Capacidade de Pagamento
+#### 11.2.5. Capacidade de Pagamento
 Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
-### 11.2.6 Carência
+#### 11.2.6 Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 <br>
 
-# 12. REFINANCIAMENTO (COMUM)
+## 12. REFINANCIAMENTO (COMUM)
 
-### 12.1. Percentual Mínimo Pago
+#### 12.1. Percentual Mínimo Pago
 ≥ 20% das parcelas pagas.
 
-## 12.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
+### 12.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal).
 
-### 12.3. Parcelas em Dia
+#### 12.3. Parcelas em Dia
 Sem parcelas vencidas.
 
-### 12.4. Aceitação do Banco Destino
+#### 12.4. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
 
 <br>
 
-# 13. CÁLCULOS
+## 13. CÁLCULOS
 
-## 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
+### 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
 rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.  
 capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
-## 13.2. Margem Consignável (Empréstimo Consignado)
+### 13.2. Margem Consignável (Empréstimo Consignado)
 margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
 
-## 13.3. Taxa de Juros Mensal
+### 13.3. Taxa de Juros Mensal
 **Consignado**:  
 TaxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
@@ -603,20 +603,20 @@ Interpolação entre Taxa mín (8,49%) e Taxa máx (9,99%) com base em scoreCred
 
 Taxa = TaxaMin + [(TaxaMax - TaxaMin) × (Score - ScoreMin)] / (ScoreMax - ScoreMin)
 
-## 13.4. Custo do Seguro
+### 13.4. Custo do Seguro
 CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-## 13.5. IOF
+### 13.5. IOF
 percentualFixo = 0,0038  
 percentualVariado = 0,000082  
 IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-## 13.6. Valor Total Financiado
+### 13.6. Valor Total Financiado
 ValorInicial = valorBase + IOF + CustoSeguro  
 ValorTotalFinanciado = ValorInicial * (1 + TaxaJurosMensal / 30) ^ diasCarencia
 
-## 13.7. Parcela Mensal
+### 13.7. Parcela Mensal
 ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-## 13.8. Saldo Devedor
+### 13.8. Saldo Devedor
 SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
