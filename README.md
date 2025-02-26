@@ -20,6 +20,36 @@
 # 1. Objetivo
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, pagamento antecipado, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
+## Variáveis Configuráveis
+Os parâmetros abaixo são ajustáveis no sistema Emprest.AI, podendo ser alterados conforme políticas internas, regulamentações ou condições comerciais. Os valores atuais estão listados na tabela:
+
+## Variáveis Configuráveis
+Os parâmetros abaixo são ajustáveis no sistema Emprest.AI, podendo ser alterados conforme políticas internas, regulamentações ou condições comerciais. Os valores atuais estão listados na tabela:
+
+# Variáveis Configuráveis
+Os parâmetros abaixo são ajustáveis no sistema Emprest.AI, podendo ser alterados conforme políticas internas, regulamentações ou condições comerciais. Os valores atuais estão listados na tabela:
+
+| **Variável**               | **Descrição**                                     | **Valor Atual**            |
+|----------------------------|--------------------------------------------------|----------------------------|
+| `jurosMinimoPessoal`      | Taxa mínima de juros mensal (Empréstimo Pessoal) | 8,49% ao mês              |
+| `jurosMaximoPessoal`      | Taxa máxima de juros mensal (Empréstimo Pessoal) | 9,99% ao mês              |
+| `jurosMinimoConsignado`   | Taxa mínima de juros mensal (Empréstimo Consignado, 24 meses) | 1,80% ao mês       |
+| `jurosMaximoConsignado`   | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês       |
+| `valorMinimoPessoal`      | Valor mínimo do Empréstimo Pessoal              | R$ 100,00                 |
+| `valorMaximoPessoal`      | Valor máximo do Empréstimo Pessoal              | R$ 20.000,00              |
+| `valorMinimoConsignado`   | Valor mínimo do Empréstimo Consignado           | Depende de `margemConsignavel` (35%) |
+| `prazoMinimoPessoal`      | Prazo mínimo em parcelas (Empréstimo Pessoal)   | 6 parcelas                |
+| `prazoMaximoPessoal`      | Prazo máximo em parcelas (Empréstimo Pessoal)   | 30 parcelas               |
+| `prazoMinimoConsignado`   | Prazo mínimo em parcelas (Empréstimo Consignado)| 24 parcelas               |
+| `prazoMaximoConsignado`   | Prazo máximo em parcelas (Empréstimo Consignado)| 92 parcelas               |
+| `carenciaMaximaPessoal`   | Período máximo de carência (Empréstimo Pessoal) | 30 dias                   |
+| `carenciaMaximaConsignado`| Período máximo de carência (Empréstimo Consignado) | 60 dias                |
+| `idadeMaximaConsignado`   | Idade máxima ao final (Empréstimo Consignado)   | 80 anos                   |
+| `margemConsignavel`       | Percentual da remuneração líquida para margem   | 35%                       |
+| `iof`                     | Imposto sobre Operações Financeiras             | Conforme legislação       |
+| `percentualRendaPessoal`  | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal) | 30%          |
+| `percentualMinimoRefinanciamento` | Percentual mínimo de parcelas pagas para refinanciamento | 20%        |
+
 # 2. Visão Geral do Funcionamento
 O sistema é estruturado em quatro áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
@@ -31,13 +61,13 @@ O sistema é estruturado em quatro áreas principais, aplicáveis a ambas as mod
 ## Regras Principais
 
 ### Empréstimo Pessoal
-- **Prazo**: Mínimo de 6 parcelas mensais e máximo de 30 parcelas mensais.
-- **Valor**: Mínimo de R$ 100,00, sem limite máximo fixo (sujeito à análise).
-- **Taxas de Juros**: De 8,49% a 9,99% ao mês (base 30 dias), conforme score, valor e prazo.
-- **Carência**: Até 30 dias entre contratação e primeiro pagamento.
+- **Prazo**: Entre `prazoMinimoPessoal` e `prazoMaximoPessoal` parcelas mensais.
+- **Valor**: Entre `valorMinimoPessoal` e `valorMaximoPessoal`, sujeito à análise de crédito.
+- **Taxas de Juros**: De `jurosMinimoPessoal` a `jurosMaximoPessoal` ao mês (base 30 dias), conforme score, valor e prazo.
+- **Carência**: Até `carenciaMaximaPessoal` dias entre contratação e primeiro pagamento.
 - **Análise de Crédito**: Baseada em score, renda líquida e idade.
 - **Pagamento**: Débito automático em conta corrente, com opção de antecipação.
-- **Cancelamento**: Direito de arrependimento em até 7 dias corridos, com devolução dos valores. Após isso, liquidação antecipada pode incluir tributos.
+- **Cancelamento**: Direito de arrependimento em até 7 dias corridos, com devolução dos valores. Após isso, liquidação antecipada pode incluir tributos como `iof`.
 
 ### Empréstimo Consignado
 - **Prazo**: Mínimo de 24 parcelas mensais e máximo de 92 parcelas mensais.
@@ -136,22 +166,22 @@ Exemplo:
 
 # 5. Elegibilidade
 ## Regras Específicas por Modalidade
-## Empréstimo Pessoal
-- **Valor do Empréstimo**: `R$ 100,00 ≤ valorEmprestimo ≤ R$ 20.000,00`, limitado pelo score de crédito.
-- **Quantidade de Parcelas**: `6 ≤ quantidadeParcelas ≤ 30`, com limites por score:
+### Empréstimo Pessoal
+- **Valor do Empréstimo**: `valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal`, limitado pelo score de crédito.
+- **Quantidade de Parcelas**: `prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal`, com limites por score:
   - 201-400: 6-12.
   - 401-600: 6-18.
   - 601-800: 6-24.
   - 801-1000: 6-30.
 - **Score de Crédito**: `scoreCredito ≥ 201`, com tabela de limites, prazos e taxas.
-- **Capacidade de Pagamento**: `Parcela ≤ 30% da rendaLiquida`.
-- **Liquidação Antecipada**: Após 7 dias, com cálculo de valor presente + tributos (ex.: IOF).
+- **Capacidade de Pagamento**: `Parcela ≤ percentualRendaPessoal da rendaLiquida`.
+- **Liquidação Antecipada**: Após 7 dias, com cálculo de valor presente + tributos (ex.: `iof`).
 
-## Empréstimo Consignado
-- **Margem Consignável**: `Parcela ≤ margemConsignavel`, calculada como `(remuneracaoLiquida * 35%) - soma das parcelas ativas`.
-- **Idade Máxima**: Idade final (`idade + quantidadeParcelas / 12`) ≤ 80 (ajustável).
-- **Quantidade de Parcelas**: `24 ≤ quantidadeParcelas ≤ 92`, limitada por idade e `prazoMaximo`.
-- **Taxa de Juros**: `TaxaJurosMensal ≤ 2,14%` (ajustável).
+### Empréstimo Consignado
+- **Margem Consignável**: `Parcela ≤ margemConsignavel`, calculada como `(remuneracaoLiquida * margemConsignavel) - soma das parcelas ativas`.
+- **Idade Máxima**: Idade final (`idade + quantidadeParcelas / 12`) ≤ `idadeMaximaConsignado`.
+- **Quantidade de Parcelas**: `prazoMinimoConsignado ≤ quantidadeParcelas ≤ prazoMaximoConsignado`.
+- **Taxa de Juros**: `TaxaJurosMensal ≤ jurosMaximoConsignado`.
 - **Tipo de Vínculo**: Exige vínculo válido (ex.: "aposentado", "servidor público").
 - **Portabilidade**: Parcelas em dia, `bancoDestino` aceito, nova parcela ≤ `margemConsignavel`.
 
