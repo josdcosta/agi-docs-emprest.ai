@@ -144,16 +144,16 @@ Executa [12.7. Parcela Mensal](#127-parcela-mensal).
 Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
 Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
-**Passo 10: Geração da Tabela de Parcelas**
+### Passo 10: Geração da Tabela de Parcelas
 
-Com base no valorTotalFinanciado, quantidadeParcelas, taxaJurosMensal e dataInicioPagamento, o sistema calcula e gera uma tabela detalhando cada parcela, incluindo:
+Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, o sistema calcula e gera uma tabela detalhando cada parcela, incluindo:
 
-Número da parcela
-Data de vencimento (mensal a partir da dataInicioPagamento)
-Valor da parcela
-Juros da parcela
-Amortização do principal
-Saldo devedor restante
+1. **Número da parcela**
+2. **Data de vencimento** (mensal a partir da `dataInicioPagamento`)
+3. **Valor da parcela**
+4. **Juros da parcela**
+5. **Amortização do principal**
+6. **Saldo devedor restante**
 
 **Passo 11: Retorno da Simulação**  
 Retorna os valores calculados sem gravar o contrato.
