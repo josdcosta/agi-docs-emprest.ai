@@ -68,6 +68,9 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 - Portabilidade: Transferência de consignados e empréstimo pessoal para outro banco.
 - Cancelamento de Contrato: Gestão de desistências ou finalizações.
 
+<br>
+<br>
+
 ### 4. Dados Armazenados do Cliente
 ```json
 {
@@ -78,6 +81,9 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "tipoVinculo": "[aposentado, servidor, pensionista, empregado ou nulo]",
 }
 ```
+
+<br>
+<br>
 
 ### 5. Simulação de Empréstimo
 #### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
@@ -189,6 +195,9 @@ Retorna os valores calculados sem gravar o contrato.
 }
 ```
 
+<br>
+<br>
+
 ### 6. Concessão de Empréstimo
 #### 6.1. Requisição
 Empréstimo Consignado
@@ -230,6 +239,9 @@ Empréstimo Pessoal
 
 #### 6.3. Saída
 (Idêntica à Simulação, com "mensagem": "Empréstimo concedido com sucesso.")
+
+<br>
+<br>
 
 ### 7. Consulta de Dados de Empréstimo
 #### 7.1. Requisição
@@ -290,6 +302,8 @@ Empréstimo Pessoal
   "mensagem": "Consulta realizada com sucesso."
 }
 ```
+<br>
+<br>
 
 ### 8. Pagamento de Empréstimo
 #### 8.1. Requisição
@@ -374,6 +388,9 @@ Empréstimo Pessoal
   - Multa: `305.96 * 0,02 = 6,12`.
   - Juros de mora: `305.96 * 0,00033 * 10 = 1,00`.
   - Total a pagar: `305.96 + 6,12 + 1,00 = 313,08`.
+
+<br>
+<br>
 
 ## 9. Refinanciamento de Empréstimo
 ## 9.1. Requisição
