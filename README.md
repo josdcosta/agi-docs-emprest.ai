@@ -502,10 +502,11 @@ Empréstimo Pessoal
 ```json
 {
   "idCliente": "123.456.789-00",
-  "idEmprestimo": "EMP001",
-  "valorPagamento": 313.08,  // Ajustado para cobrir multa e juros de mora
-  "numeroParcela": 6,
-  "dataPagamento": "11/09/2025"  // Corrigido para refletir atraso
+  "idEmprestimoOriginal": "EMP001",
+  "novoValorEmprestimo": 2000.00,
+  "novaQuantidadeParcelas": 60,
+  "contratarSeguro": true,
+  "dataInicioPagamento": "01/04/2025"
 }
 ```
 
