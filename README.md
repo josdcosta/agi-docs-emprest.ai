@@ -134,6 +134,38 @@ Exemplo:
 }
 ```
 
+# 5. Elegibilidade
+# Regras Específicas por Modalidade
+## Empréstimo Pessoal
+- **Valor do Empréstimo**: `R$ 100,00 ≤ valorEmprestimo ≤ R$ 20.000,00`, limitado pelo score de crédito.
+- **Quantidade de Parcelas**: `6 ≤ quantidadeParcelas ≤ 30`, com limites por score:
+  - 201-400: 6-12.
+  - 401-600: 6-18.
+  - 601-800: 6-24.
+  - 801-1000: 6-30.
+- **Score de Crédito**: `scoreCredito ≥ 201`, com tabela de limites, prazos e taxas.
+- **Capacidade de Pagamento**: `Parcela ≤ 30% da rendaLiquida`.
+- **Liquidação Antecipada**: Após 7 dias, com cálculo de valor presente + tributos (ex.: IOF).
+
+## Empréstimo Consignado
+- **Margem Consignável**: `Parcela ≤ margemConsignavel`, calculada como `(remuneracaoLiquida * 35%) - soma das parcelas ativas`.
+- **Idade Máxima**: Idade final (`idade + quantidadeParcelas / 12`) ≤ 80 (ajustável).
+- **Quantidade de Parcelas**: `24 ≤ quantidadeParcelas ≤ 92`, limitada por idade e `prazoMaximo`.
+- **Taxa de Juros**: `TaxaJurosMensal ≤ 2,14%` (ajustável).
+- **Tipo de Vínculo**: Exige vínculo válido (ex.: "aposentado", "servidor público").
+- **Portabilidade**: Parcelas em dia, `bancoDestino` aceito, nova parcela ≤ `margemConsignavel`.
+
+# Regras Gerais/Comuns
+### Refinanciamento
+- **Percentual Mínimo Pago**: ≥ 20% das parcelas do `idEmprestimoOriginal` pagas (status "paga" em Parcelas).
+- **Limite de Pagamento**:
+  - Pessoal: Nova parcela ≤ `min(rendaLiquida * 0.30, limiteMaximoPorScore)`.
+  - Consignado: Nova parcela ≤ `margemConsignavel`.
+- **Idade Final**:
+  - Pessoal: Não aplicável diretamente, mas pode ser opcional.
+  - Consignado: ≤ `idadeMaxima` (ex.: 80).
+- **Erro**: "Pagamento mínimo não atingido" ou "Limite insuficiente".
+
 #### Consulta Inicial
 O sistema valida o `idCliente` na tabela de clientes, obtendo `remuneracaoLiquida`, `margemConsignavel`, `idade` (atualizada na data atual), e `tipoVinculo`. Consulta a tabela **ConfiguracoesLocais** para recuperar `taxaInicial`, `incrementoMensal`, `tetoJuros`, `prazoMinimo`, `prazoMaximo`, `idadeMaxima`, `carenciaMaxima` e `margemConsignavelPercentual`. Calcula a margem máxima como `remuneracaoLiquida * margemConsignavelPercentual`. Para refinanciamento ou portabilidade, consulta o `idEmprestimoOriginal` para recuperar o saldo devedor.
 
