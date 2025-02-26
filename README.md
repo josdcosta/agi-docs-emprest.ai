@@ -73,7 +73,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "idCliente": "123.456.789-00",
   "nome": "João Silva",
   "remuneracaoLiquidaMensal": 5000.00,
-  "idade": 75,
+  "idade": 70,
   "tipoVinculo": "aposentado",
   "scoreCredito": 600
 }
