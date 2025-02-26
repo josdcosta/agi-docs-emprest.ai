@@ -57,8 +57,6 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | iof                        | Imposto sobre Operações Financeiras                       | Conforme legislação     |
 | percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%            |
 | percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                     |
-| taxaMaximaSeguroAnual      | Taxa máxima anual permitida para seguro                   | 1%                      |
-
 ### 3. Visão Geral do Funcionamento
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
@@ -417,11 +415,14 @@ Empréstimo Pessoal
 
 5. **Processamento do Pagamento:**
    - Valida o `numeroParcela` informado. Se inválido (fora do intervalo ou já pago), retorna "Erro: Parcela inválida ou já quitada".
-   - Verifica se o `valorPagamento` é igual ou superior ao `valorParcela` da parcela escolhida. Se menor, retorna "Erro: Valor insuficiente para a parcela".
-   - Aplica o `valorPagamento` à parcela especificada, marcando-a como "paga" na `dataPagamento`. Se houver excedente (valor maior que a parcela), registra como crédito ou devolve (regra a definir).
+   - **5.1. Verificação de Atraso:** Se `dataPagamento > dataVencimento`, calcula:
+     - Multa: 2% sobre `valorParcela` (limite do Código de Defesa do Consumidor, art. 52, §2º).
+     - Juros de mora: 0,033% ao dia sobre `valorParcela`, proporcional aos dias de atraso.
+     - Soma ao `valorParcela` para obter `valorTotalAjustado`. Se `valorPagamento < valorTotalAjustado`, retorna "Erro: Valor insuficiente para a parcela atrasada".
+   - Aplica o `valorPagamento` à parcela especificada, marcando-a como "paga" na `dataPagamento`. Se houver excedente, registra como crédito ou devolve (regra a definir).
 
 6. **Atualização do Contrato:**
-   - Atualiza a tabela de parcelas, refletindo a parcela paga, e recalcula o saldo devedor com base na amortização realizada.
+   - Atualiza a tabela de parcelas com `multa`, `jurosMora` e `valorTotalAjustado` (se aplicável), refletindo a parcela paga e recalculando o saldo devedor.
 
 7. **Retorno da Confirmação:**
    - Retorna o status atualizado, incluindo a tabela de parcelas revisada com a parcela paga.
@@ -432,7 +433,7 @@ Empréstimo Pessoal
 {
   "idCliente": "123.456.789-00",
   "idEmprestimo": "EMP001",
-  "valorPagamento": 306.28,
+  "valorPagamento": 313.41,  // Ajustado para cobrir multa e juros de mora
   "numeroParcela": 6,
   "saldoDevedor": 9278.07,
   "tabelaParcelas": [
@@ -446,16 +447,19 @@ Empréstimo Pessoal
       "status": "paga",
       "dataPagamento": "01/04/2025"
     },
-    // ... (parcelas 2 a 5 já pagas anteriormente)
+    // ... (parcelas 2 a 5 já pagas)
     {
       "numeroParcela": 6,
       "dataVencimento": "01/09/2025",
       "valorParcela": 306.28,
+      "multa": 6.12,  // 2% de 306.28
+      "jurosMora": 1.01,  // 0,033% ao dia por 10 dias
+      "valorTotalAjustado": 313.41,  // 306.28 + 6.12 + 1.01
       "juros": 198.00,
       "amortizacao": 108.28,
       "saldoDevedor": 9278.07,
       "status": "paga",
-      "dataPagamento": "26/02/2025"
+      "dataPagamento": "11/09/2025"  // Atraso de 10 dias
     },
     {
       "numeroParcela": 7,
@@ -479,9 +483,18 @@ Empréstimo Pessoal
       "dataPagamento": null
     }
   ],
-  "mensagem": "Pagamento da parcela 6 registrado com sucesso."
+  "mensagem": "Pagamento da parcela 6 registrado com sucesso, com multa e juros de mora aplicados."
 }
 ```
+
+#### 8.4. Tratamento de Atrasos
+- Se uma parcela não for paga até a `dataVencimento`, aplica-se:
+  - **Multa**: 2% sobre o valor da parcela (limite do Código de Defesa do Consumidor, art. 52, §2º).
+  - **Juros de Mora**: 1% ao mês (0,033% ao dia) sobre o valor da parcela, proporcional aos dias de atraso.
+- Exemplo: Parcela de R$ 306,28 vencida em 01/09/2025, paga em 11/09/2025 (10 dias de atraso):
+  - Multa: `306,28 * 0,02 = 6,12`.
+  - Juros de mora: `306,28 * 0,00033 * 10 = 1,01`.
+  - Total a pagar: `306,28 + 6,12 + 1,01 = 313,41`.
 
 ## 9. Refinanciamento de Empréstimo
 ## 9.1. Requisição
