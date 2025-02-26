@@ -65,7 +65,6 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                     |
 
 <br>
-<br>
 
 ### 3. Visão Geral do Funcionamento
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
@@ -77,7 +76,6 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 - Portabilidade: Transferência de consignados e empréstimo pessoal para outro banco.
 - Cancelamento de Contrato: Gestão de desistências ou finalizações.
 
-<br>
 <br>
 
 ### 4. Dados Armazenados do Cliente
