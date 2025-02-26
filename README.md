@@ -481,6 +481,7 @@ Empréstimo Pessoal
 <br>
 <br>
 <br>
+
 # 11. ELEGIBILIDADE
 
 ## 11.1. Empréstimo **Consignado**
@@ -542,7 +543,10 @@ Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
 ### 11.2.6 Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
-
+<br>
+<br>
+<br>
+<br>
 
 # 12. REFINANCIAMENTO (COMUM)
 
@@ -556,7 +560,10 @@ Sem parcelas vencidas.
 
 ### 12.4. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
-
+<br>
+<br>
+<br>
+<br>
 
 # 13. CÁLCULOS
 
