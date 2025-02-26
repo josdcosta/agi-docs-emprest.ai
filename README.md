@@ -544,7 +544,6 @@ valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 | 401-600        | Risco moderado     | R$ 100 a R$ 5.000  | 
 | 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
 | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 | 
-|----------------|--------------------|--------------------|
 
 
 ### 11.2.3. Quantidade de Parcelas
@@ -557,7 +556,6 @@ prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score
 | 401-600        | Risco moderado     |  6 a 18             |
 | 601-800        | Risco baixo        |  6 a 24             |
 | 801-1000       | Risco muito baixo  |  6 a 30             |
-|----------------|--------------------|---------------------|
 
 ### 11.2.4. Score de Crédito
 scoreCredito ≥ 201.
@@ -611,7 +609,6 @@ Interpolação entre jurosMinimoPessoal (8,49%) e jurosMaximoPessoal (9,99%) com
 | 401-600        | Risco moderado     | 9,49% a 9,99%      | 
 | 601-800        | Risco baixo        | 8,99% a 9,49%      | 
 | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
-|----------------|--------------------|--------------------|
 
 Taxa = Taxa_mín + [(Taxa_máx - Taxa_mín) × (Score - Score_mín)] / (Score_máx - Score_mín)
 
