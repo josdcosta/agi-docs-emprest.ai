@@ -499,32 +499,32 @@ Empréstimo Pessoal
 <br>
 <br>
 
-## 11.1. Empréstimo Consignado
+## 10.1. Empréstimo Consignado
 
-#### 11.1.1. Margem Consignável
+#### 10.1.1. Margem Consignável
     Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
 
-#### 11.1.2. Idade Máxima
+#### 10.1.2. Idade Máxima
     idade + quantidadeParcelas / 12 < idadeMaximaConsignado: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
 
-#### 11.1.3. Quantidade de Parcelas
+#### 10.1.3. Quantidade de Parcelas
     Entre 24 e 92 parcelas.
 
-#### 11.1.4. Taxa de Juros
+#### 10.1.4. Taxa de Juros
     jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMaximoConsignado.
 
-#### 11.1.5. Tipo de Vínculo
+#### 10.1.5. Tipo de Vínculo
     "Aposentado", "servidor público" ou outro válido.
 
-#### 11.1.6. Carência
+#### 10.1.6. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
-## 11.2. Empréstimo Pessoal
+## 10.2. Empréstimo Pessoal
 
-#### 11.2.1. Idade Máxima
+#### 10.2.1. Idade Máxima
     idade + quantidadeParcelas / 12 < idadeMaximaPessoal: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
 
-#### 11.2.2. Valor do Empréstimo
+#### 10.2.2. Valor do Empréstimo
     valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 
     | Faixa de Score | Nível de Risco     | Limite Crédito     |
@@ -535,7 +535,7 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
     | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 |
 
-#### 11.2.3. Quantidade de Parcelas
+#### 10.2.3. Quantidade de Parcelas
     prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
 
     | Faixa de Score | Nível de Risco     | Meses    |
@@ -546,7 +546,7 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | 6 a 24   |
     | 801-1000       | Risco muito baixo  | 6 a 30   |
 
-#### 11.2.4. Taxa de Juros
+#### 10.2.4. Taxa de Juros
     jurosMinimoPessoal ≤ Taxa mensal ≤ jurosMaximoPessoal, conforme score:
     
     | Faixa de Score | Nível de Risco     | Taxa               |
@@ -557,42 +557,42 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | 8,99% a 9,49%      |
     | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
-#### 11.2.5. Score de Crédito
+#### 10.2.5. Score de Crédito
     scoreCredito ≥ 201.
 
-#### 11.2.6. Capacidade de Pagamento
+#### 10.2.6. Capacidade de Pagamento
     Parcela ≤ rendaTotalLiquida * percentualRendaPessoal.
 
-#### 11.2.7. Carência
+#### 10.2.7. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 <br>
 
-## 11.3. REFINANCIAMENTO (COMUM)
+## 10.3. REFINANCIAMENTO (COMUM)
 
-#### 11.3.1. Percentual Mínimo Pago
+#### 10.3.1. Percentual Mínimo Pago
     ≥ 20% das parcelas pagas.
 
-#### 11.3.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+#### 10.3.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
 
-#### 11.3.3. Parcelas em Dia
+#### 10.3.3. Parcelas em Dia
     Sem parcelas vencidas.
 
-#### 11.3.4. Aceitação do Banco Destino
+#### 10.3.4. Aceitação do Banco Destino
     bancoDestino deve aceitar a portabilidade.
 
 <br>
 
-## 13. CÁLCULOS
+## 11. CÁLCULOS
 
-### 13.1. Capacidade de Pagamento (Empréstimo Pessoal)
+### 11.1. Capacidade de Pagamento (Empréstimo Pessoal)
     rendaTotalLiquida = remuneracaoLiquida - Total de Despesas  
     capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
-### 13.2. Margem Consignável (Empréstimo Consignado)
+### 11.2. Margem Consignável (Empréstimo Consignado)
     margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
 
-### 13.3. Taxa de Juros Mensal
+### 11.3. Taxa de Juros Mensal
     **Consignado**:  
         taxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
@@ -608,23 +608,23 @@ Empréstimo Pessoal
 
         Exemplo: Score 500 (401-600): Taxa = 9,49 + [(9,99 - 9,49) * (500 - 401)] / (600 - 401) = 9,49 + 0,25 = 9,74%.
 
-### 13.4. Custo do Seguro
+### 11.4. Custo do Seguro
     CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-### 13.5. IOF
+### 11.5. IOF
     percentualFixo = 0,0038  
     percentualVariado = 0,000082  
     IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-### 13.6. Valor Total Financiado
+### 11.6. Valor Total Financiado
     ValorTotalFinanciado = valorBase + IOF + CustoSeguro
 
-### 13.7. Parcela Mensal
+### 11.7. Parcela Mensal
     ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-### 13.8. Saldo Devedor
+### 11.8. Saldo Devedor
     SaldoDevedor = ParcelaMensal * [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelasRestantes)] / TaxaJurosMensal
 
-### 13.9. Juros Mora e Multa por Atraso
+### 11.9. Juros Mora e Multa por Atraso
     Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
