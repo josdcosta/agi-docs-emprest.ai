@@ -503,6 +503,9 @@ Taxa mensal ≤ 2,14%.
 ### 11.1.6. Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
+<br>
+---
+<br>
 
 ## 11.2. Empréstimo **Pessoal**
 
