@@ -74,7 +74,8 @@ O sistema é estruturado em áreas principais específicas para empréstimos emp
   "razaoSocial": "Empresa Exemplo Ltda",
   "faturamentoLiquidoAnual": 600000.00,
   "porteEmpresa": "grande",
-  "dividasExistentes": 5000.00
+  "dividasExistentes": 5000.00,
+  "scoreCredito": 700
 }
 ```
 ## 5. Simulação de Empréstimo
@@ -183,7 +184,7 @@ O sistema é estruturado em áreas principais específicas para empréstimos emp
 ```json
 {
   "idEmpresa": "12.345.678/0001-90",
-  "score": 720
+  "scoreCredito": 720
 }
 ```
 - Critérios de Aprovação:
