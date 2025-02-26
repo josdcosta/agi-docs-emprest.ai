@@ -478,12 +478,10 @@ Empréstimo Pessoal
 }
 ```
 
----
----
----
-# 11. Elegibilidade
 
-## 11.1. Empréstimo CONSIGNADO
+# 11. ELEGIBILIDADE
+
+## 11.1. Empréstimo **Consignado**
 
 ### 11.1.1. Margem Consignável
 Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
@@ -503,10 +501,8 @@ Taxa mensal ≤ 2,14%.
 ### 11.1.6. Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
----
----
----
-## 11.2. Empréstimo PESSOAL
+
+## 11.2. Empréstimo **Pessoal**
 
 ### 11.2.1. Idade Máxima
 `idade + quantidadeParcelas / 12 < idadeMaximaPessoal`: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
@@ -545,11 +541,8 @@ Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 ### 11.2.6 Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
----
----
----
 
-## 11.3. Refinanciamento (Comum)
+## 11.3. REFINANCIAMENTO (COMUM)
 
 ### 11.3.1. Percentual Mínimo Pago
 ≥ 20% das parcelas pagas.
@@ -562,8 +555,8 @@ Sem parcelas vencidas.
 ### 11.4.2. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
 
-<hr>
-# 12. Cálculos
+
+# 12. CÁLCULOS
 
 ### 12.1. Renda Total Liquida
 rendaTotalLiquida = (Rendas Familiar + remuneracaoLiquida - Total de Despesas ou Dividas) / quantidadeMembrosFamilia.
