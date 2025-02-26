@@ -498,7 +498,7 @@ Empréstimo Pessoal
   "mensagem": "Refinanciamento realizado com sucesso."
 }
 ```
-<br>
+
 <br>
 <br>
 
@@ -523,8 +523,6 @@ Taxa mensal ≤ 2,14%.
 
 ### 11.1.6. Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
-
-<br>
 
 ## 11.2. Empréstimo **Pessoal**
 
@@ -562,8 +560,7 @@ Parcela ≤ rendaTotalLiquida * remuneracaoLiquida.
 
 ### 11.2.6 Carência
 Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
-<br>
-<br>
+
 <br>
 
 # 12. REFINANCIAMENTO (COMUM)
@@ -578,8 +575,7 @@ Sem parcelas vencidas.
 
 ### 12.4. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
-<br>
-<br>
+
 <br>
 
 # 13. CÁLCULOS
