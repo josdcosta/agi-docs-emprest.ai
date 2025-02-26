@@ -562,9 +562,7 @@ Sem parcelas vencidas.
 ### 11.4.2. Aceitação do Banco Destino
 bancoDestino deve aceitar a portabilidade.
 
----
----
----
+***
 
 # 12. Cálculos
 
