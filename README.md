@@ -24,6 +24,9 @@
 - @Victor Augusto Ferreira
 - @Joao Formigari
 
+<br>
+<br>
+
 ### Referências
 - Planilha de cálculo
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
