@@ -46,8 +46,8 @@ Os parâmetros abaixo do sistema Emprest.AI:
 |----------------------------|-----------------------------------------------------------|-------------------------|
 | jurosMinimoPessoal         | Taxa mínima de juros mensal (Empréstimo Pessoal)          | 8,49% ao mês            |
 | jurosMaximoPessoal         | Taxa máxima de juros mensal (Empréstimo Pessoal)          | 9,99% ao mês            |
-| jurosMinimoConsignado      | Taxa mínima de juros mensal (Empréstimo Consignado, 24 meses) | 1,80% ao mês            |
-| jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês            |
+| jurosMinimoConsignado      | Taxa mínima de juros mensal (Empréstimo Consignado, 24 meses) | 1,80% ao mês        |
+| jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês        |
 | valorMinimoPessoal         | Valor mínimo do Empréstimo Pessoal                        | R$ 100,00               |
 | valorMaximoPessoal         | Valor máximo do Empréstimo Pessoal                        | R$ 20.000,00            |
 | valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | R$ 1.000,00             |
@@ -61,8 +61,12 @@ Os parâmetros abaixo do sistema Emprest.AI:
 | idadeMaximaPessoal         | Idade máxima ao final (Empréstimo Pessoal)                | 75 anos                 |
 | margemConsignavel          | Percentual da remuneração líquida para margem             | 35%                     |
 | iof                        | Imposto sobre Operações Financeiras                       | Conforme legislação     |
-| percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%            |
-| percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                     |
+| percentualRendaPessoal     | Percentual máximo da renda líquida para parcela (Empréstimo Pessoal)  | 30%         |
+| percentualMinimoRefinanciamento | Percentual mínimo de parcelas pagas para refinanciamento | 20%                 |
+| percentualJurosMora        | Percentual máximo de juros mora dia                       | 0,0033%/dia             |
+| percentualMultaAtraso      | Percentual máximo para multa por atraso                   | 1%                      |
+
+
 
 <br>
 
@@ -620,3 +624,7 @@ ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMe
 
 ### 13.8. Saldo Devedor
 SaldoDevedor = ValorTotalFinanciado * [(1 + TaxaJurosMensal)^quantidadeParcelasRestantes - 1] / [(1 + TaxaJurosMensal)^quantidadeParcelasTotais - 1]
+
+### 13.9 Juros Mora e Multa por Atraso
+  - Multa = `valorParcela * percentualJurosMora`.
+  - Juros de mora = `valorParcela * percentualJurosMora * diasAtraso`.
