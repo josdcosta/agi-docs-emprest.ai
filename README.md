@@ -91,7 +91,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-# 5. SIMULAÇÃO DE EMPRESTIMO
+# 5. SIMULAÇÃO DE EMPRÉSTIMO
 ## 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
 ### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
