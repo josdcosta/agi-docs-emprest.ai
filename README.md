@@ -1,8 +1,8 @@
 # Documentações Emprest.AI 📄
 
-## EMPRÉSTIMO CONSIGNADO E PESSOAL
+# EMPRÉSTIMO CONSIGNADO E PESSOAL
 
-### Índice
+# Índice
 1. [Autores](#autores)
 2. [Referências](#referências)
 3. [1. Objetivo](#1-objetivo)
@@ -17,7 +17,7 @@
 12. [11. Elegibilidade](#11-elegibilidade)
 13. [12. Cálculos](#12-cálculos)
 
-### AUTORES
+# AUTORES
 - @Dalleth Martins
 - @Josué Davi da Costa
 - @Carollina Guedes
@@ -26,19 +26,19 @@
 
 <br>
 
-### REFERÊNCIAS
+# REFERÊNCIAS
 - Planilha de cálculo
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 - Leis e Regulamentações: Lei nº 8.078/1990: O Código de Defesa do Consumidor (CDC). Esta lei protege você quando contrata um empréstimo pessoal, garantindo informações claras, proibindo cobranças abusivas, protegendo contra problemas e ajudando a evitar o superendividamento.
 
 <br>
 
-### 1. OBJETIVO
+# 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
 <br>
 
-### 2. VARIÁVEIS
+# 2. VARIÁVEIS
 Os parâmetros abaixo do sistema Emprest.AI:
 
 
@@ -66,7 +66,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 
 <br>
 
-### 3. VISÃO GERAL DE FUNCIONAMENTO
+# 3. VISÃO GERAL DE FUNCIONAMENTO
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
@@ -78,7 +78,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-### 4. DADOS ARMAZENADOS DO CLIENTE
+# 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
   "idCliente": [cpf],
@@ -91,9 +91,9 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-### 5. SIMULAÇÃO DE EMPRESTIMO
-#### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
-##### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
+# 5. SIMULAÇÃO DE EMPRESTIMO
+## 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
+### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
 {
   "idCliente": [cpf],
@@ -104,7 +104,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
-##### Empréstimo Pessoal
+### Empréstimo Pessoal
 ```json
 {
   "idCliente": [cpf]
@@ -115,7 +115,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
   "dataInicioPagamento": "[data no formato DD/MM/AAAA]"
 }
 ```
-#### 5.2. Processo Passo a Passo
+## 5.2. Processo Passo a Passo
 **Passo 1: Consulta de Dados do Cliente**  
 O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio
 do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
@@ -158,7 +158,7 @@ Executa [12.7. Parcela Mensal](#127-parcela-mensal).
 Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
 Pessoal: Aplica [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento).
 
-### Passo 10: Geração da Tabela de Parcelas
+**Passo 10: Geração da Tabela de Parcelas**
 
 Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, o sistema calcula e gera uma tabela detalhando cada parcela, incluindo:
 
@@ -172,8 +172,8 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 **Passo 11: Retorno da Simulação**  
 Retorna os valores calculados sem gravar o contrato.
 
-#### 5.3. Saída
-##### Empréstimo Consignado/Pessoal
+# 5.3. Saída
+## Empréstimo Consignado/Pessoal
 ```json
 {
   "idCliente": [cpf]
@@ -203,8 +203,8 @@ Retorna os valores calculados sem gravar o contrato.
 
 <br>
 
-### 6. CONCESSÃO DE EMPRÉSTIMO
-#### 6.1. Requisição
+# 6. CONCESSÃO DE EMPRÉSTIMO
+## 6.1. Requisição
 Empréstimo Consignado
 ```json
 {
@@ -229,7 +229,7 @@ Empréstimo Pessoal
 }
 ```
 
-#### 6.2. Processo Passo a Passo
+## 6.2. Processo Passo a Passo
 - Consulta de Dados do Cliente: Mesmo que Simulação.
 - Verificação Inicial de Elegibilidade: Mesmo que Simulação (ver [11.1](#111-empréstimo-consignado) para consignado ou [11.2](#112-empréstimo-pessoal) para pessoal).
 - Determinação da Capacidade de Pagamento: Mesmo que Simulação.
@@ -242,20 +242,20 @@ Empréstimo Pessoal
 - Gera a tabela de parcelas para o contrato: Idêntico ao passo da simulação, gera a tabela de parcelas para o contrato.
 - Registro do Contrato: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
-#### 6.3. Saída
+## 6.3. Saída
 (Idêntica à Simulação, com "mensagem": "Empréstimo concedido com sucesso.")
 
 <br>
 
-### 7. CONSULTA DE DADOS DE EMPRÉSTIMO
-#### 7.1. Requisição
+# 7. CONSULTA DE DADOS DE EMPRÉSTIMO
+## 7.1. Requisição
 ```json
 {
   "idCliente": [cpf],
   "idEmprestimo": "[identificador único]"
 }
 ```
-### 7.2. Processo Passo a Passo
+## 7.2. Processo Passo a Passo
 
 1. **Consulta de Dados do Cliente:**
    - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
@@ -275,7 +275,7 @@ Empréstimo Pessoal
 6. **Retorno dos Dados:**
    - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
 
-#### 7.3. Saída
+## 7.3. Saída
 ```json
 {
   "idCliente": "[cpf]",
@@ -309,9 +309,9 @@ Empréstimo Pessoal
 
 <br>
 
-### 8. PAGAMENTO DO EMPRÉSTIMO
-#### 8.1. Requisição
-##### Pagamento Parcela
+# 8. PAGAMENTO DO EMPRÉSTIMO
+## 8.1. Requisição
+### Pagamento Parcela
 ```json
 {
   "idCliente": "[cpf]",
@@ -323,7 +323,7 @@ Empréstimo Pessoal
 ```
 
 
-### 8.2. Processo Passo a Passo
+## 8.2. Processo Passo a Passo
 
 1. **Consulta de Dados do Cliente:**
    - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
@@ -351,8 +351,8 @@ Empréstimo Pessoal
 7. **Retorno da Confirmação:**
    - Retorna o status atualizado, incluindo a tabela de parcelas revisada com a parcela paga.
 
-#### 8.3. Saída
-##### Pagamento Parcela
+## 8.3. Saída
+### Pagamento Parcela
 ```json
 {
   "idCliente": "[cpf]",
@@ -384,7 +384,7 @@ Empréstimo Pessoal
 }
 ```
 
-#### 8.4. Tratamento de Atrasos
+## 8.4. Tratamento de Atrasos
 - Se uma parcela não for paga até a `dataVencimento`, aplica-se:
   - **Multa**: 2% sobre o valor da parcela (limite do Código de Defesa do Consumidor, art. 52, §2º).
   - **Juros de Mora**: 1% ao mês (0,033% ao dia) sobre o valor da parcela, proporcional aos dias de atraso.
@@ -395,7 +395,7 @@ Empréstimo Pessoal
 
 <br>
 
-## 9. REFINANCIAMENTO DO EMPRÉSTIMO
+# 9. REFINANCIAMENTO DO EMPRÉSTIMO
 ## 9.1. Requisição
 
 ```json
