@@ -135,7 +135,7 @@ Exemplo:
 ```
 
 # 5. Elegibilidade
-# Regras Específicas por Modalidade
+## Regras Específicas por Modalidade
 ## Empréstimo Pessoal
 - **Valor do Empréstimo**: `R$ 100,00 ≤ valorEmprestimo ≤ R$ 20.000,00`, limitado pelo score de crédito.
 - **Quantidade de Parcelas**: `6 ≤ quantidadeParcelas ≤ 30`, com limites por score:
@@ -155,7 +155,7 @@ Exemplo:
 - **Tipo de Vínculo**: Exige vínculo válido (ex.: "aposentado", "servidor público").
 - **Portabilidade**: Parcelas em dia, `bancoDestino` aceito, nova parcela ≤ `margemConsignavel`.
 
-# Regras Gerais/Comuns
+## Regras Gerais/Comuns
 ### Refinanciamento
 - **Percentual Mínimo Pago**: ≥ 20% das parcelas do `idEmprestimoOriginal` pagas (status "paga" em Parcelas).
 - **Limite de Pagamento**:
