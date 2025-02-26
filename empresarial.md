@@ -57,6 +57,8 @@ Os parâmetros abaixo são aplicáveis ao sistema Emprest.AI para empréstimos e
 | iofFixo                   | Alíquota fixa do IOF                                      | 0,38%                   |
 | iofVariavel               | Alíquota variável do IOF por dia (máximo 365 dias)        | 0,041%                  |
 
+
+
 ## 3. Visão Geral do Funcionamento
 O sistema é estruturado em áreas principais específicas para empréstimos empresariais:
 
@@ -138,6 +140,44 @@ O sistema é estruturado em áreas principais específicas para empréstimos emp
   "mensagem": "Simulação realizada com sucesso."
 }
 ```
+### 5.4. Exemplo Prático de Tabela SAC
+
+Para ilustrar o funcionamento do Sistema de Amortização Constante (SAC) no **Emprest.AI**, consideremos o exemplo de um empréstimo empresarial simulado no 5.1.
+
+#### Cálculos Base
+1. **Amortização Mensal**:  
+   `Amortização = Valor Total Financiado / Quantidade de Parcelas`  
+   `Amortização = 54.094,41 / 24 = 2.253,93`
+
+2. **Parcela Mensal**:  
+   `Parcela = Amortização + (Saldo Devedor Anterior * Taxa de Juros Mensal)`  
+   Os juros são calculados sobre o saldo devedor restante a cada mês.
+
+3. **Saldo Devedor**:  
+   `Saldo Devedor = Saldo Devedor Anterior - Amortização`
+
+#### Tabela SAC
+| Parcela | Data         | Saldo Devedor Anterior (R$) | Amortização (R$) | Juros (R$) | Parcela Total (R$) | Saldo Devedor Restante (R$) |
+|---------|--------------|-----------------------------|------------------|------------|--------------------|-----------------------------|
+| 1       | 01/04/2025  | 54.094,41                   | 2.253,93         | 919,60     | 3.173,53           | 51.840,48                   |
+| 2       | 01/05/2025  | 51.840,48                   | 2.253,93         | 881,29     | 3.135,22           | 49.586,55                   |
+| 3       | 01/06/2025  | 49.586,55                   | 2.253,93         | 842,97     | 3.096,90           | 47.332,62                   |
+| 4       | 01/07/2025  | 47.332,62                   | 2.253,93         | 804,65     | 3.058,58           | 45.078,69                   |
+| 5       | 01/08/2025  | 45.078,69                   | 2.253,93         | 766,34     | 3.020,27           | 42.824,76                   |
+| ...     | ...         | ...                         | ...              | ...        | ...                | ...                         |
+| 12      | 01/03/2026  | 29.301,09                   | 2.253,93         | 498,12     | 2.752,05           | 27.047,16                   |
+| ...     | ...         | ...                         | ...              | ...        | ...                | ...                         |
+| 20      | 01/11/2026  | 11.269,65                   | 2.253,93         | 191,58     | 2.445,51           | 9.015,72                    |
+| 21      | 01/12/2026  | 9.015,72                    | 2.253,93         | 153,27     | 2.407,20           | 6.761,79                    |
+| 22      | 01/01/2027  | 6.761,79                    | 2.253,93         | 114,95     | 2.368,88           | 4.507,86                    |
+| 23      | 01/02/2027  | 4.507,86                    | 2.253,93         | 76,63      | 2.330,56           | 2.253,93                    |
+| 24      | 01/03/2027  | 2.253,93                    | 2.253,93         | 38,32      | 2.292,25           | 0,00                        |
+
+#### Observações
+- **Primeira Parcela**: R$ 3.173,53, composta por R$ 2.253,93 de amortização e R$ 919,60 de juros (54.094,41 * 0,017).  
+- **Última Parcela**: R$ 2.292,25, com juros reduzidos a R$ 38,32 devido ao saldo devedor baixo.  
+- **Valor Total Pago**: Somando todas as parcelas, o total é aproximadamente R$ 65.389,02, refletindo o custo do financiamento (empréstimo + juros + seguro + IOF).  
+- A tabela demonstra como os juros diminuem ao longo do tempo, enquanto a amortização permanece fixa, uma característica essencial do SAC.
 
 ## 6. Concessão de Empréstimo
 ### 6.1. Requisição
