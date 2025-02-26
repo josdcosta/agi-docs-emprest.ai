@@ -302,13 +302,25 @@ Empréstimo Pessoal
   "idEmprestimo": "EMP001"
 }
 ```
-#### 7.2. Processo Passo a Passo
-- Consulta de Dados do Cliente: Valida `idCliente`. Se não encontrado, "Erro: Cliente não encontrado".
-- Verificação do Empréstimo: Busca `idEmprestimo`. Se inválido, "Erro: Empréstimo não encontrado ou inválido".
-- Recuperação dos Dados do Empréstimo: Obtém dados do contrato.
-- Consulta do Histórico de Pagamentos: Verifica parcelas pagas e restantes.
-- Cálculo do Saldo Devedor: Executa 12.8. Saldo Devedor.
-- Retorno dos Dados: Compila e retorna as informações.
+### 7.2. Processo Passo a Passo
+
+1. **Consulta de Dados do Cliente:**
+   - Valida `idCliente`. Se não encontrado, retorna "Erro: Cliente não encontrado".
+
+2. **Verificação do Empréstimo:**
+   - Busca `idEmprestimo`. Se inválido, retorna "Erro: Empréstimo não encontrado ou inválido".
+
+3. **Recuperação dos Dados do Empréstimo:**
+   - Obtém dados do contrato, incluindo a tabela de parcelas.
+
+4. **Consulta do Histórico de Pagamentos:**
+   - Verifica parcelas pagas e restantes, atualizando o status de cada parcela na tabela ("paga" ou "pendente").
+
+5. **Cálculo do Saldo Devedor:**
+   - Executa 12.8. Saldo Devedor.
+
+6. **Retorno dos Dados:**
+   - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
 
 #### 7.3. Saída
 ```json
@@ -325,6 +337,50 @@ Empréstimo Pessoal
   "totalParcelasPagas": 5,
   "totalParcelasRestantes": 43,
   "saldoDevedor": 9278.07,
+  "tabelaParcelas": [
+    {
+      "numeroParcela": 1,
+      "dataVencimento": "01/04/2025",
+      "valorParcela": 306.28,
+      "juros": 207.54,
+      "amortizacao": 98.74,
+      "saldoDevedor": 10710.73,
+      "status": "paga",
+      "dataPagamento": "01/04/2025"
+    },
+    {
+      "numeroParcela": 2,
+      "dataVencimento": "01/05/2025",
+      "valorParcela": 306.28,
+      "juros": 205.65,
+      "amortizacao": 100.63,
+      "saldoDevedor": 10610.10,
+      "status": "paga",
+      "dataPagamento": "01/05/2025"
+    },
+    // ... (parcelas 3 a 5 também "paga")
+    {
+      "numeroParcela": 6,
+      "dataVencimento": "01/09/2025",
+      "valorParcela": 306.28,
+      "juros": 198.00,
+      "amortizacao": 108.28,
+      "saldoDevedor": 9278.07,
+      "status": "pendente",
+      "dataPagamento": null
+    },
+    // ... (continua até a parcela 48)
+    {
+      "numeroParcela": 48,
+      "dataVencimento": "01/03/2029",
+      "valorParcela": 306.28,
+      "juros": 5.85,
+      "amortizacao": 300.43,
+      "saldoDevedor": 0.00,
+      "status": "pendente",
+      "dataPagamento": null
+    }
+  ],
   "mensagem": "Consulta realizada com sucesso."
 }
 ```
@@ -442,26 +498,59 @@ Empréstimo Pessoal
 
 ## 9.2. Processo Passo a Passo
 
-1. Consulta de Dados do Cliente: Valida `idCliente`.
-2. Verificação do Empréstimo Original: Busca `idEmprestimoOriginal`.
-3. Validação do Status: Confirma se ativo.
-4. Verificação de Elegibilidade:
-   - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).
-   - Consignado: [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
-   - Pessoal: [11.2.2. Quantidade de Parcelas](#1122-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
-5. Cálculo do Saldo Devedor: Executa [12.8. Saldo Devedor](#128-saldo-devedor).
-6. Determinação da Capacidade:
-   - Consignado: [12.1. Margem Consignável](#121-margem-consignável)
-   - Pessoal: [12.2. Capacidade de Pagamento](#122-capacidade-de-pagamento)
-7. Definição da Taxa de Juros: [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal).
-8. Cálculo do Custo do Seguro: [12.4. Custo do Seguro](#124-custo-do-seguro).
-9. Cálculo do IOF: [12.5. IOF](#125-iof).
-10. Cálculo do Valor Total Financiado: [12.6. Valor Total Financiado](#126-valor-total-financiado).
-11. Cálculo da Nova Parcela: [12.7. Parcela Mensal](#127-parcela-mensal).
-12. Validação Final:
-    - Consignado: [11.1.1. Margem Consignável](#1111-margem-consignável)
-    - Pessoal: [11.2.4. Capacidade de Pagamento](#1124-capacidade-de-pagamento)
-13. Registro do Refinanciamento: Cria novo contrato e marca o original como "refinanciado".
+1. **Consulta de Dados do Cliente:**
+   - Valida `idCliente`.
+
+2. **Verificação do Empréstimo Original:**
+   - Busca `idEmprestimoOriginal`.
+
+3. **Validação do Status:**
+   - Confirma se ativo.
+
+4. **Verificação de Elegibilidade:**
+   - Aplica 11.3.1. Percentual Mínimo Pago.
+   - Consignado: 11.1.2. Idade Máxima, 11.1.3. Quantidade de Parcelas, 11.1.6. Carência.
+   - Pessoal: 11.2.2. Quantidade de Parcelas, 11.2.5. Carência.
+
+5. **Cálculo do Saldo Devedor:**
+   - Executa 12.8. Saldo Devedor do contrato original.
+
+6. **Determinação da Capacidade:**
+   - Consignado: 12.1. Margem Consignável.
+   - Pessoal: 12.2. Capacidade de Pagamento.
+
+7. **Definição da Taxa de Juros:**
+   - Aplica 12.3. Taxa de Juros Mensal.
+
+8. **Cálculo do Custo do Seguro:**
+   - Aplica 12.4. Custo do Seguro se `contratarSeguro = true`.
+
+9. **Cálculo do IOF:**
+   - Executa 12.5. IOF.
+
+10. **Cálculo do Valor Total Financiado:**
+    - Aplica 12.6. Valor Total Financiado, somando `saldoDevedorOriginal` e `novoValorEmprestimo`.
+
+11. **Cálculo da Nova Parcela:**
+    - Executa 12.7. Parcela Mensal.
+
+12. **Geração da Tabela de Parcelas:**
+    - Com base no `valorTotalFinanciado`, `novaQuantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, gera a tabela com:
+      - Número da parcela
+      - Data de vencimento (mensal a partir da `dataInicioPagamento`)
+      - Valor da parcela
+      - Juros da parcela
+      - Amortização do principal
+      - Saldo devedor restante
+      - Status (inicialmente "pendente")
+      - Data de pagamento (inicialmente null)
+
+13. **Validação Final:**
+    - Consignado: 11.1.1. Margem Consignável.
+    - Pessoal: 11.2.4. Capacidade de Pagamento.
+
+14. **Registro do Refinanciamento:**
+    - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
 
 ## 9.3. Saída
 
@@ -478,56 +567,40 @@ Empréstimo Pessoal
   "iof": 438.70,
   "valorTotalFinanciado": 14029.27,
   "parcelaMensal": 353.45,
+  "tabelaParcelas": [
+    {
+      "numeroParcela": 1,
+      "dataVencimento": "01/04/2025",
+      "valorParcela": 353.45,
+      "juros": 277.78,
+      "amortizacao": 75.67,
+      "saldoDevedor": 13953.60,
+      "status": "pendente",
+      "dataPagamento": null
+    },
+    {
+      "numeroParcela": 2,
+      "dataVencimento": "01/05/2025",
+      "valorParcela": 353.45,
+      "juros": 276.28,
+      "amortizacao": 77.17,
+      "saldoDevedor": 13876.43,
+      "status": "pendente",
+      "dataPagamento": null
+    },
+    // ... (continua até a parcela 60)
+    {
+      "numeroParcela": 60,
+      "dataVencimento": "01/03/2030",
+      "valorParcela": 353.45,
+      "juros": 6.99,
+      "amortizacao": 346.46,
+      "saldoDevedor": 0.00,
+      "status": "pendente",
+      "dataPagamento": null
+    }
+  ],
   "mensagem": "Refinanciamento realizado com sucesso."
-}
-```
-
-# 10. Portabilidade de Empréstimo (Apenas Consignado)
-
-## 10.1. Requisição
-
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "EMP001",
-  "bancoDestino": "Banco XYZ",
-  "novaQuantidadeParcelas": 60,
-  "contratarSeguro": true,
-  "dataInicioPagamento": "01/04/2025"
-}
-```
-
-## 10.2. Processo Passo a Passo
-
-1. Consulta de Dados do Cliente: Valida `idCliente`.
-2. Verificação do Empréstimo Original: Busca `idEmprestimoOriginal`.
-3. Validação do Status: Confirma se ativo.
-4. Verificação de Elegibilidade: Aplica [11.4.1. Parcelas em Dia](#1141-parcelas-em-dia), [11.4.2. Aceitação do Banco Destino](#1142-aceitação-do-banco-destino), [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
-5. Cálculo do Saldo Devedor: [12.8. Saldo Devedor](#128-saldo-devedor).
-6. Determinação da Margem: [12.1. Margem Consignável](#121-margem-consignável).
-7. Definição da Taxa de Juros: [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal).
-8. Cálculo do Custo do Seguro: [12.4. Custo do Seguro](#124-custo-do-seguro).
-9. Cálculo do IOF: [12.5. IOF](#125-iof).
-10. Cálculo do Valor Total Financiado: [12.6. Valor Total Financiado](#126-valor-total-financiado).
-11. Cálculo da Nova Parcela: [12.7. Parcela Mensal](#127-parcela-mensal).
-12. Validação Final: [11.1.1. Margem Consignável](#1111-margem-consignável).
-13. Registro da Portabilidade: Marca como "portado" e notifica o banco destino.
-
-## 10.3. Saída
-
-```json
-{
-  "idCliente": "123.456.789-00",
-  "idEmprestimoOriginal": "EMP001",
-  "bancoDestino": "Banco XYZ",
-  "saldoDevedorOriginal": 9278.07,
-  "novaQuantidadeParcelas": 60,
-  "taxaJurosMensal": 0.0198,
-  "custoSeguro": 250.00,
-  "iof": 337.30,
-  "valorTotalFinanciado": 9865.37,
-  "parcelaMensal": 248.67,
-  "mensagem": "Portabilidade realizada com sucesso."
 }
 ```
 
