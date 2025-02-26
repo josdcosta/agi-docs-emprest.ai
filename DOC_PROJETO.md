@@ -14,7 +14,7 @@
 - [Cancelamento de Contrato](#8-cancelamento-de-contrato)
 - [Tabelas Sugeridas e Campos](#tabelas-sugeridas-e-campos)
 
-## Autores
+##Autores
 - [@Dalleth Martins](https://github.com/dalleth-martinss)
 - [@Josué Davi da Costa](https://github.com/josdcosta)
 - [@Carollina Guedes](https://github.com/CarollinaGuedes)
@@ -25,10 +25,10 @@
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 
-## 1. Objetivo
+## 1.Objetivo
 O Emprest.AI é um sistema backend completo, desenvolvido para a gestão eficiente e segura de empréstimos, abrangendo as modalidades empréstimo consignado e empréstimo pessoal. Para empréstimos consignados, o sistema foca na análise da margem consignável do cliente, garantindo operações seguras e em conformidade com as regulamentações. Já para empréstimos pessoais, o Emprest.AI utiliza uma análise de crédito abrangente, considerando score de crédito, renda e idade, para determinar limites de crédito e taxas de juros personalizadas. O sistema automatiza o ciclo de vida completo do empréstimo, desde a concessão até o gerenciamento de pagamentos, refinanciamentos, portabilidades e cancelamentos, sempre em conformidade com as regulamentações vigentes.
 
-## 2. Visão Geral do Funcionamento
+## 2.Visão Geral do Funcionamento
 
 O sistema é estruturado em cinco áreas principais, projetadas para gerenciar de forma eficiente todas as etapas do ciclo de empréstimos, abrangendo tanto a modalidade de empréstimo consignado quanto o empréstimo pessoal.
 
@@ -50,7 +50,7 @@ O sistema é estruturado em cinco áreas principais, projetadas para gerenciar d
 - **IOF:** Incorporado ao valor financiado, conforme regulamentação fiscal.
 - **Carência:** Período entre a solicitação e o primeiro pagamento, ajustável até um máximo de 60 dias.
 
-## 3. Dados do Clientes
+## 3.Gerenciamento de clientes
 Exemplo:
 ```json
 {
@@ -62,8 +62,8 @@ Exemplo:
 }
 ```
 
-## 3. Simulação de empréstimo
-### 3.1. Verificação de Elegibilidade:
+## 3.1 Simulação de empréstimo
+### 3.2. Verificação de Elegibilidade:
 
 Entrada:
 ```json
@@ -115,7 +115,8 @@ Resposta da solicitação:
 }
 ```
 
-### 4.2. Processos
+## Consulta de elegibilidade
+###4.1. Processos
 1. O sistema consulta a tabela de clientes com base no CPF.
 2. Recupera `remuneracaoLiquida`, `idade` e `tipoVinculo`.
 3. Em seguida, consulta variaveis locais para cada tipo de empréstimo:
@@ -140,7 +141,7 @@ Resposta da solicitação:
 
 6.  Calcula a margem máxima como `remuneracaoLiquida * margemConsignavel ou MargemPessoal` e verifica se a margem atual é suficiente para suportar um empréstimo.
 
-## 5. Concessão de Empréstimos
+##5. Concessão de Empréstimos
 
 ### 5.1. Entrada de Dados
 | Campo               | Descrição                                     | Exemplo         | Obrigatório? |
@@ -348,7 +349,7 @@ Após validação bem-sucedida, o contrato é registrado no banco de dados com s
 }
 ```
 
-# 6. Refinanciamento e Portabilidade
+#6.Refinanciamento e Portabilidade
 
 Essa seção descreve os processos de refinanciamento e portabilidade de empréstimos consignados, que permitem ao cliente renegociar um contrato existente ou transferi-lo para outro banco, respectivamente. Ambos os processos utilizam o saldo devedor do contrato original como base e aplicam regras específicas para elegibilidade e cálculo.
 
@@ -534,7 +535,7 @@ A taxa de 1,55% (0,0155) é assumida como fornecida pelo banco destino, inferior
 }
 ```
 
-## 8. Cancelamento de Contrato
+##8.Cancelamento de Contrato
 
 ### 8.1. Condições
 
