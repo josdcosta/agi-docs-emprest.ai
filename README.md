@@ -28,7 +28,7 @@
 <br>
 
 # REFERÊNCIAS
-- Planilha de cálculo
+- [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 - Leis e Regulamentações: Lei nº 8.078/1990: O Código de Defesa do Consumidor (CDC). Esta lei protege você quando contrata um empréstimo pessoal, garantindo informações claras, proibindo cobranças abusivas, protegendo contra problemas e ajudando a evitar o superendividamento.
 
@@ -125,7 +125,6 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio
 do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
 
-### 5.2. Processo Passo a Passo
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:  
 - Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
@@ -421,7 +420,6 @@ Empréstimo Pessoal
 3. **Validação do Status:**
    - Confirma se ativo.
 
-### 9.2. Processo Passo a Passo
 4. **Verificação de Elegibilidade:**  
    - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).  
    - Consignado: Aplica [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).  
