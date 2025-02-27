@@ -125,48 +125,48 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 O sistema busca o `idCliente` na base e retorna `remuneracaoLiquidaMensal`, `idade`, `tipoVinculo` (para consignado) e por meio
 do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (para pessoal). Se não encontrado, "Erro: Cliente não encontrado".
 
+### 5.2. Processo Passo a Passo
 **Passo 2: Verificação Inicial de Elegibilidade**  
-Empréstimo Consignado:
-- Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).
-- Aplica [10.1.2. Idade Máxima](#1012-idade-máxima).
-- Aplica [10.1.3. Quantidade de Parcelas](#1013-quantidade-de-parcelas).
-- Aplica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).
-- Aplica [10.1.5. Tipo de Vínculo](#1015-tipo-de-vínculo).
-- Calcula dias de carência e aplica [10.1.6. Carência](#1016-carência).  
+Empréstimo Consignado:  
+- Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
+- Aplica [11.1.2. Idade Máxima](#1112-idade-máxima).  
+- Aplica [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas).  
+- Aplica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
+- Aplica [11.1.5. Tipo de Vínculo](#1115-tipo-de-vínculo).  
+- Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
 
-Empréstimo Pessoal:
-- Aplica [10.2.1. Idade Máxima](#1021-idade-máxima).
-- Aplica [10.2.2. Valor do Empréstimo](#1022-valor-do-empréstimo).
-- Aplica [10.2.3. Quantidade de Parcelas](#1023-quantidade-de-parcelas).
-- Aplica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
-- Aplica [10.2.5. Score de Crédito](#1025-score-de-crédito).
-- Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
-- Calcula dias de carência e aplica [10.2.7. Carência](#1027-carência).
+Empréstimo Pessoal:  
+- Aplica [11.2.1. Idade Máxima](#1121-idade-máxima).  
+- Aplica [11.2.2. Valor do Empréstimo](#1122-valor-do-empréstimo).  
+- Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas).  
+- Aplica [11.2.4. Taxa de Juros](#1124-taxa-de-juros).  
+- Aplica [11.2.5. Score de Crédito](#1125-score-de-crédito).  
+- Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).  
+- Calcula dias de carência e aplica [11.2.7. Carência](#1127-carência).  
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-- Consignado: Executa [11.2. Margem Consignável](#112-margem-consignável).  
-- Pessoal: Executa [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento). 
-
+- Consignado: Executa [12.2. Margem Consignável](#122-margem-consignável).  
+- Pessoal: Executa [12.1. Capacidade de Pagamento](#121-capacidade-de-pagamento).  
 
 **Passo 4: Definição da Taxa de Juros**  
-- Consignado: Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal) e verifica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).  
-- Pessoal: Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal) e verifica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
+- Consignado: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
+- Pessoal: Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal) e verifica [11.2.4. Taxa de Juros](#1124-taxa-de-juros).  
 
 **Passo 5: Cálculo do Custo do Seguro**  
-- Se `contratarSeguro = true`, aplica [11.4. Custo do Seguro](#114-custo-do-seguro).
+- Se `contratarSeguro = true`, aplica [12.4. Custo do Seguro](#124-custo-do-seguro).  
 
 **Passo 6: Cálculo do IOF**  
-- Executa [11.5. IOF](#115-iof).
+- Executa [12.5. IOF](#125-iof).  
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-- Aplica [11.6. Valor Total Financiado](#116-valor-total-financiado).
+- Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado).  
 
 **Passo 8: Cálculo da Parcela Mensal**  
-- Executa [11.7. Parcela Mensal](#117-parcela-mensal).
+- Executa [12.7. Parcela Mensal](#127-parcela-mensal).  
 
 **Passo 9: Validação Final de Elegibilidade**  
-- Consignado: Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).  
-- Pessoal: Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
+- Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
+- Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 **Passo 10: Geração da Tabela de Parcelas**
 
@@ -240,8 +240,7 @@ Empréstimo Pessoal
 ```
 
 ### 6.2. Processo Passo a Passo
-- Executa os passos 1 a 9 da Simulação (ver [5.2](#52-processo-passo-a-passo)) para determinar elegibilidade, cálculos e tabela de parcelas.
-- **Registro do Contrato**: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
+- Executa os passos 1 a 9 da Simulação (ver [5.2](#52-processo-passo-a-passo)) para determinar elegibilidade, cálculos e tabela de parcelas.- **Registro do Contrato**: Cria o contrato e associa o pagamento (folha para consignado, débito automático para pessoal).
 
 ### 6.3. Saída
 (Idêntica à Simulação, com "mensagem": "Empréstimo concedido com sucesso.")
@@ -270,8 +269,8 @@ Empréstimo Pessoal
 4. **Consulta do Histórico de Pagamentos:**
    - Verifica parcelas pagas e restantes, atualizando o status de cada parcela na tabela ("paga" ou "pendente").
 
-5. **Cálculo do Saldo Devedor:**
-   - Executa [11.8. Saldo Devedor](#118-saldo-devedor).
+5. **Cálculo do Saldo Devedor:**  
+   - Executa [12.8. Saldo Devedor](#128-saldo-devedor).
 
 6. **Retorno dos Dados:**
    - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
@@ -336,8 +335,8 @@ Empréstimo Pessoal
 3. **Validação do Status do Empréstimo:**
    - Confirma se está ativo. Se todas as parcelas estiverem quitadas, retorna "Erro: Empréstimo já liquidado".
 
-4. **Consulta do Saldo Devedor Atual:**
-   - Executa [11.8. Saldo Devedor](#118-saldo-devedor) com base nas parcelas pendentes.
+4. **Consulta do Saldo Devedor Atual:**  
+   - Executa [12.8. Saldo Devedor](#128-saldo-devedor) com base nas parcelas pendentes.
 
 5. **Processamento do Pagamento:**
    - Valida o `numeroParcela` informado. Se inválido (fora do intervalo ou já pago), retorna "Erro: Parcela inválida ou já quitada".
@@ -422,33 +421,34 @@ Empréstimo Pessoal
 3. **Validação do Status:**
    - Confirma se ativo.
 
-4. **Verificação de Elegibilidade:**
-   - Aplica [10.3.1. Percentual Mínimo Pago](#1031-percentual-mínimo-pago).
-   - Consignado: Aplica [10.1.2. Idade Máxima](#1012-idade-máxima), [10.1.3. Quantidade de Parcelas](#1013-quantidade-de-parcelas), [10.1.6. Carência](#1016-carência).
-   - Pessoal: Aplica [10.2.3. Quantidade de Parcelas](#1023-quantidade-de-parcelas), [10.2.7. Carência](#1027-carência).
+### 9.2. Processo Passo a Passo
+4. **Verificação de Elegibilidade:**  
+   - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).  
+   - Consignado: Aplica [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).  
+   - Pessoal: Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas), [11.2.7. Carência](#1127-carência).  
 
-5. **Cálculo do Saldo Devedor:**
-   - Executa [11.8. Saldo Devedor](#118-saldo-devedor) do contrato original.
+5. **Cálculo do Saldo Devedor:**  
+   - Executa [12.8. Saldo Devedor](#128-saldo-devedor) do contrato original.  
 
-6. **Determinação da Capacidade:**
-   - Consignado: [11.2. Margem Consignável](#112-margem-consignável).
-   - Pessoal: [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento).
+6. **Determinação da Capacidade:**  
+   - Consignado: [12.2. Margem Consignável](#122-margem-consignável).  
+   - Pessoal: [12.1. Capacidade de Pagamento](#121-capacidade-de-pagamento).  
 
-7. **Definição da Taxa de Juros:**
-   - Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal).
+7. **Definição da Taxa de Juros:**  
+   - Aplica [12.3. Taxa de Juros Mensal](#123-taxa-de-juros-mensal).  
 
-8. **Cálculo do Custo do Seguro:**
-   - Aplica [11.4. Custo do Seguro](#114-custo-do-seguro) se `contratarSeguro = true`.
+8. **Cálculo do Custo do Seguro:**  
+   - Aplica [12.4. Custo do Seguro](#124-custo-do-seguro) se `contratarSeguro = true`.  
 
-9. **Cálculo do IOF:**
-   - Executa [11.5. IOF](#115-iof).
+9. **Cálculo do IOF:**  
+   - Executa [12.5. IOF](#125-iof).  
 
-10. **Cálculo do Valor Total Financiado:**
-    - valorBase = saldoDevedorOriginal + novoValorEmprestimo
-    - Aplica [11.6. Valor Total Financiado](#116-valor-total-financiado) usando o valorBase calculado.
+10. **Cálculo do Valor Total Financiado:**  
+    - valorBase = saldoDevedorOriginal + novoValorEmprestimo  
+    - Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado) usando o valorBase calculado.  
 
-11. **Cálculo da Nova Parcela:**
-    - Executa [11.7. Parcela Mensal](#117-parcela-mensal).
+11. **Cálculo da Nova Parcela:**  
+    - Executa [12.7. Parcela Mensal](#127-parcela-mensal).  
 
 12. **Geração da Tabela de Parcelas:**
     - Com base no `valorTotalFinanciado`, `novaQuantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, gera a tabela com:
@@ -461,9 +461,9 @@ Empréstimo Pessoal
       - Status (inicialmente "pendente")
       - Data de pagamento (inicialmente null)
 
-13. **Validação Final:**
-- Consignado: Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).
-- Pessoal: Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
+13. **Validação Final:**  
+- Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
+- Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
 
 14. **Registro do Refinanciamento:**
     - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
@@ -505,34 +505,131 @@ Empréstimo Pessoal
 <br>
 <br>
 
-## 10. Elegibilidade para Empréstimos
+# 10. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
 
-## 10.1. Empréstimo Consignado
+## Regras
+A portabilidade permite transferir contratos de empréstimo entre instituições, com o Emprest.AI gerenciando os registros e se comunicando com um setor interno (ex.: financeiro) para coordenar quitações e notificações. Suporta:
 
-#### 10.1.1. Margem Consignável
+- **Recebendo**: Registra contratos portados após quitação pelo setor interno.
+- **Enviando**: Atualiza contratos como "liquidado por portabilidade" após confirmação do setor interno.
+
+## 10.1. Recebendo Portabilidade
+
+### Processo
+
+1. Cliente solicita portabilidade à instituição.
+2. Emprest.AI solicita ao setor interno os dados do contrato original (saldo [12.8](#128-saldo-devedor), parcelas, taxa).
+3. Emprest.AI simula condições ([11.1.4](#1114-taxa-de-juros), [11.2.4](#1124-taxa-de-juros), [11.1.3](#1113-quantidade-de-parcelas), [11.2.3](#1123-quantidade-de-parcelas), [12.4](#124-custo-do-seguro), [12.5](#125-iof), [12.6](#126-valor-total-financiado), [12.7](#127-parcela-mensal)) e envia ao setor interno.
+4. Após confirmação do cliente, setor interno quita o saldo e notifica o Emprest.AI.
+5. Emprest.AI registra o contrato como "portado" e solicita ao setor interno ajustes (ex.: folha ou débito).
+
+### Elegibilidade
+- Contrato ativo, sem atrasos.
+  - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
+  - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
+
+### Requisição
+```json
+{
+  "idCliente": "[cpf]",
+  "idEmprestimoOriginal": "[id original]",
+  "tipoEmprestimo": "[consignado ou pessoal]",
+  "novoValorEmprestimo": "[saldo em reais]",
+  "novaQuantidadeParcelas": "[número]",
+  "contratarSeguro": "[true/false]",
+  "dataInicioPagamento": "[DD/MM/AAAA]",
+  "dataQuitacaoOriginal": "[DD/MM/AAAA]"
+}
+```
+
+### Saída
+```json
+{
+  "idCliente": "[cpf]",
+  "idNovoEmprestimo": "[id novo]",
+  "valorEmprestimo": "[saldo quitado]",
+  "quantidadeParcelas": "[número]",
+  "taxaJurosMensal": "[decimal]",
+  "parcelaMensal": "[valor em reais]",
+  "status": "portado",
+  "mensagem": "Contrato portado registrado."
+}
+```
+
+## 10.2. Enviando Portabilidade
+
+### Processo
+
+1. Cliente solicita portabilidade a outra instituição.
+2. Setor interno solicita ao Emprest.AI os dados do contrato.
+3. Emprest.AI fornece saldo [12.8](#128-saldo-devedor) e parcelas ao setor interno.
+4. Setor interno confirma quitação por outra instituição.
+5. Emprest.AI atualiza o contrato como "liquidado por portabilidade" e solicita ajustes ao setor interno (ex.: folha ou débito).
+
+### Elegibilidade
+- Contrato ativo, sem atrasos.
+  - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
+  - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
+
+### Requisição (Setor Interno)
+```json
+{
+  "idCliente": "[cpf]",
+  "idEmprestimo": "[id no Emprest.AI]"
+}
+```
+
+### Saída
+```json
+{
+  "idCliente": "[cpf]",
+  "idEmprestimo": "[id]",
+  "saldoDevedorQuitado": "[valor em reais]",
+  "dataQuitacao": "[DD/MM/AAAA]",
+  "status": "liquidado por portabilidade",
+  "mensagem": "Contrato quitado e transferido."
+}
+```
+
+## Exemplo
+
+### Recebendo
+Saldo de R$ 5.000,00 (20 parcelas, 2,14%). Emprest.AI simula 1,90%, R$ 287,50/parcela. Setor interno quita e Emprest.AI registra como "portado".
+
+### Enviando
+Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Emprest.AI marca como "liquidado por portabilidade".
+
+<br>
+<br>
+
+## 11. Elegibilidade para Empréstimos
+
+## 11.1. Empréstimo Consignado
+
+#### 11.1.1. Margem Consignável
     Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
 
-#### 10.1.2. Idade Máxima
+#### 11.1.2. Idade Máxima
     idade + quantidadeParcelas / 12 < idadeMaximaConsignado: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
 
-#### 10.1.3. Quantidade de Parcelas
+#### 11.1.3. Quantidade de Parcelas
     Entre 24 e 92 parcelas.
 
-#### 10.1.4. Taxa de Juros
+#### 11.1.4. Taxa de Juros
     jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMaximoConsignado.
 
-#### 10.1.5. Tipo de Vínculo
+#### 11.1.5. Tipo de Vínculo
     "Aposentado", "servidor público" ou outro válido.
 
-#### 10.1.6. Carência
+#### 11.1.6. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
-## 10.2. Empréstimo Pessoal
+## 11.2. Empréstimo Pessoal
 
-#### 10.2.1. Idade Máxima
+#### 11.2.1. Idade Máxima
     idade + quantidadeParcelas / 12 < idadeMaximaPessoal: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
 
-#### 10.2.2. Valor do Empréstimo
+#### 11.2.2. Valor do Empréstimo
     valorMinimoPessoal ≤ valorEmprestimo ≤ valorMaximoPessoal, conforme score:
 
     | Faixa de Score | Nível de Risco     | Limite Crédito     |
@@ -543,7 +640,7 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | R$ 100 a R$ 15.000 |
     | 801-1000       | Risco muito baixo  | R$ 100 a R$ 20.000 |
 
-#### 10.2.3. Quantidade de Parcelas
+#### 11.2.3. Quantidade de Parcelas
     prazoMinimoPessoal ≤ quantidadeParcelas ≤ prazoMaximoPessoal, conforme score:
 
     | Faixa de Score | Nível de Risco     | Meses    |
@@ -554,7 +651,7 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | 6 a 24   |
     | 801-1000       | Risco muito baixo  | 6 a 30   |
 
-#### 10.2.4. Taxa de Juros
+#### 11.2.4. Taxa de Juros
     jurosMinimoPessoal ≤ Taxa mensal ≤ jurosMaximoPessoal, conforme score:
     
     | Faixa de Score | Nível de Risco     | Taxa               |
@@ -565,45 +662,39 @@ Empréstimo Pessoal
     | 601-800        | Risco baixo        | 8,99% a 9,49%      |
     | 801-1000       | Risco muito baixo  | 8,49% a 8,99%      |
 
-#### 10.2.5. Score de Crédito
+#### 11.2.5. Score de Crédito
     scoreCredito ≥ 201.
 
-#### 10.2.6. Capacidade de Pagamento
+#### 11.2.6. Capacidade de Pagamento
     Parcela ≤ rendaTotalLiquida * percentualRendaPessoal.
 
-#### 10.2.7. Carência
+#### 11.2.7. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaPessoal.
 
 <br>
 
-## 10.3. REFINANCIAMENTO (COMUM)
+## 11.3. REFINANCIAMENTO (COMUM)
 
-#### 10.3.1. Percentual Mínimo Pago
+#### 11.3.1. Percentual Mínimo Pago
     ≥ 20% das parcelas pagas.
 
 <br>
 
-## 10.4.1. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
-    Transferência do contrato de empréstimo para outra instituição financeira, desde que respeitadas as condições de elegibilidade.
-    
-#### 10.4.2. Parcelas em Dia
-    Sem parcelas vencidas.
-
-#### 10.4.3. Aceitação do Banco Destino
-    bancoDestino deve aceitar a portabilidade.
+## 11.4.1. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+Regras
 
 <br>
 
-## 11. CÁLCULOS
+## 12. CÁLCULOS
 
-### 11.1. Capacidade de Pagamento (Empréstimo Pessoal)
+### 12.1. Capacidade de Pagamento (Empréstimo Pessoal)
     rendaTotalLiquida = remuneracaoLiquida - Total de Despesas  
     capacidadeMaxima = rendaTotalLiquida * percentualRendaPessoal
 
-### 11.2. Margem Consignável (Empréstimo Consignado)
+### 12.2. Margem Consignável (Empréstimo Consignado)
     margemMaxima = remuneracaoLiquida * margemConsignavel - Parcela de Empréstimos Ativos
 
-### 11.3. Taxa de Juros Mensal
+### 12.3. Taxa de Juros Mensal
     **Consignado**:  
         taxaJurosMensal = 0,018 + 0,00005 * (quantidadeParcelas - 24), limitada a 2,14%.
 
@@ -619,28 +710,28 @@ Empréstimo Pessoal
 
         Exemplo: Score 500 (401-600): Taxa = 9,49 + [(9,99 - 9,49) * (500 - 401)] / (600 - 401) = 9,49 + 0,25 = 9,74%.
 
-### 11.4. Custo do Seguro
+### 12.4. Custo do Seguro
     CustoSeguro = valorBase * (0,0025 + 0,00005 * idade) * (quantidadeParcelas / 12)
 
-### 11.5. IOF
+### 12.5. IOF
     percentualFixo = 0,0038  
     percentualVariado = 0,000082  
     IOF = (percentualFixo * valorBase) + (percentualVariado * valorBase * min(diasFinanciamento, 365))
 
-### 11.6. Valor Total Financiado
+### 12.6. Valor Total Financiado
     ValorTotalFinanciado = valorBase + IOF + CustoSeguro
 
-### 11.7. Parcela Mensal
+### 12.7. Parcela Mensal
     ParcelaMensal = [ValorTotalFinanciado * TaxaJurosMensal] / [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelas)]
 
-### 11.8. Saldo Devedor
+### 12.8. Saldo Devedor
     SaldoDevedor = ParcelaMensal * [1 - (1 + TaxaJurosMensal)^(-quantidadeParcelasRestantes)] / TaxaJurosMensal
 
-### 11.9. Juros Mora e Multa por Atraso
+### 12.9. Juros Mora e Multa por Atraso
     Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
 
-## 12. Glossário 
+## 13. Glossário 
 
 ## Amortização
 Redução gradual do saldo devedor de um empréstimo através de pagamentos periódicos.
