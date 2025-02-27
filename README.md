@@ -337,7 +337,7 @@ Empréstimo Pessoal
    - Confirma se está ativo. Se todas as parcelas estiverem quitadas, retorna "Erro: Empréstimo já liquidado".
 
 4. **Consulta do Saldo Devedor Atual:**
-   - Executa [13.8. Saldo Devedor](#138-saldo-devedor) com base nas parcelas pendentes.
+   - Executa [11.8. Saldo Devedor](#118-saldo-devedor) com base nas parcelas pendentes.
 
 5. **Processamento do Pagamento:**
    - Valida o `numeroParcela` informado. Se inválido (fora do intervalo ou já pago), retorna "Erro: Parcela inválida ou já quitada".
@@ -423,9 +423,9 @@ Empréstimo Pessoal
    - Confirma se ativo.
 
 4. **Verificação de Elegibilidade:**
-   - Aplica [11.3.1. Percentual Mínimo Pago](#1131-percentual-mínimo-pago).
-   - Consignado: Aplica [11.1.2. Idade Máxima](#1112-idade-máxima), [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas), [11.1.6. Carência](#1116-carência).
-   - Pessoal: Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
+   - Aplica [10.3.1. Percentual Mínimo Pago](#1031-percentual-mínimo-pago).
+   - Consignado: Aplica [10.1.2. Idade Máxima](#1012-idade-máxima), [10.1.3. Quantidade de Parcelas](#1013-quantidade-de-parcelas), [10.1.6. Carência](#1016-carência).
+   - Pessoal: Aplica [10.2.3. Quantidade de Parcelas](#1023-quantidade-de-parcelas), [10.2.7. Carência](#1027-carência).
 
 5. **Cálculo do Saldo Devedor:**
    - Executa [11.8. Saldo Devedor](#118-saldo-devedor) do contrato original.
@@ -438,10 +438,10 @@ Empréstimo Pessoal
    - Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal).
 
 8. **Cálculo do Custo do Seguro:**
-   - Aplica [13.4. Custo do Seguro](#134-custo-do-seguro) se `contratarSeguro = true`.
+   - Aplica [11.4. Custo do Seguro](#114-custo-do-seguro) se `contratarSeguro = true`.
 
 9. **Cálculo do IOF:**
-   - Executa [13.5. IOF](#135-iof).
+   - Executa [11.5. IOF](#115-iof).
 
 10. **Cálculo do Valor Total Financiado:**
     - valorBase = saldoDevedorOriginal + novoValorEmprestimo
