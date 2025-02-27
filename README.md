@@ -196,6 +196,8 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
   "valorTotalFinanciado": "[valor em reais]",
   "parcelaMensal": "[valor em reais]",
   "cetMensal": "[valor decimal]",
+  "saldoDevedorAtualizado": "[valor em reais]"
+
   "tabelaParcelas": [
     {
       "numeroParcela": "[número]",
@@ -203,7 +205,6 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
       "valorParcela": "[valor em reais]",
       "juros": "[valor em reais]",
       "amortizacao": "[valor em reais]",
-      "saldoDevedor": "[valor em reais]"
     }
     "... Demais parcelas"
   ],
