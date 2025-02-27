@@ -524,7 +524,7 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 5. Emprest.AI registra o contrato como "portado" e solicita ao setor interno ajustes (ex.: folha ou débito).
 
 ### Elegibilidade
-- Contrato ativo, sem atrasos.
+  - Deve estar em conformidade com as regras [11.4.1.](#1141-sem-atrasos) e [11.4.2.](#1142-contrato-ativo)
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
 
@@ -561,13 +561,13 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 ### Processo
 
 1. Cliente solicita portabilidade a outra instituição.
-2. Setor interno solicita ao Emprest.AI os dados do contrato.
+2. Setor interno recebe do Emprest.AI os dados do contrato.
 3. Emprest.AI fornece saldo [12.8](#128-saldo-devedor) e parcelas ao setor interno.
 4. Setor interno confirma quitação por outra instituição.
 5. Emprest.AI atualiza o contrato como "liquidado por portabilidade" e solicita ajustes ao setor interno (ex.: folha ou débito).
 
 ### Elegibilidade
-- Contrato ativo, sem atrasos.
+  - Deve estar em conformidade com as regras [11.4.1.](#1141-sem-atrasos) e [11.4.2.](#1142-contrato-ativo)
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
 
@@ -680,8 +680,13 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 
 <br>
 
-## 11.4.1. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
-Regras
+## 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+
+#### 11.4.1. Sem atrasos e ativo
+    contrato deve estar ativo
+    
+#### 11.4.2. Contrato ativo
+    contrato deve estar sem atrasos de parcelas
 
 <br>
 
