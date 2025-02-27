@@ -247,7 +247,7 @@ Empréstimo Pessoal
 
 <br>
 
-## 7. CONSULTA DE DADOS DE EMPRÉSTIMO
+# 7. CONSULTA DE DADOS DE EMPRÉSTIMO
 ### 7.1. Requisição
 ```json
 {
