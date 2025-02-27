@@ -619,7 +619,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
     jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMaximoConsignado.
 
 #### 11.1.5. Tipo de Vínculo
-    "Aposentado", "servidor público" ou outro válido.
+    "Aposentado", "servidor público" ou "pensionista".
 
 #### 11.1.6. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
