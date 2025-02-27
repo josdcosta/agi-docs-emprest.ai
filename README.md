@@ -77,7 +77,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
 - Consulta de Empréstimos: Acompanhamento de status, parcelas e histórico de pagamentos.
-- Pagamento de Empréstimos: Registro de pagamentos, incluindo antecipações.
+- Pagamento de Empréstimos: Registro de pagamentos, incluindo antecipação da última parcela com a parcela atual.
 - Refinanciamento: Renegociação de contratos existentes (ambas as modalidades).
 - Portabilidade: Transferência de consignados e empréstimo pessoal para outro banco.
 - Cancelamento de Contrato: Gestão de desistências ou finalizações.
