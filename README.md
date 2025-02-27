@@ -636,3 +636,53 @@ Empréstimo Pessoal
 ### 11.9. Juros Mora e Multa por Atraso
     Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
+
+## 12. Glossário 
+
+## Amortização
+Redução gradual do saldo devedor de um empréstimo através de pagamentos periódicos.
+
+## Capacidade de Pagamento
+Valor máximo que um cliente pode comprometer com o pagamento de um empréstimo, calculado com base em sua renda líquida e despesas.
+
+## Carência
+Período inicial de um empréstimo durante o qual o cliente não precisa fazer pagamentos.
+
+## CET (Custo Efetivo Total)
+Custo total de um empréstimo, incluindo juros, taxas e outros encargos, expresso como uma taxa percentual anual.
+
+## Consignado
+Tipo de empréstimo cujas parcelas são descontadas diretamente da folha de pagamento ou benefício do cliente.
+
+## IOF (Imposto sobre Operações Financeiras)
+Imposto federal cobrado sobre operações de crédito, câmbio, seguros e títulos mobiliários.
+
+## Juros de Mora
+Encargos cobrados pelo atraso no pagamento de uma parcela de empréstimo.
+
+## Margem Consignável
+Percentual máximo da renda líquida que pode ser comprometido com o pagamento de empréstimos consignados.
+
+## Multa por Atraso
+Valor fixo ou percentual cobrado pelo atraso no pagamento de uma parcela de empréstimo.
+
+## Parcela
+Valor periódico a ser pago pelo cliente para quitar um empréstimo.
+
+## Refinanciamento
+Renegociação de um contrato de empréstimo existente, geralmente para obter melhores condições de pagamento.
+
+## Renda Líquida
+Valor da renda total após a dedução de impostos e outras despesas.
+
+## Saldo Devedor
+Valor total que o cliente ainda deve em um empréstimo.
+
+## Score de Crédito
+Pontuação que indica o risco de inadimplência de um cliente, utilizada para avaliar a concessão de crédito.
+
+## Taxa de Juros
+Percentual cobrado sobre o valor emprestado, representando o custo do empréstimo.
+
+## Valor Financiado
+Valor total do empréstimo, incluindo o valor principal, juros e outros encargos.    
