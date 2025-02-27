@@ -613,7 +613,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
     idade + quantidadeParcelas / 12 < idadeMaximaConsignado: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaConsignado.
 
 #### 11.1.3. Quantidade de Parcelas
-    Entre 24 e 92 parcelas.
+    prazoMinimoConsignado ≤ quantidadeParcelas ≤ prazoMinimoConsignado
 
 #### 11.1.4. Taxa de Juros
     jurosMinimoConsignado ≤ Taxa mensal ≤ jurosMaximoConsignado.
