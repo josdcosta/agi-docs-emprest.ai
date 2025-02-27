@@ -14,9 +14,10 @@
 9. [7. Consulta de Dados de Empréstimo](#7-consulta-de-dados-de-empréstimo)
 10. [8. Pagamento de Empréstimo](#8-pagamento-de-empréstimo)
 11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-de-empréstimo)
-12. [10. Elegibilidade para Empréstimos](#10-elegibilidade-para-empréstimos)
-13. [11. Cálculos](#11-cálculos)
-14. [12. Glossário](#12-glossário)
+12. [10. Portabilidade](#10-portabilidade)
+13. [11. Elegibilidade para Empréstimos](#11-elegibilidade-para-empréstimos)
+14. [12. Cálculos](#12-cálculos)
+15. [13. Glossário](#13-glossário)
 
 # AUTORES
 - @Dalleth Martins
@@ -503,7 +504,7 @@ Empréstimo Pessoal
 <br>
 <br>
 
-# 10. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+# 10. Portabilidade
 
 ## Regras
 A portabilidade permite transferir contratos de empréstimo entre instituições, com o Emprest.AI gerenciando os registros e se comunicando com um setor interno (ex.: financeiro) para coordenar quitações e notificações. Suporta:
