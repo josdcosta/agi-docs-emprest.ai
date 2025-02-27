@@ -2,7 +2,7 @@
 
 # EMPRÉSTIMO CONSIGNADO E PESSOAL
 
-# Índice
+## Índice
 1. [Autores](#autores)
 2. [Referências](#referências)
 3. [1. Objetivo](#1-objetivo)
@@ -19,7 +19,7 @@
 14. [12. Cálculos](#12-cálculos)
 15. [13. Glossário](#13-glossário)
 
-# AUTORES
+## AUTORES
 - @Dalleth Martins
 - @Josué Davi da Costa
 - @Carollina Guedes
@@ -28,19 +28,19 @@
 
 <br>
 
-# REFERÊNCIAS
+## REFERÊNCIAS
 - [Planilha de cálculo](https://docs.google.com/spreadsheets/d/1Y_vrP424Qpyh_nWdp_xtSSbsdswpp4XKPIOVeIV9B4E/edit?usp=sharing)
 - Leis e Regulamentações: Lei 10.820/2003 (base para consignados), Lei 14.509/2022 (margem consignável de 35%), Regulamentação INSS, Resoluções do Banco Central, Código de Defesa do Consumidor (art. 52, §2º para multa e juros mora).
 - Leis e Regulamentações: Lei nº 8.078/1990: O Código de Defesa do Consumidor (CDC). Esta lei protege você quando contrata um empréstimo pessoal, garantindo informações claras, proibindo cobranças abusivas, protegendo contra problemas e ajudando a evitar o superendividamento.
 
 <br>
 
-# 1. OBJETIVO
+## 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
 <br>
 
-# 2. VARIÁVEIS
+## 2. VARIÁVEIS
 Os parâmetros abaixo do sistema Emprest.AI:
 
 
@@ -72,7 +72,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 
 <br>
 
-# 3. VISÃO GERAL DE FUNCIONAMENTO
+## 3. VISÃO GERAL DE FUNCIONAMENTO
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
@@ -84,7 +84,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-# 4. DADOS ARMAZENADOS DO CLIENTE
+## 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
   "idCliente": "[cpf]",
@@ -97,7 +97,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-# 5. SIMULAÇÃO DE EMPRÉSTIMO
+## 5. SIMULAÇÃO DE EMPRÉSTIMO
 ### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
 #### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
@@ -183,7 +183,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 - Retorna os valores calculados sem gravar o contrato.
 
 ### 5.3. Saída
-### Empréstimo Consignado/Pessoal
+#### Empréstimo Consignado/Pessoal
 ```json
 {
   "idCliente": "[cpf]",
@@ -205,7 +205,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
       "amortizacao": "[valor em reais]",
       "saldoDevedor": "[valor em reais]"
     }
-    ... Demais parcelas
+    "... Demais parcelas"
   ],
   "mensagem": "Simulação realizada com sucesso."
 }
@@ -213,7 +213,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 
 <br>
 
-# 6. CONCESSÃO DE EMPRÉSTIMO
+## 6. CONCESSÃO DE EMPRÉSTIMO
 ### 6.1. Requisição
 Empréstimo Consignado
 ```json
@@ -247,7 +247,7 @@ Empréstimo Pessoal
 
 <br>
 
-# 7. CONSULTA DE DADOS DE EMPRÉSTIMO
+## 7. CONSULTA DE DADOS DE EMPRÉSTIMO
 ### 7.1. Requisição
 ```json
 {
@@ -310,7 +310,7 @@ Empréstimo Pessoal
 
 <br>
 
-# 8. PAGAMENTO DO EMPRÉSTIMO
+## 8. PAGAMENTO DO EMPRÉSTIMO
 ### 8.1. Requisição
 #### Pagamento Parcela
 ```json
@@ -443,8 +443,8 @@ Empréstimo Pessoal
    - Executa [12.5. IOF](#125-iof).  
 
 10. **Cálculo do Valor Total Financiado:**  
-    - valorBase = saldoDevedorOriginal + novoValorEmprestimo  
-    - Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado) usando o valorBase calculado.  
+    - `valorBase = saldoDevedorOriginal + novoValorEmprestimo  `
+    - Aplica [12.6. Valor Total Financiado](#126-valor-total-financiado) usando o `valorBase` calculado.  
 
 11. **Cálculo da Nova Parcela:**  
     - Executa [12.7. Parcela Mensal](#127-parcela-mensal).  
@@ -473,7 +473,7 @@ Empréstimo Pessoal
 {
   "idCliente": "[cpf]",
   "idEmprestimo": "[identificador único]",
-  "idEmprestimoOriginal": "[identificador único]", (Autoreferenciamento)
+  "idEmprestimoOriginal": "[identificador único]", "(Autoreferenciamento)"
   "valorEmprestimo": "[valor em reais]",
   "quantidadeParcelas": "[número]",
   "taxaJurosMensal": "[valor decimal]",
@@ -504,17 +504,17 @@ Empréstimo Pessoal
 <br>
 <br>
 
-# 10. Portabilidade
+## 10. Portabilidade
 
-## Regras
+### Regras
 A portabilidade permite transferir contratos de empréstimo entre instituições, com o Emprest.AI gerenciando os registros e se comunicando com um setor interno (ex.: financeiro) para coordenar quitações e notificações. Suporta:
 
 - **Recebendo**: Registra contratos portados após quitação pelo setor interno.
 - **Enviando**: Atualiza contratos como "liquidado por portabilidade" após confirmação do setor interno.
 
-## 10.1. Recebendo Portabilidade
+### 10.1. Recebendo Portabilidade
 
-### Processo
+#### Processo
 
 1. Cliente solicita portabilidade à instituição.
 2. Emprest.AI solicita ao setor interno os dados do contrato original (saldo [12.8](#128-saldo-devedor), parcelas, taxa).
@@ -522,12 +522,12 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 4. Após confirmação do cliente, setor interno quita o saldo e notifica o Emprest.AI.
 5. Emprest.AI registra o contrato como "portado" e solicita ao setor interno ajustes (ex.: folha ou débito).
 
-### Elegibilidade
+#### Elegibilidade
   - Deve estar em conformidade com as regras [11.4.1.](#1141-sem-atrasos) e [11.4.2.](#1142-contrato-ativo)
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
 
-### Requisição
+#### Requisição
 ```json
 {
   "idCliente": "[cpf]",
@@ -541,7 +541,7 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 }
 ```
 
-### Saída
+#### Saída
 ```json
 {
   "idCliente": "[cpf]",
@@ -555,9 +555,9 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 }
 ```
 
-## 10.2. Enviando Portabilidade
+### 10.2. Enviando Portabilidade
 
-### Processo
+#### Processo
 
 1. Cliente solicita portabilidade a outra instituição.
 2. Setor interno recebe do Emprest.AI os dados do contrato.
@@ -565,12 +565,12 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 4. Setor interno confirma quitação por outra instituição.
 5. Emprest.AI atualiza o contrato como "liquidado por portabilidade" e solicita ajustes ao setor interno (ex.: folha ou débito).
 
-### Elegibilidade
+#### Elegibilidade
   - Deve estar em conformidade com as regras [11.4.1.](#1141-sem-atrasos) e [11.4.2.](#1142-contrato-ativo)
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
   - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
 
-### Requisição (Setor Interno)
+#### Requisição (Setor Interno)
 ```json
 {
   "idCliente": "[cpf]",
@@ -578,7 +578,7 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 }
 ```
 
-### Saída
+#### Saída
 ```json
 {
   "idCliente": "[cpf]",
@@ -590,20 +590,20 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 }
 ```
 
-## Exemplo
+### Exemplo
 
-### Recebendo
+#### Recebendo
 Saldo de R$ 5.000,00 (20 parcelas, 2,14%). Emprest.AI simula 1,90%, R$ 287,50/parcela. Setor interno quita e Emprest.AI registra como "portado".
 
-### Enviando
+#### Enviando
 Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Emprest.AI marca como "liquidado por portabilidade".
 
 <br>
 <br>
 
-# 11. Elegibilidade para Empréstimos
+## 11. Elegibilidade para Empréstimos
 
-## 11.1. Empréstimo Consignado
+### 11.1. Empréstimo Consignado
 
 #### 11.1.1. Margem Consignável
     Parcela ≤ (remuneracaoLiquida * margemConsignavel) - soma de parcelas ativas.
@@ -623,7 +623,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 #### 11.1.6. Carência
     Dias até o primeiro pagamento ≤ carenciaMaximaConsignado.
 
-## 11.2. Empréstimo Pessoal
+### 11.2. Empréstimo Pessoal
 
 #### 11.2.1. Idade Máxima
     idade + quantidadeParcelas / 12 < idadeMaximaPessoal: A idade aproximada do cliente ao final do contrato não deve atingir ou exceder idadeMaximaPessoal.
@@ -672,14 +672,14 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 
 <br>
 
-## 11.3. REFINANCIAMENTO (COMUM)
+### 11.3. REFINANCIAMENTO (COMUM)
 
 #### 11.3.1. Percentual Mínimo Pago
     ≥ 20% das parcelas pagas.
 
 <br>
 
-## 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+### 11.4. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
 
 #### 11.4.1. Sem atrasos e ativo
     contrato deve estar ativo
@@ -689,7 +689,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 
 <br>
 
-# 12. CÁLCULOS
+## 12. CÁLCULOS
 
 ### 12.1. Capacidade de Pagamento (Empréstimo Pessoal)
     rendaTotalLiquida = remuneracaoLiquida - Total de Despesas  
@@ -735,7 +735,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
     Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
 
-# 13. Glossário 
+## 13. Glossário 
 
 ### Amortização
 Redução gradual do saldo devedor de um empréstimo através de pagamentos periódicos.
