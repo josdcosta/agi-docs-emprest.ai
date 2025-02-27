@@ -428,14 +428,14 @@ Empréstimo Pessoal
    - Pessoal: Aplica [11.2.3. Quantidade de Parcelas](#1123-quantidade-de-parcelas), [11.2.5. Carência](#1125-carência).
 
 5. **Cálculo do Saldo Devedor:**
-   - Executa [13.8. Saldo Devedor](#138-saldo-devedor) do contrato original.
+   - Executa [11.8. Saldo Devedor](#118-saldo-devedor) do contrato original.
 
 6. **Determinação da Capacidade:**
-   - Consignado: [13.2. Margem Consignável](#132-margem-consignável).
-   - Pessoal: [13.1. Capacidade de Pagamento](#131-capacidade-de-pagamento).
+   - Consignado: [11.2. Margem Consignável](#112-margem-consignável).
+   - Pessoal: [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento).
 
 7. **Definição da Taxa de Juros:**
-   - Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal).
+   - Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal).
 
 8. **Cálculo do Custo do Seguro:**
    - Aplica [13.4. Custo do Seguro](#134-custo-do-seguro) se `contratarSeguro = true`.
@@ -445,10 +445,10 @@ Empréstimo Pessoal
 
 10. **Cálculo do Valor Total Financiado:**
     - valorBase = saldoDevedorOriginal + novoValorEmprestimo
-    - Aplica [13.6. Valor Total Financiado](#136-valor-total-financiado) usando o valorBase calculado.
+    - Aplica [11.6. Valor Total Financiado](#116-valor-total-financiado) usando o valorBase calculado.
 
 11. **Cálculo da Nova Parcela:**
-    - Executa [13.7. Parcela Mensal](#137-parcela-mensal).
+    - Executa [11.7. Parcela Mensal](#117-parcela-mensal).
 
 12. **Geração da Tabela de Parcelas:**
     - Com base no `valorTotalFinanciado`, `novaQuantidadeParcelas`, `taxaJurosMensal` e `dataInicioPagamento`, gera a tabela com:
