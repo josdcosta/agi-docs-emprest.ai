@@ -271,7 +271,7 @@ Empréstimo Pessoal
    - Verifica parcelas pagas e restantes, atualizando o status de cada parcela na tabela ("paga" ou "pendente").
 
 5. **Cálculo do Saldo Devedor:**
-   - Executa [13.8. Saldo Devedor](#138-saldo-devedor).
+   - Executa [11.8. Saldo Devedor](#118-saldo-devedor).
 
 6. **Retorno dos Dados:**
    - Compila e retorna as informações, incluindo a tabela de parcelas atualizada.
