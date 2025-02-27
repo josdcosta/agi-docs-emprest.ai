@@ -15,8 +15,8 @@
 10. [8. Pagamento de Empréstimo](#8-pagamento-de-empréstimo)
 11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-de-empréstimo)
 12. [10. Elegibilidade para Empréstimos](#10-elegibilidade-para-empréstimos)
-13. [11. Cálculos](#12-cálculos)
-14. [12. Glossário](#12-Glossário)
+13. [11. Cálculos](#11-cálculos)
+14. [12. Glossário](#12-glossário)
 
 # AUTORES
 - @Dalleth Martins
@@ -47,8 +47,8 @@ Os parâmetros abaixo do sistema Emprest.AI:
 |----------------------------|-----------------------------------------------------------|-------------------------|
 | jurosMinimoPessoal         | Taxa mínima de juros mensal (Empréstimo Pessoal)          | 8,49% ao mês            |
 | jurosMaximoPessoal         | Taxa máxima de juros mensal (Empréstimo Pessoal)          | 9,99% ao mês            |
-| jurosMinimoConsignado      | Taxa mínima de juros mensal (Empréstimo Consignado, 24 meses) | 1,80% ao mês        |
-| jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado, 92 meses) | 2,14% ao mês        |
+| jurosMinimoConsignado      | Taxa mínima de juros mensal (Empréstimo Consignado)       | 1,80% ao mês        |
+| jurosMaximoConsignado      | Taxa máxima de juros mensal (Empréstimo Consignado)       | 2,14% ao mês        |
 | valorMinimoPessoal         | Valor mínimo do Empréstimo Pessoal                        | R$ 100,00               |
 | valorMaximoPessoal         | Valor máximo do Empréstimo Pessoal                        | R$ 20.000,00            |
 | valorMinimoConsignado      | Valor mínimo do Empréstimo Consignado                     | R$ 1.000,00             |
@@ -139,18 +139,18 @@ Empréstimo Pessoal:
 - Aplica [10.2.2. Valor do Empréstimo](#1022-valor-do-empréstimo).
 - Aplica [10.2.3. Quantidade de Parcelas](#1023-quantidade-de-parcelas).
 - Aplica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
-- Aplica [10.2.5. Pontuação de Crédito](#1025-pontuação-de-creédito).
-- Aplica [10.2.6 Capacidade de Pagamento](#1026-capacidade-de-pagamento).
+- Aplica [10.2.5. Score de Crédito](#1025-score-de-crédito).
+- Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
 - Calcula dias de carência e aplica [10.2.7. Carência](#1027-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-- Pessoal: Executa [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento).
 - Consignado: Executa [11.2. Margem Consignável](#112-margem-consignável).  
+- Pessoal: Executa [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento). 
 
 
 **Passo 4: Definição da Taxa de Juros**  
-- Consignado: Aplica [11.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).  
-- Pessoal: Aplica [11.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
+- Consignado: Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal) e verifica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).  
+- Pessoal: Aplica [11.3. Taxa de Juros Mensal](#113-taxa-de-juros-mensal) e verifica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
 
 **Passo 5: Cálculo do Custo do Seguro**  
 - Se `contratarSeguro = true`, aplica [11.4. Custo do Seguro](#114-custo-do-seguro).
@@ -462,8 +462,8 @@ Empréstimo Pessoal
       - Data de pagamento (inicialmente null)
 
 13. **Validação Final:**
-    - Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).
-    - Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
+- Consignado: Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).
+- Pessoal: Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
 
 14. **Registro do Refinanciamento:**
     - Cria novo contrato com a tabela de parcelas e marca o original como "refinanciado".
@@ -581,12 +581,15 @@ Empréstimo Pessoal
 #### 10.3.1. Percentual Mínimo Pago
     ≥ 20% das parcelas pagas.
 
-#### 10.3.2. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+<br>
 
-#### 10.3.3. Parcelas em Dia
+## 10.4.1. Portabilidade (Empréstimo Consignado, Empréstimo Pessoal)
+    Transferência do contrato de empréstimo para outra instituição financeira, desde que respeitadas as condições de elegibilidade.
+    
+#### 10.4.2. Parcelas em Dia
     Sem parcelas vencidas.
 
-#### 10.3.4. Aceitação do Banco Destino
+#### 10.4.3. Aceitação do Banco Destino
     bancoDestino deve aceitar a portabilidade.
 
 <br>
