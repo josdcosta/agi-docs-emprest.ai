@@ -144,28 +144,29 @@ Empréstimo Pessoal:
 - Calcula dias de carência e aplica [10.2.7. Carência](#1027-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
-- Consignado: Executa [13.2. Margem Consignável](#132-margem-consignável).  
-- Pessoal: Executa [13.1. Capacidade de Pagamento](#131-capacidade-de-pagamento).
+- Pessoal: Executa [11.1. Capacidade de Pagamento](#111-capacidade-de-pagamento).
+- Consignado: Executa [11.2. Margem Consignável](#112-margem-consignável).  
+
 
 **Passo 4: Definição da Taxa de Juros**  
-- Consignado: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.1.4. Taxa de Juros](#1114-taxa-de-juros).  
-- Pessoal: Aplica [13.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [11.2.7. Taxa de Juros](#1127-taxa-de-juros).
+- Consignado: Aplica [11.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).  
+- Pessoal: Aplica [11.3. Taxa de Juros Mensal](#133-taxa-de-juros-mensal) e verifica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
 
 **Passo 5: Cálculo do Custo do Seguro**  
-- Se `contratarSeguro = true`, aplica [13.4. Custo do Seguro](#134-custo-do-seguro).
+- Se `contratarSeguro = true`, aplica [11.4. Custo do Seguro](#114-custo-do-seguro).
 
 **Passo 6: Cálculo do IOF**  
-- Executa [13.5. IOF](#135-iof).
+- Executa [11.5. IOF](#115-iof).
 
 **Passo 7: Cálculo do Valor Total Financiado**  
-- Aplica [13.6. Valor Total Financiado](#136-valor-total-financiado).
+- Aplica [11.6. Valor Total Financiado](#116-valor-total-financiado).
 
 **Passo 8: Cálculo da Parcela Mensal**  
-- Executa [13.7. Parcela Mensal](#137-parcela-mensal).
+- Executa [11.7. Parcela Mensal](#117-parcela-mensal).
 
 **Passo 9: Validação Final de Elegibilidade**  
-- Consignado: Aplica [11.1.1. Margem Consignável](#1111-margem-consignável).  
-- Pessoal: Aplica [11.2.6. Capacidade de Pagamento](#1126-capacidade-de-pagamento).
+- Consignado: Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).  
+- Pessoal: Aplica [10.2.6. Capacidade de Pagamento](#1026-capacidade-de-pagamento).
 
 **Passo 10: Geração da Tabela de Parcelas**
 
