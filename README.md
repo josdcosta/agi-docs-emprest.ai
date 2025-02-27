@@ -525,7 +525,7 @@ A portabilidade permite transferir contratos de empréstimo entre instituições
 #### Elegibilidade
   - Deve estar em conformidade com as regras [11.4.1.](#1141-sem-atrasos) e [11.4.2.](#1142-contrato-ativo)
   - **Consignado**: [11.1.1](#1111-margem-consignável), [11.1.2](#1112-idade-máxima).
-  - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento), [11.2.5](#1125-score-de-crédito).
+  - **Pessoal**: [11.2.6](#1126-capacidade-de-pagamento),[11.1.2](#1112-idade-máxima), [11.2.5](#1125-score-de-crédito).
 
 #### Requisição
 ```json
