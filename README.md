@@ -7,13 +7,13 @@
 2. [Referências](#referências)
 3. [1. Objetivo](#1-objetivo)
 4. [2. Variáveis](#2-variáveis)
-5. [3. Visão Geral do Funcionamento](#3-visão-geral-do-funcionamento)
+5. [3. Visão Geral do Funcionamento](#3-visão-geral-de-funcionamento)
 6. [4. Dados Armazenados do Cliente](#4-dados-armazenados-do-cliente)
 7. [5. Simulação de Empréstimo](#5-simulação-de-empréstimo)
 8. [6. Concessão de Empréstimo](#6-concessão-de-empréstimo)
 9. [7. Consulta de Dados de Empréstimo](#7-consulta-de-dados-de-empréstimo)
-10. [8. Pagamento de Empréstimo](#8-pagamento-de-empréstimo)
-11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-de-empréstimo)
+10. [8. Pagamento de Empréstimo](#8-pagamento-do-empréstimo)
+11. [9. Refinanciamento de Empréstimo](#9-refinanciamento-do-empréstimo)
 12. [10. Portabilidade](#10-portabilidade)
 13. [11. Elegibilidade para Empréstimos](#11-elegibilidade-para-empréstimos)
 14. [12. Cálculos](#12-cálculos)
@@ -35,12 +35,12 @@
 
 <br>
 
-## 1. OBJETIVO
+# 1. OBJETIVO
 O Emprest.AI é um backend projetado para gerenciar de forma eficiente e transparente o ciclo completo de empréstimos, abrangendo as modalidades Empréstimo Pessoal e Empréstimo Consignado. Suas funcionalidades incluem concessão de novos contratos, simulação de condições, consulta de dados, pagamento antecipado de parcela, refinanciamento (quando aplicável), portabilidade (para consignado) e cancelamento, com critérios adaptados a cada modalidade.
 
 <br>
 
-## 2. VARIÁVEIS
+# 2. VARIÁVEIS
 Os parâmetros abaixo do sistema Emprest.AI:
 
 
@@ -72,7 +72,7 @@ Os parâmetros abaixo do sistema Emprest.AI:
 
 <br>
 
-## 3. VISÃO GERAL DE FUNCIONAMENTO
+# 3. VISÃO GERAL DE FUNCIONAMENTO
 O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidades com ajustes específicos:
 
 - Concessão de Empréstimos: Análise de crédito adaptada (Consignado: margem consignável; Pessoal: score e renda). Simulação e aprovação de contratos.
@@ -84,7 +84,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-## 4. DADOS ARMAZENADOS DO CLIENTE
+# 4. DADOS ARMAZENADOS DO CLIENTE
 ```json
 {
   "idCliente": "[cpf]",
@@ -97,7 +97,7 @@ O sistema é estruturado em áreas principais, aplicáveis a ambas as modalidade
 
 <br>
 
-## 5. SIMULAÇÃO DE EMPRÉSTIMO
+# 5. SIMULAÇÃO DE EMPRÉSTIMO
 ### 5.1. Requisição - Sistema recebe informações do usúario identificando o tipo de modalidade.
 #### Empréstimo Consignado - Aposentado, pensionistas, funcionários públicos.
 ```json
@@ -182,8 +182,8 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 **Passo 11: Retorno da Simulação**  
 - Retorna os valores calculados sem gravar o contrato.
 
-# 5.3. Saída
-## Empréstimo Consignado/Pessoal
+### 5.3. Saída
+### Empréstimo Consignado/Pessoal
 ```json
 {
   "idCliente": "[cpf]",
@@ -213,7 +213,7 @@ Com base no `valorTotalFinanciado`, `quantidadeParcelas`, `taxaJurosMensal` e `d
 
 <br>
 
-## 6. CONCESSÃO DE EMPRÉSTIMO
+# 6. CONCESSÃO DE EMPRÉSTIMO
 ### 6.1. Requisição
 Empréstimo Consignado
 ```json
@@ -310,7 +310,7 @@ Empréstimo Pessoal
 
 <br>
 
-## 8. PAGAMENTO DO EMPRÉSTIMO
+# 8. PAGAMENTO DO EMPRÉSTIMO
 ### 8.1. Requisição
 #### Pagamento Parcela
 ```json
@@ -601,7 +601,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 <br>
 <br>
 
-## 11. Elegibilidade para Empréstimos
+# 11. Elegibilidade para Empréstimos
 
 ## 11.1. Empréstimo Consignado
 
@@ -689,7 +689,7 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
 
 <br>
 
-## 12. CÁLCULOS
+# 12. CÁLCULOS
 
 ### 12.1. Capacidade de Pagamento (Empréstimo Pessoal)
     rendaTotalLiquida = remuneracaoLiquida - Total de Despesas  
@@ -735,52 +735,52 @@ Saldo de R$ 5.000,00 (20 parcelas, 1,90%). Setor interno confirma quitação, Em
     Multa = valorParcela * percentualMultaAtraso  
     Juros de mora = valorParcela * percentualJurosMora * diasAtraso
 
-## 13. Glossário 
+# 13. Glossário 
 
-## Amortização
+### Amortização
 Redução gradual do saldo devedor de um empréstimo através de pagamentos periódicos.
 
-## Capacidade de Pagamento
+### Capacidade de Pagamento
 Valor máximo que um cliente pode comprometer com o pagamento de um empréstimo, calculado com base em sua renda líquida e despesas.
 
-## Carência
+### Carência
 Período inicial de um empréstimo durante o qual o cliente não precisa fazer pagamentos.
 
-## CET (Custo Efetivo Total)
+### CET (Custo Efetivo Total)
 Custo total de um empréstimo, incluindo juros, taxas e outros encargos, expresso como uma taxa percentual anual.
 
-## Consignado
+### Consignado
 Tipo de empréstimo cujas parcelas são descontadas diretamente da folha de pagamento ou benefício do cliente.
 
-## IOF (Imposto sobre Operações Financeiras)
+### IOF (Imposto sobre Operações Financeiras)
 Imposto federal cobrado sobre operações de crédito, câmbio, seguros e títulos mobiliários.
 
-## Juros de Mora
+### Juros de Mora
 Encargos cobrados pelo atraso no pagamento de uma parcela de empréstimo.
 
-## Margem Consignável
+### Margem Consignável
 Percentual máximo da renda líquida que pode ser comprometido com o pagamento de empréstimos consignados.
 
-## Multa por Atraso
+### Multa por Atraso
 Valor fixo ou percentual cobrado pelo atraso no pagamento de uma parcela de empréstimo.
 
-## Parcela
+### Parcela
 Valor periódico a ser pago pelo cliente para quitar um empréstimo.
 
-## Refinanciamento
+### Refinanciamento
 Renegociação de um contrato de empréstimo existente, geralmente para obter melhores condições de pagamento.
 
-## Renda Líquida
+### Renda Líquida
 Valor da renda total após a dedução de impostos e outras despesas.
 
-## Saldo Devedor
+### Saldo Devedor
 Valor total que o cliente ainda deve em um empréstimo.
 
-## Score de Crédito
+### Score de Crédito
 Pontuação que indica o risco de inadimplência de um cliente, utilizada para avaliar a concessão de crédito.
 
-## Taxa de Juros
+### Taxa de Juros
 Percentual cobrado sobre o valor emprestado, representando o custo do empréstimo.
 
-## Valor Financiado
+### Valor Financiado
 Valor total do empréstimo, incluindo o valor principal, juros e outros encargos.    
