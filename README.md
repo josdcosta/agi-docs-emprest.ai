@@ -127,17 +127,21 @@ do `idCliente`consulta  o analisador de risco que retorna  o `scoreCredito` (par
 
 **Passo 2: Verificação Inicial de Elegibilidade**  
 Empréstimo Consignado:
-- Aplica [11.1.5. Tipo de Vínculo](#1115-tipo-de-vínculo).
-- Aplica [11.1.2. Idade Máxima](#1112-idade-máxima).
-- Aplica [11.1.3. Quantidade de Parcelas](#1113-quantidade-de-parcelas).
-- Calcula dias de carência e aplica [11.1.6. Carência](#1116-carência).  
+- Aplica [10.1.1. Margem Consignável](#1011-margem-consignável).
+- Aplica [10.1.2. Idade Máxima](#1012-idade-máxima).
+- Aplica [10.1.3. Quantidade de Parcelas](#1013-quantidade-de-parcelas).
+- Aplica [10.1.4. Taxa de Juros](#1014-taxa-de-juros).
+- Aplica [10.1.5. Tipo de Vínculo](#1015-tipo-de-vínculo).
+- Calcula dias de carência e aplica [10.1.6. Carência](#1016-carência).  
 
 Empréstimo Pessoal:
-- Aplica [11.2.1. Idade Máxima](#1121-idade-máxima).
-- Aplica [11.2.2. Valor do Empréstimo](#1122-valor-do-empréstimo).
-- Aplica [11.2.3. Quantidade de Parcelas](#1124-quantidade-de-parcelas).
-- Aplica [11.2.4. Score de Crédito](#1124-score-de-crédito).
-- Calcula dias de carência e aplica [11.2.6. Carência](#1126-carência).
+- Aplica [10.2.1. Idade Máxima](#1021-idade-máxima).
+- Aplica [10.2.2. Valor do Empréstimo](#1022-valor-do-empréstimo).
+- Aplica [10.2.3. Quantidade de Parcelas](#1023-quantidade-de-parcelas).
+- Aplica [10.2.4. Taxa de Juros](#1024-taxa-de-juros).
+- Aplica [10.2.5. Pontuação de Crédito](#1025-pontuação-de-creédito).
+- Aplica [10.2.6 Capacidade de Pagamento](#1026-capacidade-de-pagamento).
+- Calcula dias de carência e aplica [10.2.7. Carência](#1027-carência).
 
 **Passo 3: Determinação da Capacidade de Pagamento**  
 - Consignado: Executa [13.2. Margem Consignável](#132-margem-consignável).  
